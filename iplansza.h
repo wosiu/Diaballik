@@ -1,0 +1,50 @@
+#ifndef IPLANSZA_H
+#define IPLANSZA_H
+
+#include <QGraphicsScene>
+#include "ipilkarzyk.h"
+#include "ipilka.h"
+#include "icel.h"
+#include <vector>
+
+class IPlansza : public QGraphicsScene
+{
+	Q_OBJECT
+public:
+	explicit IPlansza(QObject *parent = 0);
+	void dodajDostepnePole( int pos );
+
+private:
+	IPole* pionki[ 16 ];
+	int toPixels(int x) {return x * IPole::rozmiar;}
+	int fromPixels(int px) {return px / IPole::rozmiar;}
+	void rysujPodklad();
+	void dodajPionki();
+	void polaczPionki();
+	void ustawPole( IPole *pole, int pos );
+
+	bool locked;
+	int clickedId;
+	std::vector< ICel* > dostepneRuchy;
+	void czyscDostepneRuchy();
+
+
+signals:
+	//sygnal o kliknieciu na pionek
+	void clicked( int poleId  );
+	//sygnal o kliknieciu na dostepne pole do ruchu = wykonanie ruchu na planszy
+	void chose( int clickedId, int pos );
+
+private slots:
+	//zbiera sygnaly z pionkow
+	void clickDetector( int poleId );
+	//zbiera sygnaly z wolnych pol
+	void moveDetector( int pos );
+
+public slots:
+	void move( int pionekId, int dx, int dy);
+	void move( int pionekId, int poz);
+
+};
+
+#endif // IPLANSZA_H
