@@ -3,6 +3,12 @@
 #include <QDebug>
 Tryb::Tryb()
 {
+	plansza = new Plansza();
+}
+
+Tryb::~Tryb()
+{
+	delete plansza;
 }
 
 bool Tryb::isValidMove( int pionekId, int pos )

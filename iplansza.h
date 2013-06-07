@@ -13,6 +13,7 @@ class IPlansza : public QGraphicsScene
 public:
 	explicit IPlansza(QObject *parent = 0);
 	void dodajDostepnePole( int pos );
+	void ustawPionek( bool gracz, int id, int x, int y );
 
 private:
 	IPole* pionki[ 16 ];

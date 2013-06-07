@@ -19,7 +19,7 @@ void ICel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	QPen pen( Qt::green );
 	pen.setWidth( 3 );
 	painter->setPen( pen );
-	painter->setBrush( QBrush(Qt::green, Qt::DiagCrossPattern) );
+	//painter->setBrush( QBrush(Qt::green, Qt::DiagCrossPattern) );
 
 	painter->drawEllipse(IPilkarzyk::przesuniecieWzgledne(),
 						 IPilkarzyk::przesuniecieWzgledne(),

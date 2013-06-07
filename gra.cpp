@@ -2,6 +2,7 @@
 
 Gra::Gra()
 {
+
 }
 
 bool Gra::isValidMove( int pionekId, int pos )
@@ -11,9 +12,10 @@ bool Gra::isValidMove( int pionekId, int pos )
 
 std::vector<int> Gra::findValidMoves( int pionekId )
 {
-	std::vector<int>res;
-	for(int i=13;i<16;i++)
-		res.push_back(i);
+//	std::vector<int>res;
 
-	return res;
+//	for(int i=13;i<16;i++)
+//		res.push_back(i);
+
+	return plansza->dajSasiedniePuste( pionekId );
 }
