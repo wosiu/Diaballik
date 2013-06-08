@@ -7,6 +7,8 @@ class Komputer : public Gracz
 {
 public:
 	Komputer();
+	virtual std::vector<int> dajDostepneRuchy(int pionekId );
+
 };
 
 #endif // KOMPUTER_H

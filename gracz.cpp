@@ -1,6 +1,7 @@
 #include "gracz.h"
 
-Gracz::Gracz()
+
+Gracz::Gracz( )
 {
 }
 

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect( scena, SIGNAL(clicked(int)), this, SLOT(askForAndSetValidMoves(int)) );
 	///connect( scena, SIGNAL(chose(int,int)), scena, SLOT(move(int, int)));
 	//wykrywa klik na pole dostepnego ruchu i przekazuje do gry
-	connect( scena, SIGNAL(chose(int,int)), tryb, SLOT(userMoveDetected(int, int)));
+	connect( scena, SIGNAL(chose(int,int)), tryb, SLOT(move(int, int)));
 	//gra informuje o ruchu logicznym = nakazanie wykonania ruchu na scenie
 	connect( tryb, SIGNAL(moved(int,int)), scena, SLOT(move(int, int)));
 }

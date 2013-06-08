@@ -2,6 +2,17 @@
 
 Czlowiek::Czlowiek()
 {
+	this->gra = gra;
+}
+
+void Czlowiek::move(int pionekId, int pozycja )
+{
+	gra->makeMove( pionekId, pozycja );
+}
+
+std::vector<int> Czlowiek::dajDostepneRuchy(int pionekId )
+{
+	return gra->plansza->dajRuchy();
 }
 
 /*
