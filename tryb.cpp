@@ -25,34 +25,21 @@ std::vector<int> Tryb::findValidMoves( int pionekId )
 	return res;
 }
 
-void Tryb::moveFromUIDetected( int pionekId, int pos )
-{
-	if( ! isValidMove( pionekId, pos  ) ) return;
-
-	gracz[ plansza->ktoryGracz() ].move( pionekId, pos );
-}
-
-struct Tryb::ruch
-{
-	int8_t pionekId,skad,dokad;
-
-	/*ruch(int pionekId, int skad, int dokad) :
-		pionekId(pionekId),
-		skad(skad),
-		dokad(dokad);*/
-
-	ruch(int pionekId, int skad, int dokad)
-	{
-		this->skad = skad;
-		this->dokad = dokad;
-		this->pionekId = pionekId;
-	}
-};
-
-void Tryb::physiacalMove( pionekId, pozycja )
+void Tryb::physicalMove( int pionekId, int pozycja )
 {
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 	//wykonac ruch na (kopi?) planszy
 
 	emit moved( pionekId, pozycja );
+}
+
+
+void Tryb::zatwierdz()
+{
+}
+
+
+void Tryb::move( int pionekId, int pozycja )
+{
+	physicalMove( pionekId, pozycja );
 }

@@ -185,3 +185,7 @@ int Plansza::czyjRuch()
 	return dane[16];
 }
 
+void Plansza::nastepnyGracz()
+{
+	dane[16] = ( dane[16] + 1 ) % 2;
+}

@@ -23,6 +23,7 @@ public:
 	std::vector<int> dajDruzyne( int poleId );
 	std::vector<int> dajRuchy(int pionekId );
 	int czyjRuch();
+	void nastepnyGracz();
 
 private:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,

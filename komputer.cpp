@@ -4,7 +4,7 @@ Komputer::Komputer()
 {
 }
 
-std::vector<int> Czlowiek::dajDostepneRuchy(int pionekId )
+std::vector<int> Komputer::dajDostepneRuchy(int pionekId )
 {
 	return std::vector<int>();
 }

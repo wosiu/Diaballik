@@ -21,7 +21,8 @@ bool Gra::isValidMove( int pionekId, int pos )
 	if ( ruchy.size() > 3 ) return false;
 
 	//sprawdzam czy nie nie przekracza ilosci podan/przesuniec
-	int podanWTurze = przesuniecWTurze = 0;
+	int podanWTurze = 0;
+	int przesuniecWTurze = 0;
 
 	for ( int i = 0; i < 3; i++ )
 		if ( plansza->czyPilka( pionekId ) )
@@ -29,8 +30,8 @@ bool Gra::isValidMove( int pionekId, int pos )
 		else //przesuniecie pilkarzyka
 			przesuniecWTurze++;
 
-	if ( podanWTurze == 1 && czyPilka( pionekId) ) return false;
-	if ( przesuniecWTurze == 2 && czyPodanie( pionekId) ) return false;
+	if ( podanWTurze == 1 && plansza->czyPilka( pionekId) ) return false;
+	if ( przesuniecWTurze == 2 && plansza->czyPilkarzyk( pionekId) ) return false;
 
 
 	//sprawdzam czy podany ruch jest dostepny (w tym miejscu powinien zawsze byc)
@@ -50,7 +51,7 @@ std::vector<int> Gra::findValidMoves( int pionekId )
 		return std::vector<int>();
 
 	//pyta gracza o jego dostepne ruchy
-	return gracz[ czyjRuch ]->dajDostepneRuchy( pionekId );
+	return gracze[ czyjRuch ]->dajDostepneRuchy( pionekId );
 }
 
 
@@ -63,18 +64,23 @@ void Gra::zatwierdz()
 	ruchy.clear();
 
 	plansza->nastepnyGracz();
-	emit nastepnyGracz( plansza->ktoryGracz() );
+	emit nastepnyGracz( plansza->czyjRuch() );
 }
+
 
 void Gra::move( int pionekId, int pozycja )
 {
 	//nie przyjdzie zawolanie z UI z pionkow kompa, bo nie wyswietla sie validMoves dla niego, wiec jest spoko
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 
-	ruchy.push_back(
-				ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );
+	//ruchy.push_back(
+	//			ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );
+
 
 	//if( !ruchy.empty() ) emit odblikujzatwierdz
+
+	//nie odsylam do czlowieka bo nie ma po co..
+	//gracz[ plansza->ktoryGracz() ].move( pionekId, pos );
 	physicalMove( pionekId, pozycja );
 }
 

@@ -18,9 +18,15 @@ public:
 	virtual std::vector <int> findValidMoves( int pionekId );
 	void physicalMove( int pionekId, int pozycja );
 
+	struct ruch {
+		int skad,dokad,pionekId;
+		ruch(int _pionekId, int _skad, int _dokad) {
+			skad = _skad; dokad = _dokad; pionekId = _pionekId;
+		}
+	};
+
 protected:
 	Plansza *plansza;
-	struct ruch;
 
 public slots:
 	virtual void move( int pionekId, int pos );
@@ -32,5 +38,6 @@ signals:
 	void moved( int pionekId, int pos );
 	void nastepnyGracz( int gracz );
 };
+
 
 #endif // TRYB_H
