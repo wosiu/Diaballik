@@ -1,6 +1,10 @@
 #include "tryb.h"
-
 #include <QDebug>
+
+const int Tryb::CZLOWIEK = 0;
+const int Tryb::KOMPUTER = 1;
+const int Tryb::EDYTOR = 2;
+
 Tryb::Tryb()
 {
 	plansza = new Plansza();
@@ -10,6 +14,11 @@ Tryb::~Tryb()
 {
 	delete plansza;
 }
+
+/*Tryb::TYPGRACZA Tryb::dajTypGracza( int graczId )
+{
+	return KOMPUTER;
+}*/
 
 
 void Tryb::physicalMove( int pionekId, int pozycja )

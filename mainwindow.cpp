@@ -10,8 +10,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+
 	scena = new IPlansza(this);
 	ui->graphicsView->setScene( scena );
+
+	statusBarMonit = new QLabel( this );
+	ui->statusBar->addWidget( statusBarMonit );
+
+	boxMonit = new QMessageBox(this);
+
+
 	//Komunikator komunikator = new Komunikator();
 	tryb = new Gra();
 
@@ -25,6 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	//po przesunieciu wysylam jeszcze jeden sygnal, aby "odkliknac" pionek
 	//w przeciwnym razie trzeba by go wcisnac, pomimo, iz nie pokazywalby dostepnych pol
 	connect( tryb, SIGNAL(moved(int,int)), this, SLOT(setValidMoves(int)) );
+
+	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
+	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
+
+	//laczymy informacje o obecnym graczu z monitem
+	connect( tryb, SIGNAL(nowaTura(int)), this, SLOT(aktualnyGracz(int)) );
 }
 
 MainWindow::~MainWindow()
@@ -52,4 +66,33 @@ void MainWindow::setValidMoves( int pionekId )
 		scena->dodajDostepnePole( pozycje.back() );
 		pozycje.pop_back();
 	}
+}
+
+
+void MainWindow::showMonitInBox( QString monit )
+{
+	//box->setWindowTitle( QString("Komunikat sędziego") );
+	boxMonit->setText( monit );
+	boxMonit->setButtonText(1,"Ok");
+	boxMonit->show();
+}
+
+void MainWindow::showMonitOnStatusBar( QString monit )
+{
+	statusBarMonit->setText( monit );
+	//ui->statusBar->showMessage( monit );
+}
+
+void MainWindow::on_Zatwierdz_pushButton_clicked()
+{
+	tryb->zatwierdz();
+}
+
+void MainWindow::aktualnyGracz( int graczId )
+{
+	QString typ="";
+	if( tryb->dajTypGracza( graczId ) == Tryb::KOMPUTER )
+		typ = "Ruch komputera. ";
+
+	showMonitOnStatusBar( typ + "Gracz: " + QString::number( graczId ) );
 }

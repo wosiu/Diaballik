@@ -14,9 +14,15 @@ class Tryb : public QObject
 public:
 	Tryb();
 	~Tryb();
+	//enum TYPGRACZA { CZLOWIEK, KOMPUTER, EDYTOR };
+	static const int CZLOWIEK;
+	static const int KOMPUTER;
+	static const int EDYTOR;
+
 	virtual bool isValidMove( int pionekId, int pos );
 	virtual std::vector <int> findValidMoves( int pionekId );
 	void physicalMove( int pionekId, int pozycja );
+	virtual int dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
 
 	struct ruch {
 		int pionekId,skad,dokad;
@@ -38,7 +44,8 @@ public slots:
 signals:
 	void moved( int pionekId, int pos );
 	//jak pozbyc sie ponizszego z tej klasy, zeby bylo tylko w podklasie?
-	virtual void nowaTura( int gracz );
+	void nowaTura( int gracz );
+	void uwaga( QString tresc );
 };
 
 

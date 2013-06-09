@@ -1,13 +1,10 @@
 #include "gra.h"
 
-int CZLOWIEK = 0;
-int KOMPUTER = 1;
-
 Gra::Gra()
 {
 	//TO DO w zaleznosci od konfigu gry:
 	typGracza[0]=CZLOWIEK;
-	typGracza[1]=KOMPUTER;
+	typGracza[1]=CZLOWIEK;
 
 	//stale:
 	//TODO:
@@ -18,6 +15,12 @@ Gra::Gra()
 Gra::~Gra()
 {
 }
+
+int Gra::dajTypGracza( int graczId )
+{
+	return typGracza[ graczId ];
+}
+
 
 //sprawdzanie pod kątem nie przekroczenia limitow ruchow
 bool Gra::isValidMove( int pionekId, int pos )
@@ -91,13 +94,19 @@ std::vector<int> Gra::findValidMoves( int pionekId )
 void Gra::zatwierdz()
 {
 	//czy jakies ruchy wykonane
-	if( ruchy.empty() ) return;
+	if( ruchy.empty() )
+	{
+		emit uwaga( "Aby zatwierdzic swoją turę, wykonaj przynajmniej jeden ruch!" );
+		return;
+	}
+
 	//TO DO: monit do powyzszego, ze nie wykonano ruchow, lub blokowac przycisk "Zatwierdz"
 
 	//historia.push_back( plansza->kopiuj() );
 	ruchy.clear();
 
 	plansza->nastepnyGracz();
+
 	emit nowaTura( plansza->czyjRuch() );
 }
 
