@@ -15,9 +15,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gra.cpp \
-    gracz.cpp \
-    czlowiek.cpp \
-    komputer.cpp \
     tryb.cpp \
     edytor.cpp \
     plansza.cpp \
@@ -25,13 +22,11 @@ SOURCES += main.cpp\
     ipilka.cpp \
     iplansza.cpp \
     ipole.cpp \
-    icel.cpp
+    icel.cpp \
+    komunikator.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
-    gracz.h \
-    czlowiek.h \
-    komputer.h \
     tryb.h \
     edytor.h \
     plansza.h \
@@ -39,6 +34,7 @@ HEADERS  += mainwindow.h \
     ipilka.h \
     iplansza.h \
     ipole.h \
-    icel.h
+    icel.h \
+    komunikator.h
 
 FORMS    += mainwindow.ui

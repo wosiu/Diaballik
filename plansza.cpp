@@ -93,6 +93,11 @@ bool Plansza::czyPuste(int x, int y)
 	return true;
 }
 
+bool Plansza::czyPuste(int pozycja)
+{
+	return czyPuste( pozycja % 7, pozycja / 7 );
+}
+
 
 std::vector<int> Plansza::dajSasiedniePuste( int pilkarzId )
 {
@@ -188,4 +193,10 @@ int Plansza::czyjRuch()
 void Plansza::nastepnyGracz()
 {
 	dane[16] = ( dane[16] + 1 ) % 2;
+}
+
+void Plansza::przesun( int pionekId, int pozycja )
+{
+	//zakladamy poprawnosc wywolania!
+	dane[ pionekId ] = pozycja;
 }

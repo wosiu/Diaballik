@@ -25,7 +25,7 @@ private:
 	Ui::MainWindow *ui;
 
 private slots:
-	void askForAndSetValidMoves(int);
+	void setValidMoves(int);
 
 };
 

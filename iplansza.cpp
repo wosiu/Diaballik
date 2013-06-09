@@ -87,6 +87,7 @@ void IPlansza::clickDetector( int poleId )
 {
 	//if( !(0 <= polId && poleId <= 15) ) return;
 	if( locked ) return;
+	//blokuje clickDetectora - klikanie na wszystkie pionki nieaktywne
 	locked = true;
 	czyscDostepneRuchy();
 

@@ -19,9 +19,9 @@ public:
 	void physicalMove( int pionekId, int pozycja );
 
 	struct ruch {
-		int skad,dokad,pionekId;
+		int pionekId,skad,dokad;
 		ruch(int _pionekId, int _skad, int _dokad) {
-			skad = _skad; dokad = _dokad; pionekId = _pionekId;
+			pionekId = _pionekId, skad = _skad; dokad = _dokad;
 		}
 	};
 
@@ -29,14 +29,16 @@ protected:
 	Plansza *plansza;
 
 public slots:
-	virtual void move( int pionekId, int pos );
 	virtual void zatwierdz();
+	virtual void move( int pionekId, int pozycja );
+	virtual void moveDetector(int pionekId , int pozycja);
 	//bool undo();
 	//bool redo();
 
 signals:
 	void moved( int pionekId, int pos );
-	void nastepnyGracz( int gracz );
+	//jak pozbyc sie ponizszego z tej klasy, zeby bylo tylko w podklasie?
+	virtual void nowaTura( int gracz );
 };
 
 

@@ -28,6 +28,7 @@ private:
 	int clickedId;
 	std::vector< ICel* > dostepneRuchy;
 	void czyscDostepneRuchy();
+	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 
 
 signals:
