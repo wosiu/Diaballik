@@ -32,6 +32,7 @@ private slots:
 	void setValidMoves(int);
 	void showMonitOnStatusBar( QString monit );
 	void showMonitInBox( QString monit );
+	void showWinnerBox( int gracz );
 	void aktualnyGracz(int graczId );
 
 	void on_Zatwierdz_pushButton_clicked();

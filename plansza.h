@@ -26,6 +26,8 @@ public:
 	int czyjRuch();
 	void nastepnyGracz();
 	void przesun( int pionekId, int pozycja );
+	int winCheck();
+
 
 private:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,

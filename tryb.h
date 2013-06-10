@@ -23,7 +23,7 @@ public:
 	virtual std::vector <int> findValidMoves( int pionekId );
 	void physicalMove( int pionekId, int pozycja );
 	virtual TYPGRACZA dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
-	virtual void start() = 0;
+	virtual void turaStart() = 0;
 
 	struct ruch {
 		int pionekId,skad,dokad;
@@ -46,6 +46,7 @@ signals:
 	void moved( int pionekId, int pos );
 	//jak pozbyc sie ponizszego z tej klasy, zeby bylo tylko w podklasie?
 	void nowaTura( int gracz );
+	void winDetector( int gracz );
 	void uwaga( QString tresc );
 };
 

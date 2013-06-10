@@ -3,8 +3,8 @@
 Gra::Gra()
 {
 	//TO DO w zaleznosci od konfigu gry:
-	typGracza[0]=KOMPUTER;
 	typGracza[1]=CZLOWIEK;
+	typGracza[0]=KOMPUTER;
 	//pausa = false;
 
 	//ai = new AI();
@@ -14,10 +14,25 @@ Gra::Gra()
 	//emit nowaTura( plansza->czyjRuch() );
 }
 
-void Gra::start()
+void Gra::turaStart()
 {
-	emit nowaTura( plansza->czyjRuch() );
-	komputerGraj( 0 );
+	//jesli na planszy wykryto wygraną
+	if ( plansza->winCheck() != -1 )
+	{
+		Q_ASSERT( plansza->winCheck() == plansza->czyjRuch() );
+		emit winDetector( plansza->czyjRuch() );
+	}
+	else //w p.p. kontynuujemy rozgrywke
+	{
+		ruchy.clear();
+		plansza->nastepnyGracz();
+		emit nowaTura( plansza->czyjRuch() );
+		komputerGraj( plansza->czyjRuch() );
+	}
+
+	//stare:
+	//emit nowaTura( plansza->czyjRuch() );
+	//komputerGraj( plansza->czyjRuch() );
 }
 
 Gra::~Gra()
@@ -102,18 +117,11 @@ void Gra::zatwierdz()
 		return;
 	}
 
-	//TO DO: monit do powyzszego, ze nie wykonano ruchow, lub blokowac przycisk "Zatwierdz"
-
 	//historia.push_back( plansza->kopiuj() );
-	ruchy.clear();
-	plansza->nastepnyGracz();
-
-	//to do: rozpoznanie wygranej
 
 	//while( pausa ) {}
 
-	emit nowaTura( plansza->czyjRuch() );
-	komputerGraj( plansza->czyjRuch() );
+	turaStart();
 }
 
 //TO DO! do trybu z tym (i z inicjacją w konstruktorze):
@@ -125,6 +133,13 @@ void Gra::zatwierdz()
 void Gra::move( int pionekId, int pozycja )
 {
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
+
+	//jesli nikt nie wygral lub ta tura nalezy do gracza, ktory ktoryms ruchem
+	//w tej turze wygral (to jak ma jeszcze jakies wolne ruchy, to moze zagrac,
+	//dopoki nie zatwierdzi
+	qDebug() << plansza->winCheck();
+	Q_ASSERT( plansza->winCheck() == -1 || plansza->winCheck() == plansza->czyjRuch() );
+
 
 	ruchy.push_back(
 				ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );
@@ -176,3 +191,5 @@ void Gra::komputerGraj( int gracz )
 	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
 	zatwierdz();
 }
+
+

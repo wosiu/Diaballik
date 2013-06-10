@@ -72,11 +72,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
 	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
-
 	//laczymy informacje o obecnym graczu z monitem
 	connect( tryb, SIGNAL(nowaTura(int)), this, SLOT(aktualnyGracz(int)) );
+	//laczymy informacje o wygranej z oknem wygranej
+	connect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
 
-	tryb->start();
+
+	tryb->turaStart();
 }
 
 MainWindow::~MainWindow()
@@ -110,6 +112,17 @@ void MainWindow::setValidMoves( int pionekId )
 void MainWindow::showMonitInBox( QString monit )
 {
 	//box->setWindowTitle( QString("Komunikat sędziego") );
+	boxMonit->setText( monit );
+	boxMonit->setButtonText(1,"Ok");
+	boxMonit->show();
+}
+
+void MainWindow::showWinnerBox( int gracz )
+{
+	//box->setWindowTitle( QString("Komunikat sędziego") );
+	//TO DO: przyciski: zapisz historię gry lub kontynuuj (zeby mial mozliwosc cofniecia)
+	//Nowa Gra
+	QString monit = "Wygrał gracz: " + QString::number(gracz) + "!";
 	boxMonit->setText( monit );
 	boxMonit->setButtonText(1,"Ok");
 	boxMonit->show();

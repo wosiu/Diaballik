@@ -206,3 +206,16 @@ void Plansza::przesun( int pionekId, int pozycja )
 	//zakladamy poprawnosc wywolania!
 	dane[ pionekId ] = pozycja;
 }
+
+int Plansza::winCheck()
+{
+	//jesli ktoras z pilek znalazla sie po drugiej stronie
+	if ( dane[ 14 ] >= 42 )
+		return 0;
+
+	if ( dane[ 15 ] < 7 )
+		return 1;
+
+	//nikt nie wygral
+	return -1;
+}

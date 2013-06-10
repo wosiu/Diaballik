@@ -15,7 +15,7 @@ public:
 	bool isValidMove( int pionekId, int pos );
 	std::vector<int> findValidMoves( int pionekId );
 	TYPGRACZA dajTypGracza( int graczId );
-	void start();
+	void turaStart();
 
 protected:
 	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
