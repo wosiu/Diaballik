@@ -1,9 +1,9 @@
 #include "tryb.h"
 #include <QDebug>
 
-const int Tryb::CZLOWIEK = 0;
+/*const int Tryb::CZLOWIEK = 0;
 const int Tryb::KOMPUTER = 1;
-const int Tryb::EDYTOR = 2;
+const int Tryb::EDYTOR = 2;*/
 
 Tryb::Tryb()
 {

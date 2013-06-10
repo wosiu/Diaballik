@@ -14,15 +14,16 @@ class Tryb : public QObject
 public:
 	Tryb();
 	~Tryb();
-	//enum TYPGRACZA { CZLOWIEK, KOMPUTER, EDYTOR };
-	static const int CZLOWIEK;
+	enum TYPGRACZA { CZLOWIEK, KOMPUTER, EDYTOR };
+	/*static const int CZLOWIEK;
 	static const int KOMPUTER;
-	static const int EDYTOR;
+	static const int EDYTOR;*/
 
 	virtual bool isValidMove( int pionekId, int pos );
 	virtual std::vector <int> findValidMoves( int pionekId );
 	void physicalMove( int pionekId, int pozycja );
-	virtual int dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
+	virtual TYPGRACZA dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
+	virtual void start() = 0;
 
 	struct ruch {
 		int pionekId,skad,dokad;

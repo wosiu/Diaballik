@@ -27,7 +27,6 @@ private:
 	bool locked;
 	int clickedId;
 	std::vector< ICel* > dostepneRuchy;
-	void czyscDostepneRuchy();
 	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 
 
@@ -46,6 +45,7 @@ private slots:
 public slots:
 	void move( int pionekId, int dx, int dy);
 	void move( int pionekId, int poz);
+	void czyscDostepneRuchy();
 
 };
 

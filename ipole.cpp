@@ -38,7 +38,7 @@ void IPole::unlock()
  * itd.. */
 void IPole::move(int x, int y)
 {
-	if ( locked ) return;
+	//if ( locked ) return;
 	locked = true;
 
 	QPropertyAnimation *animation = new QPropertyAnimation(this,"pos");
@@ -46,7 +46,7 @@ void IPole::move(int x, int y)
 	connect( animation, SIGNAL(finished()), this, SLOT(unlock()) );
 
 	animation->setDuration(250);
-	animation->setStartValue( this->pos() );
+	//animation->setStartValue( this->pos() );
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);
 	animation->start( QPropertyAnimation::DeleteWhenStopped );

@@ -18,8 +18,9 @@ int IPilkarzyk::przesuniecieWzgledne()
 void IPilkarzyk::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 					 QWidget *widget)
 {
-	if( graczId == 0 )	painter->setBrush( QBrush(Qt::black) );
-	else				painter->setBrush( QBrush(Qt::white) );
+	if( graczId == 0 )		painter->setBrush( QBrush(Qt::black) );
+	else if( graczId == 1 )	painter->setBrush( QBrush(Qt::white) );
+	else					painter->setBrush( QBrush(Qt::red) );
 	//(QColor(0xFF, 0xFF, 0xFF, highlightLevel), Qt::SolidPattern);
 
 	painter->drawEllipse(przesuniecieWzgledne(),przesuniecieWzgledne(),

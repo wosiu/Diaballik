@@ -83,10 +83,10 @@ std::vector<int> Plansza::dajDruzyne( int poleId )
 
 bool Plansza::czyPuste(int x, int y)
 {
-	if( x < 0 || x > 6 || y < 0 || y > 6 ) return false;
+	if ( x < 0 || x > 6 || y < 0 || y > 6 ) return false;
 	int poz = x + y * 7;
 
-	for ( int i = 0; i < 14; i++ )
+	for ( int i = 0; i < 16; i++ )
 		if( dane[i] == poz )
 			return false;
 
@@ -179,9 +179,15 @@ std::vector<int> Plansza::dajPodania( int pilkaId )
 
 std::vector<int> Plansza::dajRuchy( int pionekId )
 {
+	//jesli to pilka
 	if( czyPilka( pionekId ) )
 		return dajPodania( pionekId );
 
+	//jesli to pionek i jest pod pilka, to nie moge go ruszac
+	if( dane[ pionekId ] == dane[ 14 + ktoryGracz( pionekId ) ] )
+		return std::vector<int>();
+
+	//jesli pionek
 	return dajSasiedniePuste( pionekId );
 }
 

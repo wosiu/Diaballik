@@ -3,7 +3,9 @@
 
 #include <QDebug>
 
-#include "komunikator.h"
+
+#include <ipilkarzyk.h>
+#include <QSequentialAnimationGroup>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -19,6 +21,40 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	boxMonit = new QMessageBox(this);
 
+
+	// TEST
+/*
+	QSequentialAnimationGroup *group = new QSequentialAnimationGroup;
+	IPilkarzyk *a = new IPilkarzyk(scena, 3, 30);
+	scena->addItem( a );
+	a->setPos( 100,100 );
+
+	QPropertyAnimation *animation = new QPropertyAnimation(a,"pos");
+	animation->setDuration(1000);
+	//animation->setStartValue( a->pos() );
+	//animation->setEndValue( a->mapToParent( 0*IPole::rozmiar, 3*IPole::rozmiar ) );
+	animation->setEndValue( a->mapToScene ( 0*IPole::rozmiar, 3*IPole::rozmiar ) );
+	animation->setEasingCurve(QEasingCurve::InOutSine);
+	animation->DeleteWhenStopped;
+	//animation->start( QPropertyAnimation::DeleteWhenStopped );
+
+	QPropertyAnimation *animation2 = new QPropertyAnimation(a,"pos");
+	animation2->setDuration(1000);
+	//animation2->setStartValue( a->pos() );
+	//animation2->setEndValue( a->mapToParent( 0*IPole::rozmiar, -2*IPole::rozmiar ) );
+	animation2->setEndValue( a->mapToScene ( 0*IPole::rozmiar, -2*IPole::rozmiar ) );
+	animation2->setEasingCurve(QEasingCurve::InOutSine);
+	animation2->DeleteWhenStopped;
+	//animation2->start( QPropertyAnimation::DeleteWhenStopped );
+
+	//group->start();
+	group->addAnimation( animation );
+	group->start();
+	group->addPause(2000);
+	group->addAnimation( animation2 );
+	//group->start();
+	*/
+	// END
 
 	//Komunikator komunikator = new Komunikator();
 	tryb = new Gra();
@@ -39,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//laczymy informacje o obecnym graczu z monitem
 	connect( tryb, SIGNAL(nowaTura(int)), this, SLOT(aktualnyGracz(int)) );
+
+	tryb->start();
 }
 
 MainWindow::~MainWindow()
@@ -90,6 +128,8 @@ void MainWindow::on_Zatwierdz_pushButton_clicked()
 
 void MainWindow::aktualnyGracz( int graczId )
 {
+	scena->czyscDostepneRuchy();
+
 	QString typ="";
 	if( tryb->dajTypGracza( graczId ) == Tryb::KOMPUTER )
 		typ = "Ruch komputera. ";

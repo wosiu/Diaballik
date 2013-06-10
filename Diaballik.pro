@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     iplansza.cpp \
     ipole.cpp \
     icel.cpp \
-    komunikator.cpp
+    komunikator.cpp \
+    ai.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
@@ -35,6 +36,7 @@ HEADERS  += mainwindow.h \
     iplansza.h \
     ipole.h \
     icel.h \
-    komunikator.h
+    komunikator.h \
+    ai.h
 
 FORMS    += mainwindow.ui

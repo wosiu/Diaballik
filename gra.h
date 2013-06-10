@@ -2,6 +2,7 @@
 #define GRA_H
 
 #include "tryb.h"
+#include "ai.h"
 #include <algorithm>
 #include <vector>
 
@@ -13,13 +14,16 @@ public:
 	~Gra();
 	bool isValidMove( int pionekId, int pos );
 	std::vector<int> findValidMoves( int pionekId );
-	int dajTypGracza( int graczId );
+	TYPGRACZA dajTypGracza( int graczId );
+	void start();
 
 protected:
-	int typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
+	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
 
 private:
 	std::vector < ruch > ruchy; //w turze, jednego gracza
+	AI *ai;
+	std::vector < int > validateAllMoves( int pionekId );
 
 public slots:
 	void zatwierdz();
