@@ -36,11 +36,11 @@ protected:
 	Plansza *plansza;
 
 public slots:
-	virtual void zatwierdz();
-	virtual void move( int pionekId, int pozycja );
-	virtual void moveDetector(int pionekId , int pozycja);
-	//bool undo();
-	//bool redo();
+	virtual void zatwierdz() = 0;
+	virtual void move( int pionekId, int pozycja ) = 0;
+	virtual void moveDetector(int pionekId , int pozycja) = 0;
+	virtual bool undo() = 0;
+	virtual bool redo() = 0;
 
 signals:
 	void moved( int pionekId, int pos );

@@ -7,6 +7,8 @@ Gra::Gra()
 	typGracza[0]=KOMPUTER;
 	//pausa = false;
 
+	//po wrzuconej tu nie bedzie pisac bo turaStart() ją powieli
+	history.push_back( Plansza() );
 	//ai = new AI();
 
 	//ten connect nie dzioła
@@ -117,10 +119,9 @@ void Gra::zatwierdz()
 		return;
 	}
 
-	//historia.push_back( plansza->kopiuj() );
+	addToHistory( *dajPlansze() );
 
 	//while( pausa ) {}
-
 	turaStart();
 }
 
@@ -193,3 +194,67 @@ void Gra::komputerGraj( int gracz )
 }
 
 
+/* OBSLUGA HISTORII */
+void Gra::addToHistory( ruch r )
+{
+	//porzucam historie od tego momentu do konca, bo wykonano jakis ruch
+	history.erase( history.begin() + historyIterator + 1, history.end() );
+
+	historyIterator++;
+	history.push_back( *dajPlansze() );
+
+	if ( plansza->czyPilka( r.pionekId ) )	podanWTurze++;
+	else									przesuniecWTurze++;
+}
+
+Plansza* dajPlansze()
+{
+	//if ( history.empty() ) return new Plansza();
+
+	return &history[ historyIterator ];
+}
+
+bool Gra::undo()
+{
+	if ( !ruchy.empty() )
+	{
+		emit uwaga("Cofnięcie niezatwierdzonej tury powoduje utratę wykonanych w turze ruchów.")
+
+	}
+
+	Q_ASSERT( historyIterator >= 0 );
+	if ( historyIterator == 0 )
+	{
+		emit uwaga("Brak ruchów do cofnięcia.");
+		return false;
+	}
+
+	historyIterator--;
+	odrysujAktualnaPlansze();
+	turaStart();
+
+	return true;
+}
+
+bool Gra::redo()
+{
+	if ( historyIterator + 1 >= history.size() )
+	{
+		emit uwaga("Brak ruchów do powtorzenia.");
+		return false;
+	}
+
+	historyIterator++;
+	ruch r = history[ historyIterator ];
+
+	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.skad );
+	physicalMove( r.pionekId , r.dokad );
+
+	return true;
+}
+
+void odrysujAktualnaPlansze()
+{
+	for ( int i = 0; i < 17 ; i++ )
+		emit moved( i, dajPlansze()->dane[i] );
+}
