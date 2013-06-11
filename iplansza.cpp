@@ -68,6 +68,13 @@ void IPlansza::polaczPionki()
 void IPlansza::move(int pionekId, int dx, int dy)
 {
 	pionki[ pionekId ]->move(dx,dy);
+
+	//przesunieto pionek wiec czyszcze dostepne ruchy z jego pierwotnej pozycji
+	//zeby sie nie wyswietlaly po przejsciu do docelowej
+	czyscDostepneRuchy();
+
+	//odklikuje, jesli byl klikniety
+	clickedId = -1;
 }
 
 void IPlansza::move(int pionekId, int poz)
@@ -90,6 +97,14 @@ void IPlansza::clickDetector( int poleId )
 	//blokuje clickDetectora - klikanie na wszystkie pionki nieaktywne
 	locked = true;
 	czyscDostepneRuchy();
+
+	//odklikuję - odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
+	if ( clickedId == poleId )
+	{
+		clickedId = -1;
+		locked = false;
+		return;
+	}
 
 	clickedId = poleId;
 	emit clicked( poleId );

@@ -1,10 +1,15 @@
 #include "gra.h"
 
+#define debon 1
+#define deb(burak) if(debon) {qDebug()<<"DEB-> "<<#burak<<": "<<burak;}
+#define debv(burak) if(debon) {qDebug()<<"DEB-> "<<#burak<<": \t"; for(unsigned int zyx=0;zyx<burak.size();zyx++) cout<<burak[zyx]<<" "; cout<<endl;}
+
+
 Gra::Gra()
 {
 	//TO DO w zaleznosci od konfigu gry:
 	typGracza[1]=CZLOWIEK;
-	typGracza[0]=KOMPUTER;
+	typGracza[0]=CZLOWIEK;
 
 	historyIterator = -1;
 
@@ -23,10 +28,7 @@ Gra::Gra()
 
 Gra::~Gra()
 {
-	/*while( history.empty() )
-	{
-		delete history.back();
-	}*/
+
 }
 
 void Gra::turaStart()
@@ -39,7 +41,9 @@ void Gra::turaStart()
 	}
 	else //w p.p. kontynuujemy rozgrywke
 	{
-		podanWTurze = przesuniecWTurze = 0;
+		//?:
+		//zliczRuchyWTurze();
+		przesuniecWTurze = podanWTurze = 0;
 		//przelacznie na nastepnego gracza
 		plansza->nastepnyGracz();
 		emit nowaTura( plansza->czyjRuch() );
@@ -60,11 +64,15 @@ Tryb::TYPGRACZA Gra::dajTypGracza( int graczId )
 //sprawdzanie pod kątem nie przekroczenia limitow ruchow
 bool Gra::isValidMove( int pionekId, int pos )
 {
+	//qDebug() << "isValidMove::Gra ( pionekId = "<< pionekId << ", pozycja "<< pos <<"  )";
+
 	//sprawdzam czy dobry gracz
 	if ( plansza->czyjRuch() != plansza->ktoryGracz( pionekId ) ) return false;
 
 	//sprawdzam czy ma dostepne jeszcze ruchy
-	if ( ruchy.size() > 3 ) return false;
+	Q_ASSERT ( podanWTurze + przesuniecWTurze <= 3);
+
+	if ( podanWTurze + przesuniecWTurze == 3 ) return false;
 
 	//sprawdzam czy nie nie przekracza ilosci podan/przesuniec
 	if ( podanWTurze == 1 && plansza->czyPilka( pionekId) ) return false;
@@ -73,9 +81,9 @@ bool Gra::isValidMove( int pionekId, int pos )
 	//sprawdzam czy podany ruch jest dostepny (w tym miejscu powinien zawsze byc)
 	//chyba ze wczytujemy historie z pliku, w ktorym ktoś mogl grzebac recznie
 	std::vector<int>dobreRuchy = plansza->dajRuchy( pionekId );
-	if ( std::find( dobreRuchy.begin(), dobreRuchy.end(), pos )
-			  != dobreRuchy.end() ) return false;
 
+	if ( std::find( dobreRuchy.begin(), dobreRuchy.end(), pos )
+			  == dobreRuchy.end() ) return false;
 
 	return true;
 }
@@ -134,6 +142,8 @@ void Gra::zatwierdz()
 
 void Gra::move( int pionekId, int pozycja )
 {
+	//qDebug() << "move::Gra ( "<< pionekId << ", "<< pozycja <<"  )";
+
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 
 	//jesli nikt nie wygral lub ta tura nalezy do gracza, ktory ktoryms ruchem
@@ -141,11 +151,12 @@ void Gra::move( int pionekId, int pozycja )
 	//dopoki nie zatwierdzi
 	Q_ASSERT( plansza->winCheck() == -1 || plansza->winCheck() == plansza->czyjRuch() );
 
-	//dorzucamy ruch do ruchow wykonanych w tej turze przez obecnego gracza
+	//dorzucamy ruch do historii
 	addToHistory( ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );
 
-	//zostal wykonany ruch, wiec czyscimy historie plansza od stanu obecnego do konca
-	eraseHistoryTail();
+	//zwiekszymy licznik przesuniec / podan rundy
+	if ( plansza->czyPilka( pionekId ) )	podanWTurze++;
+	else									przesuniecWTurze++;
 
 	//wykonuje faktyczny ruch na planszy i emituje sygnal do UI
 	physicalMove( pionekId, pozycja );
@@ -168,7 +179,7 @@ void Gra::komputerGraj( int gracz )
 	//sprawdzam czy zaczeta tura nalezy do komputera
 	if( typGracza[ gracz ] != KOMPUTER ) return;
 
-	qDebug() << "komputerGraj start jako gracz: " << gracz;
+	//qDebug() << "komputerGraj start jako gracz: " << gracz;
 
 	//prymitywne AI:
 	int licznikRuchow = 0;
@@ -198,20 +209,19 @@ void Gra::komputerGraj( int gracz )
 /* OBSLUGA HISTORII */
 void Gra::addToHistory( ruch r )
 {
+	qDebug() << "addToHistory::Gra ( "<< "pionekId = " << r.pionekId  << ", skad = " << r.skad << ", dokad = " << r.dokad <<" )";
+
 	//porzucam historie od tego momentu do konca, bo wykonano jakis ruch
 	history.erase( history.begin() + historyIterator + 1, history.end() );
 
 	historyIterator++;
 	history.push_back( r );
-
-	if ( plansza->czyPilka( r.pionekId ) )	podanWTurze++;
-	else									przesuniecWTurze++;
 }
 
 bool Gra::undo()
 {
 	if ( historyIterator < 0 )
-	{https://www.youtube.com/watch?feature=player_embedded&v=kLO1djacsfg#!
+	{
 		emit uwaga("Brak ruchów do cofnięcia.");
 		return false;
 	}
@@ -219,15 +229,10 @@ bool Gra::undo()
 	ruch r = history[ historyIterator ];
 	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.dokad );
 
-
-	/*if ( plansza->czyPilka( r.pionekId ) )	podanWTurze--;
-	else									przesuniecWTurze--;
-	Q_ASSERT( podanWTurze >= 0 && przesuniecWTurze >= 0 );*/
-
-
-	Q_ASSERT ( isValidMove( r.pionekId , r.skad ) );
-	physicalMove( r.pionekId , r.skad );
+	poprawGracza();
+	physicalMove ( r.pionekId , r.skad );
 	historyIterator--;
+	zliczRuchyWTurze();
 
 	return true;
 }
@@ -241,12 +246,53 @@ bool Gra::redo()
 	}
 
 	historyIterator++;
-	ruch r = history[ historyIterator ];
 
+	ruch r = history[ historyIterator ];
 	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.skad );
+
 	physicalMove( r.pionekId , r.dokad );
+	poprawGracza();
+	zliczRuchyWTurze();
 
 	return true;
 }
 
+void Gra::zliczRuchyWTurze()
+{
+	podanWTurze = przesuniecWTurze = 0;
 
+	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
+	if( historyIterator == -1 ) return;
+
+	//pobieram gracza, do ktorego nalezy ostatni
+	//(obecnie wskazywany, wykonany odzwierciedlony na planszy) ruch w historii
+	int gracz = plansza->ktoryGracz( history[ historyIterator ].pionekId );
+
+	//zliczam ruchy tego gracza w rundzie do momentu historyIterator]
+	for( int i = historyIterator; i >= 0
+		 && plansza->ktoryGracz( history[ i ].pionekId ) == gracz
+		 ; i-- )
+	{
+		int pionekId = history[ i ].pionekId;
+
+		if ( plansza->czyPilka( pionekId) ) podanWTurze++;
+		else if ( plansza->czyPilkarzyk( pionekId) ) przesuniecWTurze++;
+	}
+}
+
+void Gra::poprawGracza()
+{
+	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
+	Q_ASSERT( historyIterator > -1 );
+	//if( historyIterator == -1 ) return;
+
+	//gracz cofanego / powtarzanego ruchu
+	int graczRuchu = plansza->ktoryGracz( history[ historyIterator ].pionekId );
+
+	//gracz rozwazanego ruchu ( cofanego / powtarzanego ) jest taki sam, jak aktaulny na planszy
+	if ( graczRuchu == plansza->czyjRuch() ) return;
+
+	//symulujemy zmiane tury
+	plansza->nastepnyGracz();
+	emit nowaTura( graczRuchu );
+}

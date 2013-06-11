@@ -37,6 +37,32 @@
      <string>Zatwierdź</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="Cofnij_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>50</y>
+      <width>87</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cofnij</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Powtorz_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>90</y>
+      <width>87</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Powtórz</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

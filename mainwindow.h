@@ -37,6 +37,8 @@ private slots:
 	void aktualnyGracz(int graczId );
 
 	void on_Zatwierdz_pushButton_clicked();
+	void on_Cofnij_pushButton_clicked();
+	void on_Powtorz_pushButton_clicked();
 };
 
 #endif // MAINWINDOW_H

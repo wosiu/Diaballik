@@ -68,7 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect( tryb, SIGNAL(moved(int,int)), scena, SLOT(move(int, int)));
 	//po przesunieciu wysylam jeszcze jeden sygnal, aby "odkliknac" pionek
 	//w przeciwnym razie trzeba by go wcisnac, pomimo, iz nie pokazywalby dostepnych pol
-	connect( tryb, SIGNAL(moved(int,int)), this, SLOT(setValidMoves(int)) );
+
+	//connect( tryb, SIGNAL(moved(int,int)), this, SLOT(setValidMoves(int)) );
 
 	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
 	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
@@ -89,6 +90,7 @@ MainWindow::~MainWindow()
 void MainWindow::setValidMoves( int pionekId )
 {
 	//odklikuję - odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
+	/*
 	static int ostatniPionekId;
 
 	if ( ostatniPionekId == pionekId )
@@ -97,6 +99,7 @@ void MainWindow::setValidMoves( int pionekId )
 		return;
 	}
 	ostatniPionekId = pionekId;
+	*/
 	//alternatywnie mozna by zrobic w iplansza i w ClickDetector zadziałac
 
 	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
@@ -148,4 +151,15 @@ void MainWindow::aktualnyGracz( int graczId )
 		typ = "Ruch komputera. ";
 
 	showMonitOnStatusBar( typ + "Gracz: " + QString::number( graczId ) );
+}
+
+//TO DO: pressed()
+void MainWindow::on_Cofnij_pushButton_clicked()
+{
+	tryb->undo();
+}
+
+void MainWindow::on_Powtorz_pushButton_clicked()
+{
+	tryb->redo();
 }

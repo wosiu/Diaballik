@@ -21,14 +21,17 @@ protected:
 	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
 
 private:
-	std::vector < ruch > ruchy; //w turze, jednego gracza
+	//std::vector < ruch > ruchy; //w turze, jednego gracza
 	AI *ai;
 	std::vector < int > validateAllMoves( int pionekId );
-	Plansza* dajPlansze();
-	int historyIterator;
 	int podanWTurze;
 	int przesuniecWTurze;
+	//obsluga historii:
+	int historyIterator;
 	std::vector < ruch > history;
+	void zliczRuchyWTurze();
+	void addToHistory( ruch r );
+	void poprawGracza();
 	//Plansza planszaStartowa;
 
 public slots:
