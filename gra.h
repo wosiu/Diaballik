@@ -24,13 +24,19 @@ private:
 	std::vector < ruch > ruchy; //w turze, jednego gracza
 	AI *ai;
 	std::vector < int > validateAllMoves( int pionekId );
+	Plansza* dajPlansze();
+	int historyIterator;
+	int podanWTurze;
+	int przesuniecWTurze;
+	std::vector < ruch > history;
+	//Plansza planszaStartowa;
 
 public slots:
 	void zatwierdz();
 	void move( int pionekId, int pozycja );
 	void moveDetector( int pionekId, int pozycja );
-	//bool undo(); TODO
-	//bool redo(); TODO
+	bool undo();
+	bool redo();
 
 public slots:
 	void komputerGraj( int gracz );

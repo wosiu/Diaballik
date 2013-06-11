@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "gra.h"
+#include "edytor.h"
 #include "iplansza.h"
 #include <QPropertyAnimation>
 #include <QLabel>
