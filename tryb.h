@@ -49,6 +49,7 @@ signals:
 	void winDetector( int gracz );
 	void uwaga( QString tresc );
 	//void remisDetector();
+	//void lockGameControl(bool) //blokuje przyciski cofnij, powtorz,itp, itd
 
 };
 

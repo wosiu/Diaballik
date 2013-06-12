@@ -219,7 +219,7 @@ int Plansza::winCheck()
 
 	//jesli oboje unfair game
 	//if ( remis() )
-	if ( unfrgm0 == unfrgm1 )
+	if ( unfrgm0 == true && unfrgm1 == true )
 		return -1;
 
 	if ( unfrgm0 )
