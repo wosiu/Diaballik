@@ -72,7 +72,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect( tryb, SIGNAL(nowaTura(int)), this, SLOT(aktualnyGracz(int)) );
 	//laczymy informacje o wygranej z oknem wygranej
 	connect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
-
+	//laczymy informacje o remisie
+	//...polaczono showWinnderBox
 
 	tryb->turaStart();
 }
@@ -107,7 +108,13 @@ void MainWindow::showWinnerBox( int gracz )
 	//box->setWindowTitle( QString("Komunikat sędziego") );
 	//TO DO: przyciski: zapisz historię gry lub kontynuuj (zeby mial mozliwosc cofniecia)
 	//Nowa Gra
-	QString monit = "Wygrał gracz: " + QString::number(gracz) + "!";
+	QString monit;
+
+	if ( gracz == 0 || gracz == 1)
+		monit = "Wygrał gracz: " + QString::number(gracz) + "!";
+	else
+		monit = "Remis!";
+
 	boxMonit->setText( monit );
 	boxMonit->setButtonText(1,"Ok");
 	boxMonit->show();

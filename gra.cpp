@@ -33,7 +33,14 @@ Gra::~Gra()
 
 bool Gra::isEndGame()
 {
-	Q_ASSERT( !plansza->remisCheck() );
+	Q_ASSERT( !plansza->doubleWinCheck() );
+
+	if ( plansza->remis() )
+	{
+		//emit remisDetector();
+		emit winDetector( 2 );
+		return true;
+	}
 
 	int winner = plansza->winCheck();
 	if ( winner != -1 )
@@ -41,8 +48,6 @@ bool Gra::isEndGame()
 		emit winDetector( winner );
 		return true;
 	}
-
-	//tu dorobic sprawdzanie remisu - powtorzenie sie plansz
 
 	return false;
 }

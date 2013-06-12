@@ -210,18 +210,25 @@ void Plansza::przesun( int pionekId, int pozycja )
 
 int Plansza::winCheck()
 {
-	//jesli remis - do tej stuacji nei powinno dojsc
-	if ( remisCheck() )
+	//do tej stuacji nei powinno dojsc
+	Q_ASSERT( !doubleWinCheck() );
+
+	//sprawdzamy unfair game
+	bool unfrgm0 = unfairGameCheck( 0 );
+	bool unfrgm1 = unfairGameCheck( 1 );
+
+	//jesli oboje unfair game
+	//if ( remis() )
+	if ( unfrgm0 == unfrgm1 )
 		return -1;
 
-	//jesli unfair game
-	if ( unfairGameCheck( 0 ) )
+	if ( unfrgm0 )
 		return 1;
 
-	if ( unfairGameCheck( 1 ) )
+	if ( unfrgm1 )
 		return 0;
 
-	//jesli pilka gracza 0 znalazla sie po drugiej stronie
+	//jesli pilka gracza znalazla sie po drugiej stronie
 	if ( dane[ 14 ] >= 42 )
 		return 0;
 
@@ -232,9 +239,14 @@ int Plansza::winCheck()
 	return -1;
 }
 
-bool Plansza::remisCheck()
+bool Plansza::doubleWinCheck()
 {
 	return  dane[ 14 ] >= 42  &&  dane[ 15 ] < 7;
+}
+
+bool Plansza::remis()
+{
+	return ( unfairGameCheck( 0 ) == true && unfairGameCheck( 1 ) == true );
 }
 
 //true -> unfair

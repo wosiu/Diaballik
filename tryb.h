@@ -48,6 +48,8 @@ signals:
 	void nowaTura( int gracz );
 	void winDetector( int gracz );
 	void uwaga( QString tresc );
+	//void remisDetector();
+
 };
 
 

@@ -26,8 +26,9 @@ public:
 	int czyjRuch();
 	void nastepnyGracz();
 	void przesun( int pionekId, int pozycja );
+	bool remis();
 	int winCheck();
-	bool remisCheck();
+	bool doubleWinCheck();
 	bool unfairGameCheck(int gracz);
 	unsigned long long hashCode();
 
