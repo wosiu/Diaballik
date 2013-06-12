@@ -5,8 +5,8 @@ const int IPilkarzyk::rozmiar = 40;
 IPilkarzyk::IPilkarzyk(QObject *parent, int gracz, int id ) :
 	IPole(parent)
 {
-	this->graczId = gracz;
-	this->id = id;
+	this->graczId = gracz; //odpowiedzialne za kolor
+	this->id = id; //odpowiedzialne za pozycje
 }
 
 

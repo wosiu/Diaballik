@@ -26,6 +26,8 @@ private:
 	std::vector < int > validateAllMoves( int pionekId );
 	int podanWTurze;
 	int przesuniecWTurze;
+	bool isEndGame();
+
 	//obsluga historii:
 	int historyIterator;
 	std::vector < ruch > history;

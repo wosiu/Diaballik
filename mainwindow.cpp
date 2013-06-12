@@ -66,11 +66,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect( scena, SIGNAL(chose(int,int)), tryb, SLOT(move(int, int)));
 	//gra informuje o ruchu logicznym = nakazanie wykonania ruchu na scenie
 	connect( tryb, SIGNAL(moved(int,int)), scena, SLOT(move(int, int)));
-	//po przesunieciu wysylam jeszcze jeden sygnal, aby "odkliknac" pionek
-	//w przeciwnym razie trzeba by go wcisnac, pomimo, iz nie pokazywalby dostepnych pol
-
-	//connect( tryb, SIGNAL(moved(int,int)), this, SLOT(setValidMoves(int)) );
-
 	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
 	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
 	//laczymy informacje o obecnym graczu z monitem
@@ -89,19 +84,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setValidMoves( int pionekId )
 {
-	//odklikuję - odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
-	/*
-	static int ostatniPionekId;
-
-	if ( ostatniPionekId == pionekId )
-	{
-		ostatniPionekId = -1;
-		return;
-	}
-	ostatniPionekId = pionekId;
-	*/
-	//alternatywnie mozna by zrobic w iplansza i w ClickDetector zadziałac
-
 	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
 	std::vector<int> pozycje = tryb -> findValidMoves( pionekId );
 	while( !pozycje.empty() )

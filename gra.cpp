@@ -12,6 +12,7 @@ Gra::Gra()
 	typGracza[0]=CZLOWIEK;
 
 	historyIterator = -1;
+	podanWTurze = przesuniecWTurze = 0;
 
 	/*Plansza a = *dajPlansze();
 	a.nastepnyGracz();
@@ -28,31 +29,44 @@ Gra::Gra()
 
 Gra::~Gra()
 {
+}
 
+bool Gra::isEndGame()
+{
+	Q_ASSERT( !plansza->remisCheck() );
+
+	int winner = plansza->winCheck();
+	if ( winner != -1 )
+	{
+		emit winDetector( winner );
+		return true;
+	}
+
+	//tu dorobic sprawdzanie remisu - powtorzenie sie plansz
+
+	return false;
 }
 
 void Gra::turaStart()
 {
-	//jesli na planszy wykryto wygraną
-	if ( plansza->winCheck() != -1 )
+	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
+	if ( !isEndGame() )
 	{
-		Q_ASSERT( plansza->winCheck() == plansza->czyjRuch() );
-		emit winDetector( plansza->czyjRuch() );
-	}
-	else //w p.p. kontynuujemy rozgrywke
-	{
-		//?:
-		//zliczRuchyWTurze();
 		przesuniecWTurze = podanWTurze = 0;
 		//przelacznie na nastepnego gracza
 		plansza->nastepnyGracz();
 		emit nowaTura( plansza->czyjRuch() );
 		komputerGraj( plansza->czyjRuch() );
 	}
+	else
+	{
+		//aby nie mozna bylo wykonywa ruchow po zatwierdzeniu wygranej:
+		przesuniecWTurze = 2;
+		podanWTurze = 1;
+	}
 
-	//stare:
-	//emit nowaTura( plansza->czyjRuch() );
-	//komputerGraj( plansza->czyjRuch() );
+	emit nowaTura( plansza->czyjRuch() );
+
 }
 
 Tryb::TYPGRACZA Gra::dajTypGracza( int graczId )
@@ -66,7 +80,11 @@ bool Gra::isValidMove( int pionekId, int pos )
 {
 	//qDebug() << "isValidMove::Gra ( pionekId = "<< pionekId << ", pozycja "<< pos <<"  )";
 
-	//sprawdzam czy dobry gracz
+	//TO DO: musi byc do wczytywania rozgrywki
+	//(nie prawda ->) nie powinno byc do AI ( bo se bedzie liczyc w tle )
+	//bo bedzie operowala na swoich planszach
+	//ALE do zwyklej gry niepotrzebne, bo czy dobry gracz, sprawdzam w FindValidMoves
+	//ale tez nie przeszkadza
 	if ( plansza->czyjRuch() != plansza->ktoryGracz( pionekId ) ) return false;
 
 	//sprawdzam czy ma dostepne jeszcze ruchy
@@ -84,6 +102,14 @@ bool Gra::isValidMove( int pionekId, int pos )
 
 	if ( std::find( dobreRuchy.begin(), dobreRuchy.end(), pos )
 			  == dobreRuchy.end() ) return false;
+
+	//sprawdzam czy ktos wygral w tej turze lub ta tura nalezy do gracza, ktory ktoryms ruchem
+	//w tej turze wygra jak zatwierdzi (to jak ma jeszcze jakies wolne ruchy, to moze kontynuowac
+	//int winner = plansza->winCheck();
+	//if ( winner != -1 && winner != plansza->czyjRuch() ) return false;
+	//tu nie moze byc sprawdzania zwyciestwa bo to syf.. zwyciestwo / przegrana / remis
+	//ma byc stwierdzana po zatwierdzeniu tury a nie w jej trakcie !!!
+
 
 	return true;
 }
@@ -146,10 +172,11 @@ void Gra::move( int pionekId, int pozycja )
 
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 
+	//poszlo do isValid:
 	//jesli nikt nie wygral lub ta tura nalezy do gracza, ktory ktoryms ruchem
 	//w tej turze wygral (to jak ma jeszcze jakies wolne ruchy, to moze zagrac,
 	//dopoki nie zatwierdzi
-	Q_ASSERT( plansza->winCheck() == -1 || plansza->winCheck() == plansza->czyjRuch() );
+	//Q_ASSERT( plansza->winCheck() == -1 || plansza->winCheck() == plansza->czyjRuch() );
 
 	//dorzucamy ruch do historii
 	addToHistory( ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );

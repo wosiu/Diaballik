@@ -41,16 +41,17 @@ void IPole::move(int x, int y)
 	//if ( locked ) return;
 	locked = true;
 
-	QPropertyAnimation *animation = new QPropertyAnimation(this,"pos");
+	QPropertyAnimation* animation = new QPropertyAnimation(this,"pos");
 
 	connect( animation, SIGNAL(finished()), this, SLOT(unlock()) );
 
-	animation->setDuration(250);
+	//TO DO: zrobic bezpieczne kolejkowanie animacji i dac 250:
+	animation->setDuration(90); //w ostatecznosci dac 100
 	//animation->setStartValue( this->pos() );
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);
+	animation->DeleteWhenStopped;
 	animation->start( QPropertyAnimation::DeleteWhenStopped );
-
 }
 
 void IPole::mousePressEvent(QGraphicsSceneMouseEvent *event )

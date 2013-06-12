@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     ipole.cpp \
     icel.cpp \
     komunikator.cpp \
-    ai.cpp
+    ai.cpp \
+    kolejkaanimacji.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
@@ -37,6 +38,7 @@ HEADERS  += mainwindow.h \
     ipole.h \
     icel.h \
     komunikator.h \
-    ai.h
+    ai.h \
+    kolejkaanimacji.h
 
 FORMS    += mainwindow.ui

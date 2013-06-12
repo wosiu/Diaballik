@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QPropertyAnimation> //needed?
+#include <QSequentialAnimationGroup>
 
 class IPole : public QObject, public QGraphicsItem
 {
@@ -24,6 +25,7 @@ public:
 
 private:
 	/*static*/ bool locked;
+	//QSequentialAnimationGroup movesQueue;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);

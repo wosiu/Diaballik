@@ -152,6 +152,7 @@ std::vector<int> Plansza::dajPodania( int pilkaId )
 		int dx = DIR[ i ].first;
 		int dy = DIR[ i ].second;
 
+		//oddalam sie o 1 kwadrat w danym kierunku
 		for ( int d = 1;
 			  0 <= (xp + dx * d) && (xp + dx * d) < 7  &&
 			  0 <= (yp + dy * d) && (yp + dy * d) < 7;
@@ -209,7 +210,18 @@ void Plansza::przesun( int pionekId, int pozycja )
 
 int Plansza::winCheck()
 {
-	//jesli ktoras z pilek znalazla sie po drugiej stronie
+	//jesli remis - do tej stuacji nei powinno dojsc
+	if ( remisCheck() )
+		return -1;
+
+	//jesli unfair game
+	if ( unfairGameCheck( 0 ) )
+		return 1;
+
+	if ( unfairGameCheck( 1 ) )
+		return 0;
+
+	//jesli pilka gracza 0 znalazla sie po drugiej stronie
 	if ( dane[ 14 ] >= 42 )
 		return 0;
 
@@ -218,4 +230,70 @@ int Plansza::winCheck()
 
 	//nikt nie wygral
 	return -1;
+}
+
+bool Plansza::remisCheck()
+{
+	return  dane[ 14 ] >= 42  &&  dane[ 15 ] < 7;
+}
+
+//true -> unfair
+bool Plansza::unfairGameCheck( int gracz )
+{
+	//sprawdzamy czy w ogole jest na planszy sciana nie do przejscia stworzona
+	//przez danego gracza:
+	std::vector <int> pozycje (7, -1);
+
+	//sprawdzam x:
+	for ( int i = 0; i < 7; i++ )
+	{
+		int j = i + 7 * gracz;
+
+		//jakis pionek stoi juz na tym x => przynajmniej 2 stoją na tym samym x
+		//=> jest luka pomiedzy pionkami jednego gracza
+		if ( pozycje[ dane[ j ] % 7 ] != -1 )
+			return false;
+
+		pozycje[ dane[ j ] % 7 ] =  dane[ j ];
+	}
+
+	//sprawdzam y:
+	for ( int i = 0; i < 6; i++ )
+		//jezeli rozia sie wiecej niz jednym wierszem
+		if ( std::abs( pozycje[i] / 7 - pozycje[i+1] / 7 ) > 1 )
+			return false;
+
+	//skoro dotrwalismy tutaj, tzn ze jest sciana nie do przejscia
+	//sprawdzamy czy min 3 pionki przeciwnika stoją przy niej
+	int przeciwnicy = 0; //licznik stykajacych sie z linia nie do przejscia przeciwnikow
+
+	for ( int i = 0; i < 7; i++ )
+	{
+		//sprawdzam pole nad, jesli jest zajete to na pewno przez przeciwnika
+		//poniewaz wszyscy moi zawodnicy znajduja sie w "scianie" (maja rozne x)
+		if ( pozycje[ i ] / 7 > 0 )
+			przeciwnicy += (int) (!czyPuste( pozycje[ i ] - 7 ));
+
+		//pod analogicznie
+		if ( pozycje[ i ] / 7 < 6 )
+			przeciwnicy += (int) (!czyPuste( pozycje[ i ] + 7 ));
+
+		if ( przeciwnicy >= 3 )
+			return true;
+	}
+
+	//jesli przeszlo powyzsze, to jest fair
+	return false;
+}
+
+
+unsigned long long Plansza::hashCode()
+{
+	unsigned long long prime[17] = {1000000007, 1000000014000000049, 14069101319555514199, 2173964608407773537, 7232439895113528231, 1423083718267137937, 9015250055358150391, 3633867129218868929, 3321970296312322375, 16054152209726863089, 4648997779380988567, 6980550577642475553, 13284617912389565159, 1913936733860700753, 17872352148200380983, 1978898776512519553, 7048929689792206983};
+	unsigned long long res = 0;
+
+	for ( int i = 0; i < 17; i++ )
+		res += dane[ i ] * prime[ i ];
+
+	return res;
 }

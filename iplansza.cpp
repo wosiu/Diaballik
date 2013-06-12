@@ -72,8 +72,7 @@ void IPlansza::move(int pionekId, int dx, int dy)
 	//przesunieto pionek wiec czyszcze dostepne ruchy z jego pierwotnej pozycji
 	//zeby sie nie wyswietlaly po przejsciu do docelowej
 	czyscDostepneRuchy();
-
-	//odklikuje, jesli byl klikniety
+	//i odklikuje, jesli byl klikniety
 	clickedId = -1;
 }
 
@@ -98,7 +97,8 @@ void IPlansza::clickDetector( int poleId )
 	locked = true;
 	czyscDostepneRuchy();
 
-	//odklikuję - odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
+	//odklikuję = odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
+	//bo wykona sie tylko powyzsze czyscDostepneRuchy
 	if ( clickedId == poleId )
 	{
 		clickedId = -1;
