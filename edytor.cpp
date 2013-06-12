@@ -1,7 +1,8 @@
 #include "edytor.h"
 
-Edytor::Edytor()
+Edytor::Edytor( /*Gra *gra*/ )
 {
+	//plansza = gra->plansza;
 }
 /*
 
@@ -25,7 +26,7 @@ std::vector<int> Tryb::findValidMoves( int pionekId )
 
 void Tryb::zatwierdz()
 {
-	Q_ASSERT_X(false,"zatwierdz()","odwolanie do slota z nadklasy.");
+	qDebug( "zakonczono edycje ");
 }
 
 

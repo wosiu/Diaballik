@@ -31,6 +31,10 @@ void IPole::unlock()
 	//emit animationFinished();
 }
 
+bool IPole::getLock()
+{
+	return locked;
+}
 
 /* Przesuwa IPole na planszy o [rozmiar]
  * move(1,0) - w prawo
@@ -50,7 +54,7 @@ void IPole::move(int x, int y)
 	//animation->setStartValue( this->pos() );
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);
-	animation->DeleteWhenStopped;
+	//animation->DeleteWhenStopped;
 	animation->start( QPropertyAnimation::DeleteWhenStopped );
 }
 

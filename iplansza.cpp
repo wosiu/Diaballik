@@ -145,3 +145,11 @@ void IPlansza::czyscDostepneRuchy()
 		dostepneRuchy.pop_back();
 	}
 }
+
+bool IPlansza::getLock()
+{
+	for ( int i = 0; i < 16; i++ )
+		if ( pionki[i]->getLock() ) return true;
+
+	return false;
+}

@@ -36,6 +36,9 @@
     <property name="text">
      <string>Zatwierdź</string>
     </property>
+    <property name="shortcut">
+     <string>Space</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="Cofnij_pushButton">
     <property name="geometry">
@@ -49,6 +52,9 @@
     <property name="text">
      <string>Cofnij</string>
     </property>
+    <property name="shortcut">
+     <string>Ctrl+Z</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="Powtorz_pushButton">
     <property name="geometry">
@@ -61,6 +67,9 @@
     </property>
     <property name="text">
      <string>Powtórz</string>
+    </property>
+    <property name="shortcut">
+     <string>Ctrl+Shift+Z</string>
     </property>
    </widget>
   </widget>

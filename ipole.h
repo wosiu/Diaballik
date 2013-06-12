@@ -22,6 +22,7 @@ public:
 						 QWidget *widget);
 	void move(int x, int y);
 	void moveable(bool lock);
+	bool getLock();
 
 private:
 	/*static*/ bool locked;

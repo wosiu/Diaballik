@@ -14,6 +14,7 @@ public:
 	explicit IPlansza(QObject *parent = 0);
 	void dodajDostepnePole( int pos );
 	void ustawPionek( bool gracz, int id, int x, int y );
+	bool getLock();
 
 private:
 	IPole* pionki[ 16 ];

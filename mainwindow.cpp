@@ -61,7 +61,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//wykrywa klik na pionek, pyta gre o dostepne ruchy dla niego, nakazuje scenie dodac dostepne ruchy
 	connect( scena, SIGNAL(clicked(int)), this, SLOT(setValidMoves(int)) );
-	///connect( scena, SIGNAL(chose(int,int)), scena, SLOT(move(int, int)));
 	//wykrywa klik na pole dostepnego ruchu i przekazuje do gry
 	connect( scena, SIGNAL(chose(int,int)), tryb, SLOT(move(int, int)));
 	//gra informuje o ruchu logicznym = nakazanie wykonania ruchu na scenie
@@ -145,10 +144,12 @@ void MainWindow::aktualnyGracz( int graczId )
 //TO DO: pressed()
 void MainWindow::on_Cofnij_pushButton_clicked()
 {
-	tryb->undo();
+	if ( !scena->getLock() )
+		tryb->undo();
 }
 
 void MainWindow::on_Powtorz_pushButton_clicked()
 {
-	tryb->redo();
+	if ( !scena->getLock() )
+		tryb->redo();
 }

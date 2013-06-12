@@ -32,7 +32,7 @@ public:
 		}
 	};
 
-protected:
+//no oprotected:
 	Plansza *plansza;
 
 public slots:
