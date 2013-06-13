@@ -68,11 +68,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
 	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
 	//laczymy informacje o obecnym graczu z monitem
-	connect( tryb, SIGNAL(nowaTura(int)), this, SLOT(aktualnyGracz(int)) );
+	connect( tryb, SIGNAL( nowaTura(int) ), this, SLOT( aktualnyGracz(int)) );
 	//laczymy informacje o wygranej z oknem wygranej
 	connect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
 	//laczymy informacje o remisie
 	//...polaczono showWinnderBox
+	//laczymy informacje o ruchach
+	connect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
 
 	tryb->turaStart();
 }
@@ -136,10 +138,26 @@ void MainWindow::aktualnyGracz( int graczId )
 
 	QString typ="";
 	if( tryb->dajTypGracza( graczId ) == Tryb::KOMPUTER )
-		typ = "Ruch komputera. ";
+		typ = "Ruch komputera. \n";
 
-	showMonitOnStatusBar( typ + "Gracz: " + QString::number( graczId ) );
+	QString kolor="";
+
+	if( graczId == 0 )	kolor = "<b>CZARNY</b> (0)";
+	else				kolor = "<b>BIAŁY</b> (1)";
+
+	ui->graczTablica->setText( typ + "Gracz: " + kolor );
+	//showMonitOnStatusBar( typ  );
 }
+
+void MainWindow::wykonaneRuchy(int przesuniec, int podan)
+{
+	QString info = "Przesunięć: " + QString::number( przesuniec ) + "\n";
+	info += "Podań: " + QString::number( podan ) + "\n";
+
+	ui->ruchyTablica->setText( info );
+}
+
+
 
 //TO DO: pressed()
 void MainWindow::on_Cofnij_pushButton_clicked()

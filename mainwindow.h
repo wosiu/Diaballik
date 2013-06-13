@@ -34,7 +34,8 @@ private slots:
 	void showMonitOnStatusBar( QString monit );
 	void showMonitInBox( QString monit );
 	void showWinnerBox( int gracz );
-	void aktualnyGracz(int graczId );
+	void aktualnyGracz( int graczId );
+	void wykonaneRuchy( int przesuniec, int podan );
 
 	void on_Zatwierdz_pushButton_clicked();
 	void on_Cofnij_pushButton_clicked();
