@@ -1,11 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include <QDebug>
-
-
 #include <ipilkarzyk.h>
 #include <QSequentialAnimationGroup>
+
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -21,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	boxMonit = new QMessageBox(this);
 
+	defaultWindowHeight = this->size().height();
+	defaultWindowWidth = this->size().width();
 
 	// TEST
 /*
@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	//laczymy informacje o wygranej z oknem wygranej
 	connect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
 	//laczymy informacje o remisie
-	//...polaczono showWinnderBox
+	//...polaczono showWinnerBox
 	//laczymy informacje o ruchach
 	connect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
 
@@ -82,6 +82,20 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+	qreal dScale = 1;
+
+	if( event->size().width() == defaultWindowWidth ) {}
+	else if(event->oldSize().width() != -1)
+		dScale = (qreal)qMin( event->size().width(), event->size().height() ) /
+				 (qreal)qMin( defaultWindowWidth,  defaultWindowHeight );
+
+
+	ui->graphicsView->resetTransform();
+	ui->graphicsView->scale( dScale, dScale );
 }
 
 void MainWindow::setValidMoves( int pionekId )
@@ -112,7 +126,7 @@ void MainWindow::showWinnerBox( int gracz )
 	QString monit;
 
 	if ( gracz == 0 || gracz == 1)
-		monit = "Wygrał gracz: " + QString::number(gracz) + "!";
+		monit = "Wygrał gracz: <b>" + idGraczToKolor[ gracz ] + "</b>!";
 	else
 		monit = "Remis!";
 
@@ -142,10 +156,7 @@ void MainWindow::aktualnyGracz( int graczId )
 
 	QString kolor="";
 
-	if( graczId == 0 )	kolor = "<b>CZARNY</b> (0)";
-	else				kolor = "<b>BIAŁY</b> (1)";
-
-	ui->graczTablica->setText( typ + "Gracz: " + kolor );
+	ui->graczTablica->setText( typ + "Gracz: <b>" + idGraczToKolor[ graczId ] + "</b>" );
 	//showMonitOnStatusBar( typ  );
 }
 
@@ -156,7 +167,6 @@ void MainWindow::wykonaneRuchy(int przesuniec, int podan)
 
 	ui->ruchyTablica->setText( info );
 }
-
 
 
 //TO DO: pressed()

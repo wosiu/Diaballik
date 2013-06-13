@@ -402,3 +402,4 @@ void Gra::poprawGracza()
 	plansza->nastepnyGracz();
 	emit nowaTura( plansza->czyjRuch() );
 }
+

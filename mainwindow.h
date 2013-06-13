@@ -8,6 +8,7 @@
 #include <QPropertyAnimation>
 #include <QLabel>
 #include <QMessageBox>
+#include <QtGui> //do resize eventu
 
 namespace Ui {
 class MainWindow;
@@ -20,14 +21,17 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-
+	void resizeEvent( QResizeEvent *event );
 	IPlansza *scena;
 	Tryb *tryb;
 
 private:
 	Ui::MainWindow *ui;
+	qreal defaultWindowHeight;
+	qreal defaultWindowWidth;
 	QLabel *statusBarMonit;
 	QMessageBox* boxMonit;
+	const QString idGraczToKolor[2] = {"CZARNY", "BIAŁY"};
 
 private slots:
 	void setValidMoves(int);
