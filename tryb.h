@@ -29,7 +29,7 @@ public:
 		}
 	};
 
-	Plansza *plansza;
+	Plansza plansza;
 
 
 public slots:

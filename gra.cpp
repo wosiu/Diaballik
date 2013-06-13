@@ -33,16 +33,16 @@ void Gra::inicjuj()
 
 bool Gra::isEndGame()
 {
-	Q_ASSERT( !plansza->doubleWinCheck() );
+	Q_ASSERT( !plansza.doubleWinCheck() );
 
-	if ( plansza->remis() )
+	if ( plansza.remis() )
 	{
 		//emit remisDetector();
 		emit winDetector( 2 );
 		return true;
 	}
 
-	int winner = plansza->winCheck();
+	int winner = plansza.winCheck();
 
 	static int counter = 0;
 	qDebug() << counter++;
@@ -65,9 +65,9 @@ void Gra::turaStart()
 		emit wykonaneRuchy( 0, 0 );
 
 		//przelacznie na nastepnego gracza
-		plansza->nastepnyGracz();
-		emit nowaTura( plansza->czyjRuch() );
-		komputerGraj( plansza->czyjRuch() );
+		plansza.nastepnyGracz();
+		emit nowaTura( plansza.czyjRuch() );
+		komputerGraj( plansza.czyjRuch() );
 	}
 	else
 	{
@@ -76,7 +76,7 @@ void Gra::turaStart()
 		podanWTurze = 1;
 	}
 
-	emit nowaTura( plansza->czyjRuch() );
+	emit nowaTura( plansza.czyjRuch() );
 
 }
 
@@ -96,7 +96,7 @@ bool Gra::isValidMove( int pionekId, int pos )
 	//bo bedzie operowala na swoich planszach
 	//ALE do zwyklej gry niepotrzebne, bo czy dobry gracz, sprawdzam w FindValidMoves
 	//ale tez nie przeszkadza
-	if ( plansza->czyjRuch() != plansza->ktoryGracz( pionekId ) ) return false;
+	if ( plansza.czyjRuch() != plansza.ktoryGracz( pionekId ) ) return false;
 
 	//sprawdzam czy ma dostepne jeszcze ruchy
 	Q_ASSERT ( podanWTurze + przesuniecWTurze <= 3);
@@ -104,20 +104,20 @@ bool Gra::isValidMove( int pionekId, int pos )
 	if ( podanWTurze + przesuniecWTurze == 3 ) return false;
 
 	//sprawdzam czy nie nie przekracza ilosci podan/przesuniec
-	if ( podanWTurze == 1 && plansza->czyPilka( pionekId) ) return false;
-	if ( przesuniecWTurze == 2 && plansza->czyPilkarzyk( pionekId) ) return false;
+	if ( podanWTurze == 1 && plansza.czyPilka( pionekId) ) return false;
+	if ( przesuniecWTurze == 2 && plansza.czyPilkarzyk( pionekId) ) return false;
 
 	//sprawdzam czy podany ruch jest dostepny (w tym miejscu powinien zawsze byc)
 	//chyba ze wczytujemy historie z pliku, w ktorym ktoś mogl grzebac recznie
-	std::vector<int>dobreRuchy = plansza->dajRuchy( pionekId );
+	std::vector<int>dobreRuchy = plansza.dajRuchy( pionekId );
 
 	if ( std::find( dobreRuchy.begin(), dobreRuchy.end(), pos )
 			  == dobreRuchy.end() ) return false;
 
 	//sprawdzam czy ktos wygral w tej turze lub ta tura nalezy do gracza, ktory ktoryms ruchem
 	//w tej turze wygra jak zatwierdzi (to jak ma jeszcze jakies wolne ruchy, to moze kontynuowac
-	//int winner = plansza->winCheck();
-	//if ( winner != -1 && winner != plansza->czyjRuch() ) return false;
+	//int winner = plansza.winCheck();
+	//if ( winner != -1 && winner != plansza.czyjRuch() ) return false;
 	//tu nie moze byc sprawdzania zwyciestwa bo to syf.. zwyciestwo / przegrana / remis
 	//ma byc stwierdzana po zatwierdzeniu tury a nie w jej trakcie !!!
 
@@ -129,7 +129,7 @@ std::vector<int> Gra::validateAllMoves( int pionekId )
 {
 	//pyta plansze o dostepne ruchy danego pionka
 	std::vector<int> res;
-	std::vector<int> mozliweRuchy = plansza->dajRuchy( pionekId );
+	std::vector<int> mozliweRuchy = plansza.dajRuchy( pionekId );
 
 	//sprawdzam dostepne ruchy pod kątem pozostalej ilosci ruchow
 	for ( int i = 0; i < mozliweRuchy.size(); i++ )
@@ -145,9 +145,9 @@ std::vector<int> Gra::findValidMoves( int pionekId )
 	qDebug() << "findValidMoves::Gra ( pionekId = "<< pionekId << " )";
 
 	//sprawdzam czy zapytano o pionek obecnego gracza
-	int czyjRuch = plansza->czyjRuch();
+	int czyjRuch = plansza.czyjRuch();
 
-	if ( czyjRuch != plansza->ktoryGracz( pionekId ) )
+	if ( czyjRuch != plansza.ktoryGracz( pionekId ) )
 		return std::vector<int>();
 
 	//sprawdzam czy to nie jest zapytanie o pionki komputera
@@ -187,13 +187,13 @@ void Gra::move( int pionekId, int pozycja )
 	//jesli nikt nie wygral lub ta tura nalezy do gracza, ktory ktoryms ruchem
 	//w tej turze wygral (to jak ma jeszcze jakies wolne ruchy, to moze zagrac,
 	//dopoki nie zatwierdzi
-	//Q_ASSERT( plansza->winCheck() == -1 || plansza->winCheck() == plansza->czyjRuch() );
+	//Q_ASSERT( plansza.winCheck() == -1 || plansza.winCheck() == plansza.czyjRuch() );
 
 	//dorzucamy ruch do historii
-	addToHistory( ruch( pionekId, plansza->dajPozycje(pionekId), pozycja ) );
+	addToHistory( ruch( pionekId, plansza.dajPozycje(pionekId), pozycja ) );
 
 	//zwiekszymy licznik przesuniec / podan rundy
-	if ( plansza->czyPilka( pionekId ) )	podanWTurze++;
+	if ( plansza.czyPilka( pionekId ) )	podanWTurze++;
 	else									przesuniecWTurze++;
 
 	//wykonuje faktyczny ruch na planszy i emituje sygnal do UI
@@ -207,7 +207,7 @@ void Gra::moveDetector( int pionekId, int pozycja )
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 	//nie przyjdzie zawolanie z UI pionkow kompa, bo nie wyswietla sie
 	//validMoves dla niego, wiec uzytkownik nie bedzie mial dostepu do takich ruchow
-	Q_ASSERT( typGracza[ plansza->ktoryGracz( pionekId ) ] == CZLOWIEK );
+	Q_ASSERT( typGracza[ plansza.ktoryGracz( pionekId ) ] == CZLOWIEK );
 
 	move( pionekId, pozycja );
 }
@@ -276,7 +276,7 @@ bool Gra::undo()
 	}
 
 
-	/*if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER && historyIterator < 3 )
+	/*if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER && historyIterator < 3 )
 	{
 		//ale jesli cofamy ruchy komputera, a przed nim nie ma nic
 		//to nie mozemy ich cofnac (takie zachowanie nei ma sensu)S
@@ -284,7 +284,7 @@ bool Gra::undo()
 			//sprawdzam wiec czy ktorys z ruchow 0,1,(2) nalezy do czlowieka
 			//bo jak tak, to moge cofnąc
 			for ( int i = 0; i < historyIterator; i++ )
-				if ( typGracza[ plansza->ktoryGracz( history[ i ].pionekId ) ]
+				if ( typGracza[ plansza.ktoryGracz( history[ i ].pionekId ) ]
 					 == CZLOWIEK )
 				{
 					isHumanOnStart = true;
@@ -302,25 +302,24 @@ bool Gra::undo()
 
 
 	ruch r = history[ historyIterator ];
-	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.dokad );
+	Q_ASSERT( plansza.dajPozycje( r.pionekId ) == r.dokad );
 
+	poprawGracza();
 	physicalMove ( r.pionekId , r.skad );
 	historyIterator--;
-	poprawGracza();
 	zliczRuchyWTurze();
-
 
 	//jesli w wyniku cofniecia obecnie ma wykonywac ruch komputer,
 	//to jego wszystkie ruchy w tej turze zostają także cofniete
 	//a takze ostatni ruch w turze przed komputerem CZLOWIEK'a
-	if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER )
+	if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER )
 	{
 		//ale jesli nie ma co cofać w turze przed komputem,
 		//to po jego cofnietych ruchach nakazujemy mu ponownie grac
 		//minus w stosunku do porpzedniego rozwiazania: stracimy historie rozgrywki
 		//ale ma to sens (odzwierciedla rzeczywistosc)
 		if ( historyIterator <  0 )
-			komputerGraj( plansza->czyjRuch() );
+			komputerGraj( plansza.czyjRuch() );
 		else //powtarzamy tak jak opisane wyzej
 			undo();
 	}
@@ -339,7 +338,7 @@ bool Gra::redo()
 	historyIterator++;
 
 	ruch r = history[ historyIterator ];
-	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.skad );
+	Q_ASSERT( plansza.dajPozycje( r.pionekId ) == r.skad );
 
 	physicalMove( r.pionekId , r.dokad );
 	poprawGracza();
@@ -348,7 +347,7 @@ bool Gra::redo()
 	//jesli w wyniku powtorzenia obecnie ma wykonywac ruch komputer,
 	//to jego wszystkie ruchy w tej turze zostają także powtorzone
 	//a takze pierwszu ruch w turze po komputerze
-	if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER )
+	if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER )
 	{
 		//ale jesli nie ma co powtarzac w turze po komputerze,
 		//to po prostu zaczynamy nowa runde
@@ -370,17 +369,17 @@ void Gra::zliczRuchyWTurze()
 	{
 		//pobieram gracza, do ktorego nalezy ostatni
 		//(obecnie wskazywany, wykonany odzwierciedlony na planszy) ruch w historii
-		int gracz = plansza->ktoryGracz( history[ historyIterator ].pionekId );
+		int gracz = plansza.ktoryGracz( history[ historyIterator ].pionekId );
 
 		//zliczam ruchy tego gracza w rundzie do momentu historyIterator]
 		for( int i = historyIterator; i >= 0
-			 && plansza->ktoryGracz( history[ i ].pionekId ) == gracz
+			 && plansza.ktoryGracz( history[ i ].pionekId ) == gracz
 			 ; i-- )
 		{
 			int pionekId = history[ i ].pionekId;
 
-			if ( plansza->czyPilka( pionekId) ) podanWTurze++;
-			else if ( plansza->czyPilkarzyk( pionekId) ) przesuniecWTurze++;
+			if ( plansza.czyPilka( pionekId) ) podanWTurze++;
+			else if ( plansza.czyPilkarzyk( pionekId) ) przesuniecWTurze++;
 		}
 	}
 
@@ -390,16 +389,16 @@ void Gra::zliczRuchyWTurze()
 void Gra::poprawGracza()
 {
 	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
-	if( historyIterator == -1 ) return;
+	Q_ASSERT( historyIterator > -1 );
+	//if( historyIterator == -1 ) return;
 
 	//gracz cofanego / powtarzanego ruchu
-	int graczRuchu = plansza->ktoryGracz( history[ historyIterator ].pionekId );
+	int graczRuchu = plansza.ktoryGracz( history[ historyIterator ].pionekId );
 
 	//gracz rozwazanego ruchu ( cofanego / powtarzanego ) jest taki sam, jak aktaulny na planszy
-	if ( graczRuchu == plansza->czyjRuch() ) return;
+	if ( graczRuchu == plansza.czyjRuch() ) return;
 
 	//symulujemy zmiane tury
-	plansza->nastepnyGracz();
-	emit nowaTura( plansza->czyjRuch() );
+	plansza.nastepnyGracz();
+	emit nowaTura( graczRuchu );
 }
-

@@ -54,7 +54,7 @@ void IPlansza::dodajPionki()
 		this->addItem( pionki[ i ] );
 }
 
-void IPlansza::dodajPionki(Plansza *plansza)
+void IPlansza::dodajPionki(Plansza plansza)
 {
 	ustawPionki( plansza );
 	for ( int i = 0; i < 16; i++ )
@@ -73,13 +73,13 @@ void IPlansza::ustawPionki()
 	pionki[ 15 ]->setPos( toPixels(3), toPixels(6) );
 }
 
-void IPlansza::ustawPionki( Plansza* plansza )
+void IPlansza::ustawPionki( Plansza plansza )
 {
 	int x,y;
 	for ( int i = 0; i < 16; i++ )
 	{
-		x = toPixels( plansza->dajPozycje( i ) % 7 );
-		y = toPixels( plansza->dajPozycje( i ) / 7 );
+		x = toPixels( plansza.dajPozycje( i ) % 7 );
+		y = toPixels( plansza.dajPozycje( i ) / 7 );
 
 		pionki[ i ]->setPos( x, y );
 	}

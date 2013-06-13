@@ -6,7 +6,7 @@ Edytor::Edytor()
 
 Edytor::Edytor(Plansza plansza)
 {
-	this->plansza = &plansza;
+	this->plansza = plansza;
 }
 
 /*Edytor::Edytor(Tryb *innyTryb)
@@ -16,13 +16,13 @@ Edytor::Edytor(Plansza plansza)
 
 std::vector<int> Edytor::findValidMoves( int pionekId )
 {
-	std::vector<int>res = plansza->dajWszystkiePuste();;
+	std::vector<int>res = plansza.dajWszystkiePuste();;
 	std::vector<int>tmp;
 
-	if ( plansza->czyPilka( pionekId ) )
+	if ( plansza.czyPilka( pionekId ) )
 	{
 		//jesli pilka to dokladam jeszcze pilkarzy z druzyny
-		tmp = plansza->dajDruzyne( pionekId );
+		tmp = plansza.dajDruzyne( pionekId );
 		res.insert( res.end(), tmp.begin(), tmp.end() );
 	}
 
@@ -42,15 +42,15 @@ bool Edytor::isValidMove(int pionekId, int pos)
 //zmienia gracza rozpoczynajacego na przeciwnego
 void Edytor::turaStart()
 {
-	plansza->nastepnyGracz();
+	plansza.nastepnyGracz();
 	emit wykonaneRuchy(0,0);
-	emit nowaTura( plansza->czyjRuch() );
+	emit nowaTura( plansza.czyjRuch() );
 }
 
 
 void Edytor::zatwierdz()
 {
-	if ( plansza->doubleWinCheck() )
+	if ( plansza.doubleWinCheck() )
 		emit uwaga( "Niepoprawny stan planszy: obaj gracze wygrywają. Popraw i zatwierdź." );
 
 	qDebug("zakoncz edycje");
@@ -60,9 +60,9 @@ void Edytor::zatwierdz()
 void Edytor::move( int pionekId, int pozycja )
 {
 	//jesli to pilka oraz miejsce docelowe jest puste
-	if ( plansza->czyPilka( pionekId ) && plansza->czyPuste( pozycja ) )
+	if ( plansza.czyPilka( pionekId ) && plansza.czyPuste( pozycja ) )
 		//to chcemy takze przesunac pionek pod nią
-		physicalMove( plansza->dajIdPodajacego( pionekId ), pozycja );
+		physicalMove( plansza.dajIdPodajacego( pionekId ), pozycja );
 
 	physicalMove( pionekId, pozycja );
 }

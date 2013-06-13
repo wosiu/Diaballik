@@ -18,9 +18,9 @@ public:
 	bool getLock();
 	void clear();
 	void dodajPionki();
-	void dodajPionki( Plansza* plansza );
+	void dodajPionki( Plansza plansza );
 	void ustawPionki();
-	void ustawPionki( Plansza* plansza );
+	void ustawPionki(Plansza plansza );
 
 
 private:

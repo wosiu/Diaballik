@@ -165,8 +165,10 @@ void MainWindow::on_actionNowa_Gra_triggered()
 
 void MainWindow::on_actionEdytuj_plansze_triggered()
 {
+
+	Tryb* nowyTryb = new Edytor( tryb->plansza );
 	delete tryb;
-	tryb = new Edytor();
+	tryb = nowyTryb;
 
 	scena->ustawPionki( tryb->plansza );
 	connector();
