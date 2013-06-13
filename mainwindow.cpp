@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// END
 
 	//Komunikator komunikator = new Komunikator();
-	tryb = new Edytor();
+	tryb = new Gra();
 
 	//wykrywa klik na pionek, pyta gre o dostepne ruchy dla niego, nakazuje scenie dodac dostepne ruchy
 	connect( scena, SIGNAL(clicked(int)), this, SLOT(setValidMoves(int)) );

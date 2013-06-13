@@ -11,7 +11,9 @@ class Gra : public Tryb
 
 public:
 	Gra();
+	Gra( Tryb* innyTryb );
 	~Gra();
+	void inicjuj();
 	bool isValidMove( int pionekId, int pos );
 	std::vector<int> findValidMoves( int pionekId );
 	TYPGRACZA dajTypGracza( int graczId );

@@ -29,8 +29,8 @@ public:
 		}
 	};
 
-//no oprotected:
 	Plansza *plansza;
+
 
 public slots:
 	virtual void zatwierdz() = 0;
@@ -47,7 +47,7 @@ signals:
 	void uwaga( QString tresc );
 	//void remisDetector();
 	//void lockGameControl(bool) //blokuje przyciski cofnij, powtorz,itp, itd
-
+	void wykonaneRuchy( int przesuniecWTurze, int podanWTurze );
 };
 
 

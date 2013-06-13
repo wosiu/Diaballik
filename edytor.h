@@ -2,13 +2,12 @@
 #define EDYTOR_H
 
 #include "tryb.h"
-#include "gra.h"
 
 class Edytor : public Tryb
 {
 public:
 	Edytor();
-	Edytor(Gra* gra);
+	Edytor( Tryb* innyTryb );
 	std::vector<int> findValidMoves( int pionekId ); //done
 	TYPGRACZA dajTypGracza( int graczId ); //done
 	virtual bool isValidMove( int pionekId, int pos );

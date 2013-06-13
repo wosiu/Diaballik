@@ -4,11 +4,10 @@ Edytor::Edytor()
 {
 }
 
-Edytor::Edytor(Gra *gra)
+Edytor::Edytor(Tryb *innyTryb)
 {
-	plansza = gra->plansza;
+	plansza = innyTryb->plansza;
 }
-
 
 std::vector<int> Edytor::findValidMoves( int pionekId )
 {

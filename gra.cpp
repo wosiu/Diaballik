@@ -5,30 +5,30 @@
 #define debv(burak) if(debon) {qDebug()<<"DEB-> "<<#burak<<": \t"; for(unsigned int zyx=0;zyx<burak.size();zyx++) cout<<burak[zyx]<<" "; cout<<endl;}
 
 
+
 Gra::Gra()
 {
-	//TO DO w zaleznosci od konfigu gry:
-	typGracza[1]=CZLOWIEK;
-	typGracza[0]=KOMPUTER;
+	inicjuj();
+}
 
-	historyIterator = -1;
-	podanWTurze = przesuniecWTurze = 0;
-
-	/*Plansza a = *dajPlansze();
-	a.nastepnyGracz();
-	qDebug() << a.czyjRuch();
-	qDebug() << dajPlansze()->czyjRuch();*/
-	//pausa = lse;
-
-	//ai = new AI();
-
-	//ten connect nie dzioła
-	//connect(this, SIGNAL( nowaTura(int) ), this, SLOT( komputerGraj(int) ) );
-	//emit nowaTura( plansza->czyjRuch() );
+Gra::Gra(Tryb *innyTryb)
+{
+	plansza = innyTryb->plansza;
+	inicjuj();
 }
 
 Gra::~Gra()
 {
+}
+
+void Gra::inicjuj()
+{
+	//TO DO w zaleznosci od konfigu gry:
+	typGracza[1]=KOMPUTER;
+	typGracza[0]=CZLOWIEK;
+
+	historyIterator = -1;
+	podanWTurze = przesuniecWTurze = 0;
 }
 
 bool Gra::isEndGame()
@@ -196,6 +196,7 @@ void Gra::move( int pionekId, int pozycja )
 
 	//wykonuje faktyczny ruch na planszy i emituje sygnal do UI
 	physicalMove( pionekId, pozycja );
+	emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 }
 
 //obsluguje ruchy czlowieka
@@ -254,13 +255,49 @@ void Gra::addToHistory( ruch r )
 	history.push_back( r );
 }
 
+//uwaga: undo / redo uzyte przez CZLOWIEK cofa zawsze jeden jego ruch
+//nawet jesli bedzie to wymagalo cofniecia calej tury KOMPUTERa
+
+//ustawia gracza na wskazywany przez historyIterator pionek
 bool Gra::undo()
 {
+	if ( typGracza[0] == KOMPUTER && typGracza[1] == KOMPUTER )
+	{
+		emit uwaga("Gra Komputer vs Komputer - cofanie ruchów niedostępne.");
+		return false;
+	}
+
 	if ( historyIterator < 0 )
 	{
 		emit uwaga("Brak ruchów do cofnięcia.");
 		return false;
 	}
+
+
+	/*if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER && historyIterator < 3 )
+	{
+		//ale jesli cofamy ruchy komputera, a przed nim nie ma nic
+		//to nie mozemy ich cofnac (takie zachowanie nei ma sensu)S
+			bool isHumanOnStart = false;
+			//sprawdzam wiec czy ktorys z ruchow 0,1,(2) nalezy do czlowieka
+			//bo jak tak, to moge cofnąc
+			for ( int i = 0; i < historyIterator; i++ )
+				if ( typGracza[ plansza->ktoryGracz( history[ i ].pionekId ) ]
+					 == CZLOWIEK )
+				{
+					isHumanOnStart = true;
+					break;
+				}
+
+			//nie ma ruchow czlowika na poczatku historii,
+			//wiec nie ma sensu cofac ruchow komputera:
+			if ( !isHumanOnStart )
+			{
+				emit( "Do tego miejsca rozgrywki zostały wykonane ruchy jedynie przez Komputer. Nie masz dostępu do cofnięcia ich. Kontynuuj grę lub powtórz ruchy jeśli dostępne.");
+				return false;
+			}
+	}*/
+
 
 	ruch r = history[ historyIterator ];
 	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.dokad );
@@ -269,6 +306,20 @@ bool Gra::undo()
 	physicalMove ( r.pionekId , r.skad );
 	historyIterator--;
 	zliczRuchyWTurze();
+
+	//jesli w wyniku cofniecia obecnie ma wykonywac ruch komputer,
+	//to jego wszystkie ruchy w tej turze zostają także cofniete
+	//a takze ostatni ruch w turze przed komputerem CZLOWIEK'a
+	if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER )
+	{
+		//ale jesli nie ma co cofać w turze przed komputem,
+		//to po jego cofnietych ruchach nakazujemy mu ponownie grac
+		//minus w stosunku do porpzedniego rozwiazania: stracimy historie rozgrywki
+		if ( historyIterator <  0 )
+			komputerGraj( plansza->czyjRuch() );
+		else //powtarzamy tak jak opisane wyzej
+			undo();
+	}
 
 	return true;
 }
@@ -289,6 +340,19 @@ bool Gra::redo()
 	physicalMove( r.pionekId , r.dokad );
 	poprawGracza();
 	zliczRuchyWTurze();
+
+	//jesli w wyniku powtorzenia obecnie ma wykonywac ruch komputer,
+	//to jego wszystkie ruchy w tej turze zostają także powtorzone
+	//a takze pierwszu ruch w turze po komputerze
+	if ( typGracza[ plansza->czyjRuch() ] == KOMPUTER )
+	{
+		//ale jesli nie ma co powtarzac w turze po komputerze,
+		//to po prostu zaczynamy nowa runde
+		if ( historyIterator + 1 >= history.size() )
+			turaStart();
+		else //powtarzamy tak jak opisane wyzej
+			redo();
+	}
 
 	return true;
 }
