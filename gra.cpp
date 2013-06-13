@@ -24,7 +24,7 @@ Gra::~Gra()
 void Gra::inicjuj()
 {
 	//TO DO w zaleznosci od konfigu gry:
-	typGracza[1]=KOMPUTER;
+	typGracza[1]=CZLOWIEK;
 	typGracza[0]=CZLOWIEK;
 
 	historyIterator = -1;
@@ -62,6 +62,8 @@ void Gra::turaStart()
 	if ( !isEndGame() )
 	{
 		przesuniecWTurze = podanWTurze = 0;
+		emit wykonaneRuchy( 0, 0 );
+
 		//przelacznie na nastepnego gracza
 		plansza->nastepnyGracz();
 		emit nowaTura( plansza->czyjRuch() );
@@ -302,10 +304,11 @@ bool Gra::undo()
 	ruch r = history[ historyIterator ];
 	Q_ASSERT( plansza->dajPozycje( r.pionekId ) == r.dokad );
 
-	poprawGracza();
 	physicalMove ( r.pionekId , r.skad );
 	historyIterator--;
+	poprawGracza();
 	zliczRuchyWTurze();
+
 
 	//jesli w wyniku cofniecia obecnie ma wykonywac ruch komputer,
 	//to jego wszystkie ruchy w tej turze zostają także cofniete
@@ -315,6 +318,7 @@ bool Gra::undo()
 		//ale jesli nie ma co cofać w turze przed komputem,
 		//to po jego cofnietych ruchach nakazujemy mu ponownie grac
 		//minus w stosunku do porpzedniego rozwiazania: stracimy historie rozgrywki
+		//ale ma to sens (odzwierciedla rzeczywistosc)
 		if ( historyIterator <  0 )
 			komputerGraj( plansza->czyjRuch() );
 		else //powtarzamy tak jak opisane wyzej
@@ -361,30 +365,32 @@ void Gra::zliczRuchyWTurze()
 {
 	podanWTurze = przesuniecWTurze = 0;
 
-	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
-	if( historyIterator == -1 ) return;
-
-	//pobieram gracza, do ktorego nalezy ostatni
-	//(obecnie wskazywany, wykonany odzwierciedlony na planszy) ruch w historii
-	int gracz = plansza->ktoryGracz( history[ historyIterator ].pionekId );
-
-	//zliczam ruchy tego gracza w rundzie do momentu historyIterator]
-	for( int i = historyIterator; i >= 0
-		 && plansza->ktoryGracz( history[ i ].pionekId ) == gracz
-		 ; i-- )
+	//jesli sa zakolejkowane jakies ruchy:
+	if( historyIterator != -1 )
 	{
-		int pionekId = history[ i ].pionekId;
+		//pobieram gracza, do ktorego nalezy ostatni
+		//(obecnie wskazywany, wykonany odzwierciedlony na planszy) ruch w historii
+		int gracz = plansza->ktoryGracz( history[ historyIterator ].pionekId );
 
-		if ( plansza->czyPilka( pionekId) ) podanWTurze++;
-		else if ( plansza->czyPilkarzyk( pionekId) ) przesuniecWTurze++;
+		//zliczam ruchy tego gracza w rundzie do momentu historyIterator]
+		for( int i = historyIterator; i >= 0
+			 && plansza->ktoryGracz( history[ i ].pionekId ) == gracz
+			 ; i-- )
+		{
+			int pionekId = history[ i ].pionekId;
+
+			if ( plansza->czyPilka( pionekId) ) podanWTurze++;
+			else if ( plansza->czyPilkarzyk( pionekId) ) przesuniecWTurze++;
+		}
 	}
+
+	emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 }
 
 void Gra::poprawGracza()
 {
 	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
-	Q_ASSERT( historyIterator > -1 );
-	//if( historyIterator == -1 ) return;
+	if( historyIterator == -1 ) return;
 
 	//gracz cofanego / powtarzanego ruchu
 	int graczRuchu = plansza->ktoryGracz( history[ historyIterator ].pionekId );
@@ -394,5 +400,5 @@ void Gra::poprawGracza()
 
 	//symulujemy zmiane tury
 	plansza->nastepnyGracz();
-	emit nowaTura( graczRuchu );
+	emit nowaTura( plansza->czyjRuch() );
 }
