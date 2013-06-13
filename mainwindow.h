@@ -31,7 +31,9 @@ private:
 	qreal defaultWindowWidth;
 	QLabel *statusBarMonit;
 	QMessageBox* boxMonit;
-	const QString idGraczToKolor[2] = {"CZARNY", "BIAŁY"};
+	const QString idGraczToKolor[3] = {"CZARNY", "BIAŁY", "EDYTOR"};
+
+	void connector();
 
 private slots:
 	void setValidMoves(int);
@@ -44,6 +46,8 @@ private slots:
 	void on_Zatwierdz_pushButton_clicked();
 	void on_Cofnij_pushButton_clicked();
 	void on_Powtorz_pushButton_clicked();
+	void on_actionNowa_Gra_triggered();
+	void on_actionEdytuj_plansze_triggered();
 };
 
 #endif // MAINWINDOW_H

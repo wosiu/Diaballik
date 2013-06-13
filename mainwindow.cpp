@@ -17,48 +17,41 @@ MainWindow::MainWindow(QWidget *parent) :
 	statusBarMonit = new QLabel( this );
 	ui->statusBar->addWidget( statusBarMonit );
 
-	boxMonit = new QMessageBox(this);
+	boxMonit = new QMessageBox( this );
 
 	defaultWindowHeight = this->size().height();
 	defaultWindowWidth = this->size().width();
 
-	// TEST
-/*
-	QSequentialAnimationGroup *group = new QSequentialAnimationGroup;
-	IPilkarzyk *a = new IPilkarzyk(scena, 3, 30);
-	scena->addItem( a );
-	a->setPos( 100,100 );
-
-	QPropertyAnimation *animation = new QPropertyAnimation(a,"pos");
-	animation->setDuration(1000);
-	//animation->setStartValue( a->pos() );
-	//animation->setEndValue( a->mapToParent( 0*IPole::rozmiar, 3*IPole::rozmiar ) );
-	animation->setEndValue( a->mapToScene ( 0*IPole::rozmiar, 3*IPole::rozmiar ) );
-	animation->setEasingCurve(QEasingCurve::InOutSine);
-	animation->DeleteWhenStopped;
-	//animation->start( QPropertyAnimation::DeleteWhenStopped );
-
-	QPropertyAnimation *animation2 = new QPropertyAnimation(a,"pos");
-	animation2->setDuration(1000);
-	//animation2->setStartValue( a->pos() );
-	//animation2->setEndValue( a->mapToParent( 0*IPole::rozmiar, -2*IPole::rozmiar ) );
-	animation2->setEndValue( a->mapToScene ( 0*IPole::rozmiar, -2*IPole::rozmiar ) );
-	animation2->setEasingCurve(QEasingCurve::InOutSine);
-	animation2->DeleteWhenStopped;
-	//animation2->start( QPropertyAnimation::DeleteWhenStopped );
-
-	//group->start();
-	group->addAnimation( animation );
-	group->start();
-	group->addPause(2000);
-	group->addAnimation( animation2 );
-	//group->start();
-	*/
-	// END
-
-	//Komunikator komunikator = new Komunikator();
+	//gra czysta
 	tryb = new Gra();
+	connector();
+	tryb->turaStart();
+	scena->dodajPionki();
+}
 
+MainWindow::~MainWindow()
+{
+	delete tryb;
+	delete ui;
+}
+
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+	qreal dScale = 1;
+
+	if( event->size().width() == defaultWindowWidth ) {}
+	else if(event->oldSize().width() != -1)
+		dScale = (qreal)qMin( event->size().width(), event->size().height() ) /
+				 (qreal)qMin( defaultWindowWidth,  defaultWindowHeight );
+
+
+	ui->graphicsView->resetTransform();
+	ui->graphicsView->scale( dScale, dScale );
+}
+
+void MainWindow::connector()
+{
 	//wykrywa klik na pionek, pyta gre o dostepne ruchy dla niego, nakazuje scenie dodac dostepne ruchy
 	connect( scena, SIGNAL(clicked(int)), this, SLOT(setValidMoves(int)) );
 	//wykrywa klik na pole dostepnego ruchu i przekazuje do gry
@@ -75,27 +68,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	//...polaczono showWinnerBox
 	//laczymy informacje o ruchach
 	connect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
-
-	tryb->turaStart();
-}
-
-MainWindow::~MainWindow()
-{
-	delete ui;
-}
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-	qreal dScale = 1;
-
-	if( event->size().width() == defaultWindowWidth ) {}
-	else if(event->oldSize().width() != -1)
-		dScale = (qreal)qMin( event->size().width(), event->size().height() ) /
-				 (qreal)qMin( defaultWindowWidth,  defaultWindowHeight );
-
-
-	ui->graphicsView->resetTransform();
-	ui->graphicsView->scale( dScale, dScale );
 }
 
 void MainWindow::setValidMoves( int pionekId )
@@ -180,4 +152,23 @@ void MainWindow::on_Powtorz_pushButton_clicked()
 {
 	if ( !scena->getLock() )
 		tryb->redo();
+}
+
+void MainWindow::on_actionNowa_Gra_triggered()
+{
+	delete tryb;
+	tryb = new Gra();
+	scena->ustawPionki();
+	connector();
+	tryb->turaStart();
+}
+
+void MainWindow::on_actionEdytuj_plansze_triggered()
+{
+	delete tryb;
+	tryb = new Edytor();
+
+	scena->ustawPionki( tryb->plansza );
+	connector();
+	tryb->turaStart();
 }

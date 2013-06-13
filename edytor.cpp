@@ -4,10 +4,15 @@ Edytor::Edytor()
 {
 }
 
-Edytor::Edytor(Tryb *innyTryb)
+Edytor::Edytor(Plansza plansza)
+{
+	this->plansza = &plansza;
+}
+
+/*Edytor::Edytor(Tryb *innyTryb)
 {
 	plansza = innyTryb->plansza;
-}
+}*/
 
 std::vector<int> Edytor::findValidMoves( int pionekId )
 {
@@ -38,6 +43,8 @@ bool Edytor::isValidMove(int pionekId, int pos)
 void Edytor::turaStart()
 {
 	plansza->nastepnyGracz();
+	emit wykonaneRuchy(0,0);
+	emit nowaTura( plansza->czyjRuch() );
 }
 
 

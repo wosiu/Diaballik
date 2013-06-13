@@ -5,6 +5,7 @@
 #include "ipilkarzyk.h"
 #include "ipilka.h"
 #include "icel.h"
+#include "plansza.h"
 #include <vector>
 
 class IPlansza : public QGraphicsScene
@@ -15,13 +16,19 @@ public:
 	void dodajDostepnePole( int pos );
 	void ustawPionek( bool gracz, int id, int x, int y );
 	bool getLock();
+	void clear();
+	void dodajPionki();
+	void dodajPionki( Plansza* plansza );
+	void ustawPionki();
+	void ustawPionki( Plansza* plansza );
+
 
 private:
 	IPole* pionki[ 16 ];
 	int toPixels(int x) {return x * IPole::rozmiar;}
 	int fromPixels(int px) {return px / IPole::rozmiar;}
 	void rysujPodklad();
-	void dodajPionki();
+	void stworzPionki();
 	void polaczPionki();
 	void ustawPole( IPole *pole, int pos );
 

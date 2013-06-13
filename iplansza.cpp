@@ -6,7 +6,8 @@ IPlansza::IPlansza(QObject *parent) :
 	QGraphicsScene(parent)
 {
 	rysujPodklad();
-	dodajPionki();
+	stworzPionki();
+	//dodajPionki();
 	polaczPionki();
 	locked = false;
 }
@@ -33,25 +34,55 @@ void IPlansza::rysujPodklad()
 		}
 }
 
-void IPlansza::dodajPionki()
+void IPlansza::stworzPionki()
 {
 	for ( int i = 0; i < 7; i++ )
 	{
 		pionki[ i ] = new IPilkarzyk(this, 0, i );
-		pionki[ i ]->setPos( toPixels(i), toPixels(0) );
-		this->addItem( pionki[ i ] );
 		pionki[ i + 7 ] = new IPilkarzyk(this, 1, i+7 );
-		pionki[ i + 7 ]->setPos( toPixels(i), toPixels(6) );
-		this->addItem( pionki[ i + 7 ] );
 	}
 
 	pionki[ 14 ] = new IPilka(this, 0, 14);
-	pionki[ 14 ]->setPos( toPixels(3), toPixels(0) );
-	this->addItem( pionki[ 14 ] );
 	pionki[ 15 ] = new IPilka(this, 1, 15);
-	pionki[ 15 ]->setPos( toPixels(3), toPixels(6) );
-	this->addItem( pionki[ 15 ] );
 
+	ustawPionki();
+}
+
+void IPlansza::dodajPionki()
+{
+	for ( int i = 0; i < 16; i++ )
+		this->addItem( pionki[ i ] );
+}
+
+void IPlansza::dodajPionki(Plansza *plansza)
+{
+	ustawPionki( plansza );
+	for ( int i = 0; i < 16; i++ )
+		this->addItem( pionki[ i ] );
+}
+
+void IPlansza::ustawPionki()
+{
+	for ( int i = 0; i < 7; i++ )
+	{
+		pionki[ i ]->setPos( toPixels(i), toPixels(0) );
+		pionki[ i + 7 ]->setPos( toPixels(i), toPixels(6) );
+	}
+
+	pionki[ 14 ]->setPos( toPixels(3), toPixels(0) );
+	pionki[ 15 ]->setPos( toPixels(3), toPixels(6) );
+}
+
+void IPlansza::ustawPionki( Plansza* plansza )
+{
+	int x,y;
+	for ( int i = 0; i < 16; i++ )
+	{
+		x = toPixels( plansza->dajPozycje( i ) % 7 );
+		y = toPixels( plansza->dajPozycje( i ) / 7 );
+
+		pionki[ i ]->setPos( x, y );
+	}
 }
 
 void IPlansza::polaczPionki()
@@ -152,4 +183,11 @@ bool IPlansza::getLock()
 		if ( pionki[i]->getLock() ) return true;
 
 	return false;
+}
+
+void IPlansza::clear()
+{
+	czyscDostepneRuchy();
+	for( int i = 0; i < 16; i++ )
+		this->removeItem( pionki[i] );
 }

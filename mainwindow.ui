@@ -147,6 +147,9 @@
    <property name="text">
     <string>Nowa Gra</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionEdytuj_plansze">
    <property name="text">
