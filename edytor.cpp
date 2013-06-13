@@ -1,44 +1,79 @@
 #include "edytor.h"
 
-Edytor::Edytor( /*Gra *gra*/ )
+Edytor::Edytor()
 {
-	//plansza = gra->plansza;
 }
-/*
 
-bool Tryb::isValidMove( int pionekId, int pos )
+Edytor::Edytor(Gra *gra)
 {
-	Q_ASSERT_X(false,"isValidMove","odwolanie do funkcji z nadklasy.");
-	return true;
+	plansza = gra->plansza;
 }
 
 
-std::vector<int> Tryb::findValidMoves( int pionekId )
+std::vector<int> Edytor::findValidMoves( int pionekId )
 {
-	Q_ASSERT_X(false,"findValidMoves()","odwolanie do funkcji z nadklasy.");
-	std::vector<int>res;
-	for(int i=0;i<49;i++)
-		res.push_back(i);
+	std::vector<int>res = plansza->dajWszystkiePuste();;
+	std::vector<int>tmp;
+
+	if ( plansza->czyPilka( pionekId ) )
+	{
+		//jesli pilka to dokladam jeszcze pilkarzy z druzyny
+		tmp = plansza->dajDruzyne( pionekId );
+		res.insert( res.end(), tmp.begin(), tmp.end() );
+	}
 
 	return res;
 }
 
-
-void Tryb::zatwierdz()
+Tryb::TYPGRACZA Edytor::dajTypGracza(int graczId)
 {
-	qDebug( "zakonczono edycje ");
+	return EDYTOR;
+}
+
+bool Edytor::isValidMove(int pionekId, int pos)
+{
+	Q_ASSERT(false);
+}
+
+//zmienia gracza rozpoczynajacego na przeciwnego
+void Edytor::turaStart()
+{
+	plansza->nastepnyGracz();
 }
 
 
-void Tryb::move( int pionekId, int pozycja )
+void Edytor::zatwierdz()
 {
-	Q_ASSERT_X(false,"move()","odwolanie do slota z nadklasy.");
+	if ( plansza->doubleWinCheck() )
+		emit uwaga( "Niepoprawny stan planszy: obaj gracze wygrywają. Popraw i zatwierdź." );
+
+	qDebug("zakoncz edycje");
+}
+
+
+void Edytor::move( int pionekId, int pozycja )
+{
+	//jesli to pilka oraz miejsce docelowe jest puste
+	if ( plansza->czyPilka( pionekId ) && plansza->czyPuste( pozycja ) )
+		//to chcemy takze przesunac pionek pod nią
+		physicalMove( plansza->dajIdPodajacego( pionekId ), pozycja );
+
 	physicalMove( pionekId, pozycja );
 }
 
-void Tryb::moveDetector( int pionekId, int pozycja )
+void Edytor::moveDetector( int pionekId, int pozycja )
 {
-	Q_ASSERT_X(false,"moveDetector()","odwolanie do slota z nadklasy.");
 	move( pionekId, pozycja );
 }
-*/
+
+bool Edytor::undo()
+{
+	emit uwaga( "Cofanie ruchów niedostępne w trybie edycji." );
+}
+
+bool Edytor::redo()
+{
+	emit uwaga( "Powtarzanie ruchów niedostępne w trybie edycji." );
+}
+
+

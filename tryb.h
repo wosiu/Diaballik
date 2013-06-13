@@ -15,13 +15,10 @@ public:
 	Tryb();
 	~Tryb();
 	enum TYPGRACZA { CZLOWIEK, KOMPUTER, EDYTOR };
-	/*static const int CZLOWIEK;
-	static const int KOMPUTER;
-	static const int EDYTOR;*/
-
-	virtual bool isValidMove( int pionekId, int pos ) = 0;
-	virtual std::vector <int> findValidMoves( int pionekId ) = 0;
 	void physicalMove( int pionekId, int pozycja );
+	virtual bool isValidMove( int pionekId, int pos ) = 0;
+
+	virtual std::vector <int> findValidMoves( int pionekId ) = 0;
 	virtual TYPGRACZA dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
 	virtual void turaStart() = 0;
 

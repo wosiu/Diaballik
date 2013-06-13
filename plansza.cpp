@@ -76,7 +76,7 @@ std::vector<int> Plansza::dajDruzyne( int poleId )
 						 dane + 7 + ktoryGracz( poleId ) * 7 );
 	sort( res.begin(), res.end() );
 
-	Q_ASSERT( res.size() == 14 );
+	Q_ASSERT( res.size() == 7 );
 	return res;
 }
 
@@ -190,6 +190,19 @@ std::vector<int> Plansza::dajRuchy( int pionekId )
 
 	//jesli pionek
 	return dajSasiedniePuste( pionekId );
+}
+
+int Plansza::dajIdPodajacego(int pilkaId)
+{
+	Q_ASSERT ( czyPilka( pilkaId ) );
+
+	int gracz = ktoryGracz( pilkaId );
+
+	for ( int i = 7 * gracz ; i < 7 + 7 * gracz; i++ )
+		if( dane[ i ] == dane[ pilkaId ] )
+			return i;
+
+	Q_ASSERT ( false );
 }
 
 int Plansza::czyjRuch()

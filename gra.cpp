@@ -8,8 +8,8 @@
 Gra::Gra()
 {
 	//TO DO w zaleznosci od konfigu gry:
-	typGracza[1]=KOMPUTER;
-	typGracza[0]=CZLOWIEK;
+	typGracza[1]=CZLOWIEK;
+	typGracza[0]=KOMPUTER;
 
 	historyIterator = -1;
 	podanWTurze = przesuniecWTurze = 0;
@@ -43,7 +43,10 @@ bool Gra::isEndGame()
 	}
 
 	int winner = plansza->winCheck();
-	qDebug() << winner;
+
+	static int counter = 0;
+	qDebug() << counter++;
+
 	if ( winner != -1 )
 	{
 		emit winDetector( winner );

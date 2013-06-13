@@ -23,6 +23,7 @@ public:
 	std::vector<int> dajPodania( int pionekId );
 	std::vector<int> dajDruzyne( int poleId );
 	std::vector<int> dajRuchy(int pionekId );
+	int dajIdPodajacego( int pilkaId );
 	int czyjRuch();
 	void nastepnyGracz();
 	void przesun( int pionekId, int pozycja );

@@ -4,22 +4,22 @@
 #include "tryb.h"
 #include "gra.h"
 
-class Edytor //: public Tryb
+class Edytor : public Tryb
 {
 public:
 	Edytor();
-
-
+	Edytor(Gra* gra);
+	std::vector<int> findValidMoves( int pionekId ); //done
+	TYPGRACZA dajTypGracza( int graczId ); //done
+	virtual bool isValidMove( int pionekId, int pos );
+	void turaStart(); //done
 
 public slots:
-	void zatwierdz();
-	void move( int pionekId, int pozycja );
-	void moveDetector( int pionekId, int pozycja );
-
-
-
-
-
+	void zatwierdz(); //done
+	void move( int pionekId, int pozycja ); //done
+	void moveDetector( int pionekId, int pozycja ); //done
+	bool undo();
+	bool redo();
 };
 
 #endif // EDYTOR_H
