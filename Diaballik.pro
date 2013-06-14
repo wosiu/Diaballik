@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     icel.cpp \
     komunikator.cpp \
     ai.cpp \
-    kolejkaanimacji.cpp
+    kolejkaanimacji.cpp \
+    nowagradialog.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
@@ -39,6 +40,8 @@ HEADERS  += mainwindow.h \
     icel.h \
     komunikator.h \
     ai.h \
-    kolejkaanimacji.h
+    kolejkaanimacji.h \
+    nowagradialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    nowagradialog.ui

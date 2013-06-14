@@ -3,6 +3,10 @@
 
 Tryb::Tryb()
 {
+	//TO DO w zaleznosci od konfigu gry:
+	typGracza[1] = CZLOWIEK;
+	typGracza[0] = CZLOWIEK;
+	podanWTurze = przesuniecWTurze = 0;
 }
 
 Tryb::~Tryb()

@@ -12,6 +12,7 @@ class Gra : public Tryb
 public:
 	Gra();
 	Gra( Tryb* innyTryb );
+	//Gra( const Gra innaGra );
 	~Gra();
 	void inicjuj();
 	bool isValidMove( int pionekId, int pos );
@@ -19,15 +20,10 @@ public:
 	TYPGRACZA dajTypGracza( int graczId );
 	void turaStart();
 
-protected:
-	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
-
 private:
 	//std::vector < ruch > ruchy; //w turze, jednego gracza
 	AI *ai;
 	std::vector < int > validateAllMoves( int pionekId );
-	int podanWTurze;
-	int przesuniecWTurze;
 	bool isEndGame();
 
 	//obsluga historii:

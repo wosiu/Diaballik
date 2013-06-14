@@ -68,19 +68,13 @@ void MainWindow::connector()
 	//...polaczono showWinnerBox
 	//laczymy informacje o ruchach
 	connect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
-}
+	//laczymy ukrywanie przyciskow Cofnij / Powtorz
+	connect( tryb, SIGNAL(undoAble(bool)), ui->Cofnij_pushButton, SLOT(setEnabled(bool)) );
+	connect( tryb, SIGNAL(redoAble(bool)), ui->Powtorz_pushButton, SLOT(setEnabled(bool)) );
+	//laczymy informacje o powrcoei z trybu edycji do gry
+	connect( tryb, SIGNAL(zmianaTrybu(Tryb*)), this, SLOT(ustawNowyTryb(Tryb*)) );
 
-void MainWindow::setValidMoves( int pionekId )
-{
-	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
-	std::vector<int> pozycje = tryb -> findValidMoves( pionekId );
-	while( !pozycje.empty() )
-	{
-		scena->dodajDostepnePole( pozycje.back() );
-		pozycje.pop_back();
-	}
 }
-
 
 void MainWindow::showMonitInBox( QString monit )
 {
@@ -140,7 +134,6 @@ void MainWindow::wykonaneRuchy(int przesuniec, int podan)
 	ui->ruchyTablica->setText( info );
 }
 
-
 //TO DO: pressed()
 void MainWindow::on_Cofnij_pushButton_clicked()
 {
@@ -156,21 +149,37 @@ void MainWindow::on_Powtorz_pushButton_clicked()
 
 void MainWindow::on_actionNowa_Gra_triggered()
 {
-	delete tryb;
-	tryb = new Gra();
-	scena->ustawPionki();
-	connector();
-	tryb->turaStart();
+	NowaGraDialog dialog;
+	//dialog.show();
+
+	//jesli kliknieto OK
+	if( dialog.exec() == QDialog::Accepted )
+		ustawNowyTryb( dialog.ustawienia );
 }
 
 void MainWindow::on_actionEdytuj_plansze_triggered()
 {
+	Tryb* nowyTryb = new Edytor( tryb );
+	ustawNowyTryb( nowyTryb );
+}
 
-	Tryb* nowyTryb = new Edytor( tryb->plansza );
+void MainWindow::ustawNowyTryb( Tryb* nowyTryb )
+{
 	delete tryb;
 	tryb = nowyTryb;
 
 	scena->ustawPionki( tryb->plansza );
 	connector();
 	tryb->turaStart();
+}
+
+void MainWindow::setValidMoves( int pionekId )
+{
+	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
+	std::vector<int> pozycje = tryb -> findValidMoves( pionekId );
+	while( !pozycje.empty() )
+	{
+		scena->dodajDostepnePole( pozycje.back() );
+		pozycje.pop_back();
+	}
 }

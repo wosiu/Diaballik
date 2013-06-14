@@ -31,6 +31,10 @@ public:
 
 	Plansza plansza;
 
+//protected:
+	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
+	int podanWTurze;
+	int przesuniecWTurze;
 
 public slots:
 	virtual void zatwierdz() = 0;
@@ -48,6 +52,9 @@ signals:
 	//void remisDetector();
 	//void lockGameControl(bool) //blokuje przyciski cofnij, powtorz,itp, itd
 	void wykonaneRuchy( int przesuniecWTurze, int podanWTurze );
+	void undoAble( bool );
+	void redoAble( bool );
+	void zmianaTrybu( Tryb* nowy ); //uzywane tylko przez tryb edycji
 };
 
 

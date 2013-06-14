@@ -119,8 +119,8 @@
      <string>Gra</string>
     </property>
     <addaction name="actionNowa_Gra"/>
-    <addaction name="actionEdytuj_plansze"/>
     <addaction name="actionZapisz_gr"/>
+    <addaction name="actionEdytuj_plansze"/>
     <addaction name="separator"/>
     <addaction name="actionZako_cz"/>
    </widget>
@@ -154,6 +154,9 @@
   <action name="actionEdytuj_plansze">
    <property name="text">
     <string>Edytuj plansze</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionZapisz_gr">

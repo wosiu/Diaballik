@@ -2,17 +2,27 @@
 
 Edytor::Edytor()
 {
+	inicjuj();
 }
 
-Edytor::Edytor(Plansza plansza)
+/*Edytor::Edytor(Plansza plansza)
 {
 	this->plansza = plansza;
-}
+}*/
 
-/*Edytor::Edytor(Tryb *innyTryb)
+Edytor::Edytor(Tryb *innyTryb)
 {
 	plansza = innyTryb->plansza;
-}*/
+	podanWTurze = innyTryb->podanWTurze;
+	przesuniecWTurze = innyTryb->przesuniecWTurze;
+	typGracza[1] = innyTryb->typGracza[1];
+	typGracza[0] = innyTryb->typGracza[0];
+	inicjuj();
+}
+
+void Edytor::inicjuj()
+{
+}
 
 std::vector<int> Edytor::findValidMoves( int pionekId )
 {
@@ -42,17 +52,25 @@ bool Edytor::isValidMove(int pionekId, int pos)
 //zmienia gracza rozpoczynajacego na przeciwnego
 void Edytor::turaStart()
 {
-	plansza.nastepnyGracz();
-	emit wykonaneRuchy(0,0);
+	//plansza.nastepnyGracz();
+	//emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
+	emit wykonaneRuchy( 0, 0 );
 	emit nowaTura( plansza.czyjRuch() );
-}
 
+	emit undoAble( false );
+	emit redoAble( false );
+}
 
 void Edytor::zatwierdz()
 {
 	if ( plansza.doubleWinCheck() )
+	{
 		emit uwaga( "Niepoprawny stan planszy: obaj gracze wygrywają. Popraw i zatwierdź." );
+		return;
+	}
 
+	Tryb *nowyTryb = new Gra( this );
+	emit zmianaTrybu( nowyTryb );
 	qDebug("zakoncz edycje");
 }
 

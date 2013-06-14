@@ -11,11 +11,28 @@ Gra::Gra()
 	inicjuj();
 }
 
-Gra::Gra(Tryb *innyTryb)
+Gra::Gra( Tryb *innyTryb )
 {
 	plansza = innyTryb->plansza;
+	plansza.nastepnyGracz(); //poniewaz turaStart() zmieni z powrotem na dobrego
+	podanWTurze = innyTryb->podanWTurze;
+	przesuniecWTurze = innyTryb->przesuniecWTurze;
+	typGracza[1] = innyTryb->typGracza[1];
+	typGracza[0] = innyTryb->typGracza[0];
 	inicjuj();
 }
+
+/*Gra::Gra(const Gra innaGra )
+{
+	plansza = innaGra.plansza;
+	plansza.nastepnyGracz(); //poniewaz turaStart() zmieni z powrotem na dobrego
+	podanWTurze = innaGra.podanWTurze;
+	przesuniecWTurze = innaGra.przesuniecWTurze;
+	typGracza[1] = innaGra.typGracza[1];
+	typGracza[0] = innaGra.typGracza[0];
+	inicjuj();
+}*/
+
 
 Gra::~Gra()
 {
@@ -23,12 +40,9 @@ Gra::~Gra()
 
 void Gra::inicjuj()
 {
-	//TO DO w zaleznosci od konfigu gry:
-	typGracza[1]=CZLOWIEK;
-	typGracza[0]=CZLOWIEK;
-
 	historyIterator = -1;
-	podanWTurze = przesuniecWTurze = 0;
+	emit undoAble( true );
+	emit redoAble( true );
 }
 
 bool Gra::isEndGame()
@@ -61,9 +75,8 @@ void Gra::turaStart()
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
 	if ( !isEndGame() )
 	{
-		przesuniecWTurze = podanWTurze = 0;
+		przesuniecWTurze = podanWTurze = 0; //ew przeniesc do zatwierdz, zeby sie nie wykonywalo przy odpaleniu gry po raz pierwszy
 		emit wykonaneRuchy( 0, 0 );
-
 		//przelacznie na nastepnego gracza
 		plansza.nastepnyGracz();
 		emit nowaTura( plansza.czyjRuch() );
@@ -77,6 +90,10 @@ void Gra::turaStart()
 	}
 
 	emit nowaTura( plansza.czyjRuch() );
+
+	//jesli bedzie trza blokowac przyciski to zrobic int historyWalker(-1..1) i tam emitowac prawdzajac historyIterator
+	emit undoAble( true );
+	emit redoAble( true );
 
 }
 
@@ -168,6 +185,8 @@ void Gra::zatwierdz()
 	}
 	//while( pausa ) {}
 
+	//w tura start:
+	//przesuniecWTurze = podanWTurze = 0;
 	turaStart();
 }
 
@@ -352,7 +371,7 @@ bool Gra::redo()
 		//ale jesli nie ma co powtarzac w turze po komputerze,
 		//to po prostu zaczynamy nowa runde
 		if ( historyIterator + 1 >= history.size() )
-			turaStart();
+			zatwierdz();
 		else //powtarzamy tak jak opisane wyzej
 			redo();
 	}
