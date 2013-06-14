@@ -41,10 +41,10 @@ bool Plansza::czyPilkarzyk( int pionekId )
 	return !czyPilka( pionekId );
 }
 
-int8_t* Plansza::zapisz()
+/*int8_t* Plansza::zapisz()
 {
 	return dane;
-}
+}*/
 
 
 int Plansza::dajPozycje( int pionekId )
@@ -95,7 +95,39 @@ bool Plansza::czyPuste(int x, int y)
 
 bool Plansza::czyPuste(int pozycja)
 {
+	if ( pozycja < 0 || pozycja > 48 ) return false;
+
 	return czyPuste( pozycja % 7, pozycja / 7 );
+}
+
+int Plansza::pozycjaToId( int pozycja )
+{
+	for ( int i = 0; i < 16; i++ )
+		if ( dane[i] == pozycja)
+			return i;
+
+	return -1;
+}
+
+//zwraca true, jesli na danej pozycji moge ustawic dany pionek
+//nie sprawdza pod katem prawidlowosci przesuniecia
+bool Plansza::czyDostepne( int pionekId, int pozycja )
+{
+	int idDocelowe = pozycjaToId ( pozycja );
+
+	if ( czyPilka( pionekId ) )
+	{
+		//podana pozycja jest pusta, wiec nie mozemy postawic tam pilki
+		if ( idDocelowe == -1 ) return false;
+		//na podanej pozycji nie stoi pilkarzyk, a pilki na pilke nie moge postawic
+		if ( ! czyPilkarzyk( idDocelowe ) ) return false;
+		//na podanej pozycji stoi pilkarzyk, ale druzyny przeciwnej
+		if ( ktoryGracz( pionekId ) != ktoryGracz( idDocelowe ) ) return false;
+	}
+	//pilkarzyka nie mozemy postawic na miejsce zajete ( czyPuste( pozycja ) != true )
+	else if ( idDocelowe != -1 ) return false;
+
+	return true;
 }
 
 
@@ -181,11 +213,11 @@ std::vector<int> Plansza::dajPodania( int pilkaId )
 std::vector<int> Plansza::dajRuchy( int pionekId )
 {
 	//jesli to pilka
-	if( czyPilka( pionekId ) )
+	if ( czyPilka( pionekId ) )
 		return dajPodania( pionekId );
 
 	//jesli to pionek i jest pod pilka, to nie moge go ruszac
-	if( dane[ pionekId ] == dane[ 14 + ktoryGracz( pionekId ) ] )
+	if ( dane[ pionekId ] == dane[ 14 + ktoryGracz( pionekId ) ] )
 		return std::vector<int>();
 
 	//jesli pionek
@@ -321,4 +353,10 @@ unsigned long long Plansza::hashCode()
 		res += dane[ i ] * prime[ i ];
 
 	return res;
+}
+
+void Plansza::usunPionki()
+{
+	for ( int i = 0; i < 16; i++ )
+		dane[ i ] = -1;
 }

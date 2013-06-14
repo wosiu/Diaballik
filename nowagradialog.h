@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "gra.h"
 #include "edytor.h"
+#include <QtGui> //do QFile
 
 namespace Ui {
 class NowaGraDialog;
@@ -17,9 +18,15 @@ public:
 	explicit NowaGraDialog(QWidget *parent = 0);
 	~NowaGraDialog();
 	Tryb* ustawienia;
+	QString saveSciezka;
+	void accept();
+	bool validateAndSetSave();
 
 private slots:
-	void on_buttonBox_accepted();
+	void on_radioButtonPlanszaPlik_clicked();
+	void on_radioButtonPlanszaEdytor_clicked();
+	void on_radioButtonPlanszaPusta_clicked();
+	void on_pushButtonWybierz_clicked();
 
 private:
 	Ui::NowaGraDialog *ui;

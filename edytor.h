@@ -15,6 +15,7 @@ public:
 	TYPGRACZA dajTypGracza( int graczId ); //done
 	virtual bool isValidMove( int pionekId, int pos );
 	void turaStart(); //done
+	Plansza dajPlanszePoczatkowa();
 
 public slots:
 	void zatwierdz(); //done

@@ -10,9 +10,9 @@ Edytor::Edytor()
 	this->plansza = plansza;
 }*/
 
-Edytor::Edytor(Tryb *innyTryb)
+Edytor::Edytor( Tryb *innyTryb )
 {
-	plansza = innyTryb->plansza;
+	planszaPoczatkowa = plansza = innyTryb->plansza;
 	podanWTurze = innyTryb->podanWTurze;
 	przesuniecWTurze = innyTryb->przesuniecWTurze;
 	typGracza[1] = innyTryb->typGracza[1];
@@ -61,6 +61,11 @@ void Edytor::turaStart()
 	emit redoAble( false );
 }
 
+Plansza Edytor::dajPlanszePoczatkowa()
+{
+	return plansza;
+}
+
 void Edytor::zatwierdz()
 {
 	if ( plansza.doubleWinCheck() )
@@ -69,6 +74,7 @@ void Edytor::zatwierdz()
 		return;
 	}
 
+	planszaPoczatkowa = plansza;
 	Tryb *nowyTryb = new Gra( this );
 	emit zmianaTrybu( nowyTryb );
 	qDebug("zakoncz edycje");

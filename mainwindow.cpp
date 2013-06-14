@@ -150,7 +150,6 @@ void MainWindow::on_Powtorz_pushButton_clicked()
 void MainWindow::on_actionNowa_Gra_triggered()
 {
 	NowaGraDialog dialog;
-	//dialog.show();
 
 	//jesli kliknieto OK
 	if( dialog.exec() == QDialog::Accepted )
@@ -182,4 +181,36 @@ void MainWindow::setValidMoves( int pionekId )
 		scena->dodajDostepnePole( pozycje.back() );
 		pozycje.pop_back();
 	}
+}
+
+void MainWindow::on_actionZapisz_gr_triggered()
+{
+	QString sciezka;
+
+	sciezka = QFileDialog::getSaveFileName(
+				this, tr("Zapis obecnego stanu gry"),
+				QDesktopServices::storageLocation(QDesktopServices::HomeLocation),
+				"Diabalik save (*.dblsave)" );
+
+	if ( sciezka.lastIndexOf( ".dblsave" ) == -1 ||
+		 sciezka.lastIndexOf( ".dblsave" ) + 9 != sciezka.size() )
+			sciezka.append(".dblsave");
+
+	QFile file( sciezka );
+	file.open(QIODevice::WriteOnly);
+	QDataStream out(&file);
+
+	//zapisuje plansze poczatkową + kto zaczyna ruch:
+	for( int i = 0; i < 17; i++ )
+		out << tryb->dajPlanszePoczatkowa().dane[i];
+	//zapisuje historie rozgrywki
+	//for( int i = 0; i < tryb->history.size(); i++ )
+	for( int i = 0; i < qMin( tryb->historyIterator + 1, (int)tryb->history.size() )
+		 ; i++ )
+	{
+		out << tryb->history[i].pionekId << tryb->history[i].skad << tryb->history[i].dokad;
+		//qDebug() << tryb->history[i].pionekId << tryb->history[i].skad << tryb->history[i].dokad;
+	}
+
+	file.close();
 }

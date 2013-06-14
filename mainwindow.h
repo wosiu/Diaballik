@@ -50,6 +50,8 @@ private slots:
 	void on_actionNowa_Gra_triggered();
 	void on_actionEdytuj_plansze_triggered();
 
+	void on_actionZapisz_gr_triggered();
+
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );
 };

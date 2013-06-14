@@ -7,6 +7,7 @@ Tryb::Tryb()
 	typGracza[1] = CZLOWIEK;
 	typGracza[0] = CZLOWIEK;
 	podanWTurze = przesuniecWTurze = 0;
+	historyIterator = -1;
 }
 
 Tryb::~Tryb()

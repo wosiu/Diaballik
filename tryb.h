@@ -23,18 +23,22 @@ public:
 	virtual void turaStart() = 0;
 
 	struct ruch {
-		int pionekId,skad,dokad;
-		ruch(int _pionekId, int _skad, int _dokad) {
+		int8_t pionekId,skad,dokad;
+		ruch(int8_t _pionekId, int8_t _skad, int8_t _dokad) {
 			pionekId = _pionekId, skad = _skad; dokad = _dokad;
 		}
 	};
 
 	Plansza plansza;
+	int historyIterator;
+	std::vector < ruch > history;
 
 //protected:
 	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
 	int podanWTurze;
 	int przesuniecWTurze;
+	Plansza planszaPoczatkowa;
+	virtual Plansza dajPlanszePoczatkowa() = 0;
 
 public slots:
 	virtual void zatwierdz() = 0;

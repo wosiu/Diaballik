@@ -163,6 +163,9 @@
    <property name="text">
     <string>Zapisz grę</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionZako_cz">
    <property name="text">

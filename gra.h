@@ -19,6 +19,7 @@ public:
 	std::vector<int> findValidMoves( int pionekId );
 	TYPGRACZA dajTypGracza( int graczId );
 	void turaStart();
+	Plansza dajPlanszePoczatkowa();
 
 private:
 	//std::vector < ruch > ruchy; //w turze, jednego gracza
@@ -27,11 +28,9 @@ private:
 	bool isEndGame();
 
 	//obsluga historii:
-	int historyIterator;
-	std::vector < ruch > history;
 	void zliczRuchyWTurze();
 	void addToHistory( ruch r );
-	void poprawGracza();
+	void poprawGraczaWzgledemHistorii();
 	//Plansza planszaStartowa;
 
 public slots:
