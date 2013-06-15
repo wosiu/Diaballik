@@ -19,8 +19,6 @@ Edytor::Edytor( Tryb *innyTryb )
 	typGracza[1] = innyTryb->typGracza[1];
 	typGracza[0] = innyTryb->typGracza[0];
 
-	isKomputerAutoPlay = innyTryb->isKomputerAutoPlay;
-
 	inicjuj();
 }
 
@@ -111,6 +109,10 @@ bool Edytor::redo()
 {
 	emit uwaga( "Powtarzanie ruchów niedostępne w trybie edycji." );
 	return false;
+}
+
+void Edytor::komputerGraj()
+{
 }
 
 

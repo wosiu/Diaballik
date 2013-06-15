@@ -22,8 +22,6 @@ Gra::Gra( Tryb *innyTryb )
 	typGracza[0] = innyTryb->typGracza[0];
 	typGracza[1] = innyTryb->typGracza[1];
 
-	isKomputerAutoPlay = innyTryb->isKomputerAutoPlay;
-
 	history = innyTryb->history;
 	inicjuj();
 	historyIterator = innyTryb->historyIterator;
@@ -49,6 +47,7 @@ void Gra::inicjuj()
 {
 	emit undoAble( true );
 	emit redoAble( true );
+	isMoveLocked = false;
 }
 
 bool Gra::isEndGame()
@@ -64,9 +63,6 @@ bool Gra::isEndGame()
 
 	int winner = plansza.winCheck();
 
-	static int counter = 0;
-	qDebug() << counter++;
-
 	if ( winner != -1 )
 	{
 		emit winDetector( winner );
@@ -78,6 +74,10 @@ bool Gra::isEndGame()
 
 void Gra::turaStart()
 {
+	static int roundCounter = 0;
+	qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
+
+
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
 	if ( !isEndGame() )
 	{
@@ -86,7 +86,7 @@ void Gra::turaStart()
 		emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 		//przelacznie na nastepnego gracza
 		emit nowaTura( plansza.czyjRuch() );
-		komputerGraj( plansza.czyjRuch() );
+		//komputerGraj( plansza.czyjRuch() );
 	}
 	else
 	{
@@ -233,49 +233,6 @@ void Gra::move( int pionekId, int pozycja )
 	emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 }
 
-//obsluguje ruchy czlowieka
-void Gra::moveDetector( int pionekId, int pozycja )
-{
-	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
-	//nie przyjdzie zawolanie z UI pionkow kompa, bo nie wyswietla sie
-	//validMoves dla niego, wiec uzytkownik nie bedzie mial dostepu do takich ruchow
-	Q_ASSERT( typGracza[ plansza.ktoryGracz( pionekId ) ] == CZLOWIEK );
-
-	move( pionekId, pozycja );
-}
-
-
-void Gra::komputerGraj( int gracz )
-{
-	//sprawdzam czy zaczeta tura nalezy do komputera
-	if( typGracza[ gracz ] != KOMPUTER ) return;
-
-	//qDebug() << "komputerGraj start jako gracz: " << gracz;
-
-	//prymitywne AI:
-	int licznikRuchow = 0;
-	while ( licznikRuchow < 2 )
-	{
-		int pionek = gracz * 7 + qrand() % 7;
-		std::vector <int> dostepneRuchy = validateAllMoves( pionek );
-
-		if ( dostepneRuchy.empty() ) continue;
-
-		std::random_shuffle( dostepneRuchy.begin(), dostepneRuchy.end() );
-
-		move( pionek, dostepneRuchy[0] );
-		licznikRuchow++;
-	}
-	//move( gracz * 7 + 2, 37);
-	//move( gracz * 7 + 2, 44);
-
-	//TO DO: move( AI.dajPodpowiedz( obecnyGracz )
-
-	//po wszystkim: zatwierdz(). nie emit nowaTura! (zeby sie zapisaly i wyczyscily ruchy, itd..)
-	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
-	zatwierdz();
-}
-
 
 /* OBSLUGA HISTORII */
 void Gra::addToHistory( ruch r )
@@ -350,7 +307,8 @@ bool Gra::undo()
 		//minus w stosunku do porpzedniego rozwiazania: stracimy historie rozgrywki
 		//ale ma to sens (odzwierciedla rzeczywistosc)
 		if ( historyIterator <  0 )
-			komputerGraj( plansza.czyjRuch() );
+			emit nowaTura( plansza.czyjRuch() );
+		//	komputerGraj(); //jesli komputer gra, to gdy w UI jest idznaczone auto play to ten poczatkowy ruch po cofnieciu komp i tak wykona sam
 		else //powtarzamy tak jak opisane wyzej
 			undo();
 	}
@@ -438,9 +396,71 @@ void Gra::poprawGraczaWzgledemHistorii()
 		else
 		{
 			plansza.nastepnyGracz();
-			emit nowaTura( graczRuchu );
+			emit graczUpdate( graczRuchu );
 		}
 	}
 
 	zliczRuchyWTurze();
+}
+
+
+/* OBSLUGRA RUCHOW GRACZY */
+
+// obsluguje ruchy czlowieka
+void Gra::moveDetector( int pionekId, int pozycja )
+{
+	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
+	//nie przyjdzie zawolanie z UI pionkow kompa, bo nie wyswietla sie
+	//validMoves dla niego, wiec uzytkownik nie bedzie mial dostepu do takich ruchow
+	Q_ASSERT( typGracza[ plansza.ktoryGracz( pionekId ) ] == CZLOWIEK );
+
+	move( pionekId, pozycja );
+}
+
+//obsluguje ruchy komputera
+void Gra::komputerGraj()
+{
+	int gracz = plansza.czyjRuch();
+
+	//sprawdzam czy zaczeta tura nalezy do komputera
+	if ( typGracza[ gracz ] != KOMPUTER ) return;
+
+	if ( isMoveLocked )
+	{
+		emit uwaga( "Ruch komputera w trakcie obliczeń." );
+		return;
+	}
+	isMoveLocked = true;
+
+	//qDebug() << "komputerGraj start jako gracz: " << gracz;
+
+	//naśladuje obliczenia AI
+	unsigned long long chuj = 7;
+	for( int i=1; i<7000000; i++)
+		chuj +=  ( i * chuj / 4887) % (unsigned long long)( (1e9+7) * i );
+	qDebug() << chuj;
+
+	//prymitywne AI:
+	int licznikRuchow = 0;
+	while ( licznikRuchow < 2 )
+	{
+		int pionek = gracz * 7 + qrand() % 7;
+		std::vector <int> dostepneRuchy = validateAllMoves( pionek );
+
+		if ( dostepneRuchy.empty() ) continue;
+
+		std::random_shuffle( dostepneRuchy.begin(), dostepneRuchy.end() );
+
+		move( pionek, dostepneRuchy[0] );
+		licznikRuchow++;
+	}
+	//move( gracz * 7 + 2, 37);
+	//move( gracz * 7 + 2, 44);
+
+	//TO DO: move( AI.dajPodpowiedz( obecnyGracz )
+
+	//po wszystkim: zatwierdz(). nie emit nowaTura! (zeby sie zapisaly i wyczyscily ruchy, itd..)
+	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
+	isMoveLocked = false;
+	zatwierdz();
 }

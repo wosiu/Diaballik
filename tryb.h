@@ -46,6 +46,7 @@ public slots:
 	virtual void moveDetector(int pionekId , int pozycja) = 0;
 	virtual bool undo() = 0;
 	virtual bool redo() = 0;
+	virtual void komputerGraj() = 0;
 
 signals:
 	void moved( int pionekId, int pos );
@@ -59,6 +60,7 @@ signals:
 	void undoAble( bool );
 	void redoAble( bool );
 	void zmianaTrybu( Tryb* nowy ); //uzywane tylko przez tryb edycji
+	void graczUpdate( int );
 };
 
 

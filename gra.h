@@ -26,6 +26,7 @@ private:
 	AI *ai;
 	std::vector < int > validateAllMoves( int pionekId );
 	bool isEndGame();
+	bool isMoveLocked;
 
 	//obsluga historii:
 	void zliczRuchyWTurze();
@@ -39,9 +40,7 @@ public slots:
 	void moveDetector( int pionekId, int pozycja );
 	bool undo();
 	bool redo();
-
-public slots:
-	void komputerGraj( int gracz );
+	void komputerGraj();
 	//void czlowiekGraj(); == moveDetector
 
 };

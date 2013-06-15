@@ -109,6 +109,7 @@ void IPlansza::move(int pionekId, int dx, int dy)
 
 void IPlansza::move(int pionekId, int poz)
 {
+	qDebug() << "IPlansza::move( pionekId=" << pionekId <<", pozycja=" << poz <<")";
 	int x = fromPixels ( pionki[ pionekId ]->pos().x() );
 	int y = fromPixels ( pionki[ pionekId ]->pos().y() );
 

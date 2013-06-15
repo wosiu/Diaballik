@@ -23,6 +23,7 @@ public slots:
 	void moveDetector( int pionekId, int pozycja ); //done
 	bool undo();
 	bool redo();
+	void komputerGraj();
 };
 
 #endif // EDYTOR_H

@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connector();
 	tryb->turaStart();
 	scena->dodajPionki();
+
+	kompAutoPlay = ui->AutoKomputer->isChecked();
 }
 
 MainWindow::~MainWindow()
@@ -61,8 +63,10 @@ void MainWindow::connector()
 	connect( tryb, SIGNAL(moved(int,int)), scena, SLOT(move(int, int)));
 	//laczymy komunikatory (uwagi, bledy, logi) tekstowe trybu z monitami okna:
 	connect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
-	//laczymy informacje o obecnym graczu z monitem
-	connect( tryb, SIGNAL( nowaTura(int) ), this, SLOT( aktualnyGracz(int)) );
+	//laczymy ifnroamcje o nowej turze
+	connect( tryb, SIGNAL( nowaTura(int) ), this, SLOT( nowaTura(int)) );
+	//laczymy informacje o uaktualnieniu gracza z monitem
+	connect( tryb, SIGNAL( graczUpdate(int) ), this, SLOT( aktualnyGracz(int)) );
 	//laczymy informacje o wygranej z oknem wygranej
 	connect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
 	//laczymy informacje o remisie
@@ -70,8 +74,8 @@ void MainWindow::connector()
 	//laczymy informacje o ruchach
 	connect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
 	//laczymy ukrywanie przyciskow Cofnij / Powtorz
-	connect( tryb, SIGNAL(undoAble(bool)), ui->Cofnij_pushButton, SLOT(setEnabled(bool)) );
-	connect( tryb, SIGNAL(redoAble(bool)), ui->Powtorz_pushButton, SLOT(setEnabled(bool)) );
+	//connect( tryb, SIGNAL(undoAble(bool)), ui->Cofnij_pushButton, SLOT(setEnabled(bool)) );
+	//connect( tryb, SIGNAL(redoAble(bool)), ui->Powtorz_pushButton, SLOT(setEnabled(bool)) );
 	//laczymy informacje o powrcoei z trybu edycji do gry
 	connect( tryb, SIGNAL(zmianaTrybu(Tryb*)), this, SLOT(ustawNowyTryb(Tryb*)) );
 
@@ -113,13 +117,69 @@ void MainWindow::on_Zatwierdz_pushButton_clicked()
 	tryb->zatwierdz();
 }
 
+void MainWindow::nowaTura( int graczId )
+{
+	aktualnyGracz( graczId );
+
+	if ( kompAutoPlay )
+		on_actionWzbudzKomputer_triggered();
+}
+
+void MainWindow::poprawDostepnoscPrzyciskow()
+{
+	int graczId = tryb->plansza.czyjRuch();
+
+	//jesli ktorys z graczow to komputer
+	if ( tryb->typGracza[0] == Tryb::KOMPUTER || tryb->typGracza[1] == Tryb::KOMPUTER )
+	{
+		ui->AutoKomputer->show();
+	}
+	else
+	{
+		ui->AutoKomputer->hide();
+	}
+
+
+	//blokowanie / odblokowywanie przyciskow UI:
+	if ( tryb->typGracza[graczId] == Tryb::KOMPUTER )
+	{
+		//sterowanie rozgrywka i historia
+		ui->Cofnij_pushButton->setEnabled( false );
+		ui->Powtorz_pushButton->setEnabled( false );
+		ui->Zatwierdz_pushButton->setEnabled( false );
+
+		ui->actionDaj_podpowiedz->setEnabled( false );
+
+		if ( kompAutoPlay ) ui->actionWzbudzKomputer->setEnabled( false );
+		else				ui->actionWzbudzKomputer->setEnabled( true );
+	}
+
+	if ( tryb->typGracza[graczId] == Tryb::CZLOWIEK )
+	{
+		//sterowanie rozgrywka i historia
+
+		qDebug() << "wszedl" <<(tryb->historyIterator > -1);
+
+		ui->Cofnij_pushButton->setEnabled( false );
+		ui->Cofnij_pushButton->setEnabled( (tryb->historyIterator > -1) );
+		ui->Powtorz_pushButton->setEnabled( (tryb->historyIterator + 1 < (int)tryb->history.size()) );
+		ui->Zatwierdz_pushButton->setEnabled( true );
+
+		ui->actionDaj_podpowiedz->setEnabled( true );
+		ui->actionWzbudzKomputer->setEnabled( false );
+	}
+}
+
 void MainWindow::aktualnyGracz( int graczId )
 {
 	scena->czyscDostepneRuchy();
 
+	//poprawDostepnoscPrzyciskow();
+
+	//poprawienie monitu:
 	QString typ="";
 	if( tryb->dajTypGracza( graczId ) == Tryb::KOMPUTER )
-		typ = "Ruch komputera. \n";
+		typ = "Ruch komputera. <br>";
 
 	QString kolor="";
 
@@ -251,3 +311,23 @@ void MainWindow::on_actionPomoc_triggered()
 	box->setButtonText(1,"Zamknij");
 	box->show();
 }
+
+void MainWindow::on_AutoKomputer_clicked()
+{
+	kompAutoPlay = ui->AutoKomputer->isChecked();
+	on_actionWzbudzKomputer_triggered();
+}
+
+void MainWindow::on_actionWzbudzKomputer_triggered()
+{
+	static int roundCounter = 0;
+	qDebug() << "Gra::zatwierdz(): tura = " << roundCounter++;
+	if( roundCounter > 50 )
+	{
+		qDebug() <<" STOOOOP!";
+		return;
+	}
+
+	tryb->komputerGraj();
+}
+

@@ -33,14 +33,16 @@ private:
 	QLabel *statusBarMonit;
 	QMessageBox* boxMonit;
 	const QString idGraczToKolor[3] = {"CZARNY", "BIAŁY", "EDYTOR"};
-
+	bool kompAutoPlay;
 	void connector();
+	void poprawDostepnoscPrzyciskow();
 
 private slots:
 	void setValidMoves(int);
 	void showMonitOnStatusBar( QString monit );
 	void showMonitInBox( QString monit );
 	void showWinnerBox( int gracz );
+	void nowaTura(int graczId);
 	void aktualnyGracz( int graczId );
 	void wykonaneRuchy( int przesuniec, int podan );
 
@@ -57,6 +59,10 @@ private slots:
 	void on_actionAutor_triggered();
 
 	void on_actionPomoc_triggered();
+
+	void on_AutoKomputer_clicked();
+
+	void on_actionWzbudzKomputer_triggered();
 
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );

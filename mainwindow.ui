@@ -68,6 +68,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QCheckBox" name="AutoKomputer">
+        <property name="text">
+         <string>Auto komputer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QVBoxLayout" name="przyciski">
         <item>
          <widget class="QPushButton" name="Zatwierdz_pushButton">
@@ -131,7 +138,15 @@
     <addaction name="actionPomoc"/>
     <addaction name="actionAutor"/>
    </widget>
+   <widget class="QMenu" name="menuTura">
+    <property name="title">
+     <string>Tura</string>
+    </property>
+    <addaction name="actionWzbudzKomputer"/>
+    <addaction name="actionDaj_podpowiedz"/>
+   </widget>
    <addaction name="menuGra"/>
+   <addaction name="menuTura"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -183,6 +198,22 @@
   <action name="actionAutor">
    <property name="text">
     <string>Autor</string>
+   </property>
+  </action>
+  <action name="actionWzbudzKomputer">
+   <property name="text">
+    <string>Wzbudź Komputer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionDaj_podpowiedz">
+   <property name="text">
+    <string>Daj podpowiedź</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
  </widget>
