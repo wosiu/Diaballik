@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     iplansza.cpp \
     ipole.cpp \
     icel.cpp \
-    komunikator.cpp \
     ai.cpp \
     kolejkaanimacji.cpp \
     nowagradialog.cpp
@@ -38,7 +37,6 @@ HEADERS  += mainwindow.h \
     iplansza.h \
     ipole.h \
     icel.h \
-    komunikator.h \
     ai.h \
     kolejkaanimacji.h \
     nowagradialog.h

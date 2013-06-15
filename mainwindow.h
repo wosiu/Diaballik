@@ -52,6 +52,12 @@ private slots:
 
 	void on_actionZapisz_gr_triggered();
 
+	void on_actionZakoncz_triggered();
+
+	void on_actionAutor_triggered();
+
+	void on_actionPomoc_triggered();
+
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );
 };

@@ -235,6 +235,7 @@ int Plansza::dajIdPodajacego(int pilkaId)
 			return i;
 
 	Q_ASSERT ( false );
+	return -1;
 }
 
 int Plansza::czyjRuch()

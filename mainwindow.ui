@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Diabalik</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -122,7 +122,7 @@
     <addaction name="actionZapisz_gr"/>
     <addaction name="actionEdytuj_plansze"/>
     <addaction name="separator"/>
-    <addaction name="actionZako_cz"/>
+    <addaction name="actionZakoncz"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -167,9 +167,12 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionZako_cz">
+  <action name="actionZakoncz">
    <property name="text">
     <string>Zakończ</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionPomoc">

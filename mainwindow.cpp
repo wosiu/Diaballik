@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete tryb;
+	delete scena;
 	delete ui;
 }
 
@@ -213,4 +214,34 @@ void MainWindow::on_actionZapisz_gr_triggered()
 	}
 
 	file.close();
+}
+
+void MainWindow::on_actionZakoncz_triggered()
+{
+	qApp->quit();
+}
+
+void MainWindow::on_actionAutor_triggered()
+{
+	QMessageBox* box = new QMessageBox(this);
+	box->setWindowTitle(QString("Autor"));
+	box->setText(QString(
+					 "Michał Woś\nmw336071@students.mimuw.edu.pl"));
+	box->setButtonText(1,"Zamknij");
+	box->show();
+}
+
+void MainWindow::on_actionPomoc_triggered()
+{
+	QMessageBox* box = new QMessageBox(this);
+	box->setWindowTitle(QString("Pomoc"));
+	QString tekst;
+
+	tekst += "Gra Diabalik.<br>";
+	tekst += "Zapis rozgrywki obejmuje historię do obecnie pokazywanego miejsca. Jeśli w obecnie aktywnej turze nie zostały wykonane żadne ruchy, tura ta zostanie porzucona w zapisie.<br>";
+	tekst += "Gracz (człowiek) nie ma możliwości cofania ruchów komputera. W grze człowiek przeciwko komputerowi cofnięcie / powtórzenie ruchów komputera to cofnięcie wszystkich tuchów komputera w danej tuże wraz z odpowied<br>";
+
+	box->setText( tekst );
+	box->setButtonText(1,"Zamknij");
+	box->show();
 }

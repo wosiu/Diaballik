@@ -39,14 +39,15 @@ std::vector<int> Edytor::findValidMoves( int pionekId )
 	return res;
 }
 
-Tryb::TYPGRACZA Edytor::dajTypGracza(int graczId)
+Tryb::TYPGRACZA Edytor::dajTypGracza( int graczId )
 {
 	return EDYTOR;
 }
 
+//nie korzystamy z tego w edytorze
 bool Edytor::isValidMove(int pionekId, int pos)
 {
-	Q_ASSERT(false);
+	return true;
 }
 
 //zmienia gracza rozpoczynajacego na przeciwnego
@@ -99,11 +100,13 @@ void Edytor::moveDetector( int pionekId, int pozycja )
 bool Edytor::undo()
 {
 	emit uwaga( "Cofanie ruchów niedostępne w trybie edycji." );
+	return false;
 }
 
 bool Edytor::redo()
 {
 	emit uwaga( "Powtarzanie ruchów niedostępne w trybie edycji." );
+	return false;
 }
 
 

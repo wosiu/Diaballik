@@ -162,7 +162,7 @@ std::vector<int> Gra::validateAllMoves( int pionekId )
 	std::vector<int> mozliweRuchy = plansza.dajRuchy( pionekId );
 
 	//sprawdzam dostepne ruchy pod kątem pozostalej ilosci ruchow
-	for ( int i = 0; i < mozliweRuchy.size(); i++ )
+	for ( int i = 0; i < (int)mozliweRuchy.size(); i++ )
 		if	( isValidMove( pionekId, mozliweRuchy[i] ))
 			res.push_back( mozliweRuchy[i] );
 
@@ -362,7 +362,7 @@ bool Gra::undo()
 
 bool Gra::redo()
 {
-	if ( historyIterator + 1 >= history.size() )
+	if ( historyIterator + 1 >= (int)history.size() )
 	{
 		emit uwaga("Brak ruchów do powtorzenia.");
 		return false;
@@ -383,7 +383,7 @@ bool Gra::redo()
 	{
 		//ale jesli nie ma co powtarzac w turze po komputerze,
 		//to po prostu zaczynamy nowa runde
-		if ( historyIterator + 1 >= history.size() )
+		if ( historyIterator + 1 >= (int)history.size() )
 			zatwierdz();
 		else //powtarzamy tak jak opisane wyzej
 			redo();
@@ -427,17 +427,22 @@ void Gra::poprawGraczaWzgledemHistorii()
 	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
 	if ( historyIterator == -1 )
 		plansza = planszaPoczatkowa;
-
-	//gracz cofanego / powtarzanego ruchu
-	int graczRuchu = plansza.ktoryGracz( history[ historyIterator ].pionekId );
-
-	//gracz rozwazanego ruchu ( cofanego / powtarzanego ) jest taki sam, jak aktaulny na planszy
-	if ( graczRuchu == plansza.czyjRuch() ) {}
+	//w p.p.
 	else
 	{
-		//symulujemy zmiane tury
-		plansza.nastepnyGracz();
-		emit nowaTura( graczRuchu );
+		//gracz cofanego / powtarzanego ruchu
+		int graczRuchu = plansza.ktoryGracz( history[ historyIterator ].pionekId );
+
+		//gracz rozwazanego ruchu ( cofanego / powtarzanego ) jest taki sam,
+		//jak aktaulny na planszy, wiec nic nie robimy
+		if ( graczRuchu == plansza.czyjRuch() ) {}
+		//w p.p. symulujemy zmiane tury
+		else
+		{
+			plansza.nastepnyGracz();
+			emit nowaTura( graczRuchu );
+		}
 	}
+
 	zliczRuchyWTurze();
 }
