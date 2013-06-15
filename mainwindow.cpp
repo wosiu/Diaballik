@@ -186,6 +186,12 @@ void MainWindow::setValidMoves( int pionekId )
 
 void MainWindow::on_actionZapisz_gr_triggered()
 {
+	if ( tryb->plansza.doubleWinCheck() )
+	{
+		showMonitInBox("Nie moża zapisać stanu planszy z niepoprawnym układem pionków (obaj gracze wygrywają). Popraw i ponów próbę zapisu.");
+		return;
+	}
+
 	QString sciezka;
 
 	sciezka = QFileDialog::getSaveFileName(

@@ -17,14 +17,12 @@ Gra::Gra( Tryb *innyTryb )
 	plansza = innyTryb->plansza;
 	planszaPoczatkowa = innyTryb->planszaPoczatkowa;
 
-	//JUZ NIE
-	//plansza.nastepnyGracz(); //poniewaz turaStart() zmieni z powrotem na dobrego
-
-
 	podanWTurze = innyTryb->podanWTurze;
 	przesuniecWTurze = innyTryb->przesuniecWTurze;
 	typGracza[0] = innyTryb->typGracza[0];
 	typGracza[1] = innyTryb->typGracza[1];
+
+	isKomputerAutoPlay = innyTryb->isKomputerAutoPlay;
 
 	history = innyTryb->history;
 	inicjuj();

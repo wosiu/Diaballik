@@ -13,10 +13,14 @@ Edytor::Edytor()
 Edytor::Edytor( Tryb *innyTryb )
 {
 	planszaPoczatkowa = plansza = innyTryb->plansza;
+
 	podanWTurze = innyTryb->podanWTurze;
 	przesuniecWTurze = innyTryb->przesuniecWTurze;
 	typGracza[1] = innyTryb->typGracza[1];
 	typGracza[0] = innyTryb->typGracza[0];
+
+	isKomputerAutoPlay = innyTryb->isKomputerAutoPlay;
+
 	inicjuj();
 }
 
