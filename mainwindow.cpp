@@ -238,8 +238,8 @@ void MainWindow::on_actionPomoc_triggered()
 	QString tekst;
 
 	tekst += "Gra Diabalik.<br>";
-	tekst += "Zapis rozgrywki obejmuje historię do obecnie pokazywanego miejsca. Jeśli w obecnie aktywnej turze nie zostały wykonane żadne ruchy, tura ta zostanie porzucona w zapisie.<br>";
-	tekst += "Gracz (człowiek) nie ma możliwości cofania ruchów komputera. W grze człowiek przeciwko komputerowi cofnięcie / powtórzenie ruchów komputera to cofnięcie wszystkich tuchów komputera w danej tuże wraz z odpowied<br>";
+	tekst += "Zapis rozgrywki obejmuje historię do obecnie widocznego stanu planszy (w celu zapisu całej historii, przewiń w przód). Jeśli w obecnie aktywnej turze nie zostały wykonane żadne ruchy, tura ta zostanie porzucona w zapisie.<br>";
+	tekst += "Gracz (człowiek) nie ma możliwości cofania ruchów komputera. W grze człowieka przeciwko komputerowi cofnięcie / powtórzenie ruchów komputera to cofnięcie wszystkich ruchów komputera w danej tuże wraz z jednym odpowiednim ruchem człowieka.<br>";
 
 	box->setText( tekst );
 	box->setButtonText(1,"Zamknij");
