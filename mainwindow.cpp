@@ -4,6 +4,7 @@
 #include <ipilkarzyk.h>
 #include <QSequentialAnimationGroup>
 
+#include "watek.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -29,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	scena->dodajPionki();
 
 	kompAutoPlay = ui->AutoKomputer->isChecked();
+
+	//watek *a = new watek();
+	//a->count(1);
+	//qDebug("fin");
 }
 
 MainWindow::~MainWindow()
@@ -78,7 +83,10 @@ void MainWindow::connector()
 	//connect( tryb, SIGNAL(redoAble(bool)), ui->Powtorz_pushButton, SLOT(setEnabled(bool)) );
 	//laczymy informacje o powrcoei z trybu edycji do gry
 	connect( tryb, SIGNAL(zmianaTrybu(Tryb*)), this, SLOT(ustawNowyTryb(Tryb*)) );
-
+	//laczymy informacje o stabilnosci planszy z wywolaniem komputera
+	//(aby komputer nie wywolywal sie, gdy sa zakolejkowane fizyczne ruchy, poniewaz takowe mają
+	//niski priorytet i wykonają sie po zakonczonych obliczeniach komputera
+	connect( scena, SIGNAL(silent()), this, SLOT( wzbudzKomputer() ) );
 }
 
 void MainWindow::showMonitInBox( QString monit )
@@ -121,8 +129,24 @@ void MainWindow::nowaTura( int graczId )
 {
 	aktualnyGracz( graczId );
 
+	//ciezar wzbudzania komputera przeniesiony do wzbudz komputer
+	//-> zakonczone ruchy na planszy wzbudzaja go do ruchu
+	//uwaga: w zwiazku z tym dla bezpieczenstwa nalezy zadbac aby najpierw
+	//wykonywana byla logika a nastepnie mechanika
+	//aby nie zaszla sytuacja wzbudzenia przed zmianą logiczną gracza na komputer
+	//bo prosba o wywolanie metody ruchu komputera zostanie odrzucona
+	//w wyniku potraktowania jako niewlasciwego gracza
+
 	if ( kompAutoPlay )
 		on_actionWzbudzKomputer_triggered();
+
+}
+
+void MainWindow::wzbudzKomputer()
+{
+//	if ( kompAutoPlay )
+//		on_actionWzbudzKomputer_triggered();
+
 }
 
 void MainWindow::poprawDostepnoscPrzyciskow()
@@ -322,11 +346,15 @@ void MainWindow::on_actionWzbudzKomputer_triggered()
 {
 	static int roundCounter = 0;
 	qDebug() << "Gra::zatwierdz(): tura = " << roundCounter++;
-	if( roundCounter > 50 )
+	if( roundCounter > 200 )
 	{
 		qDebug() <<" STOOOOP!";
 		return;
 	}
+
+	//waiter( *bool )
+	//if ( roundCounter % 10 == 0 )
+	//	QCoreApplication::processEvents();
 
 	tryb->komputerGraj();
 }

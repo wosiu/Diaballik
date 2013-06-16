@@ -38,6 +38,7 @@ private slots:
 
 signals:
 		void clicked(int clickedId);
+		void finished();
 		//void animationFinished();
 };
 

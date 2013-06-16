@@ -438,7 +438,7 @@ void Gra::komputerGraj()
 	unsigned long long chuj = 7;
 	for( int i=1; i<7000000; i++)
 		chuj +=  ( i * chuj / 4887) % (unsigned long long)( (1e9+7) * i );
-	qDebug() << chuj;
+	//qDebug() << chuj;
 
 	//prymitywne AI:
 	int licznikRuchow = 0;
@@ -463,4 +463,5 @@ void Gra::komputerGraj()
 	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
 	isMoveLocked = false;
 	zatwierdz();
+
 }

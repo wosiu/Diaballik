@@ -48,9 +48,11 @@ void IPole::move(int x, int y)
 	QPropertyAnimation* animation = new QPropertyAnimation(this,"pos");
 
 	connect( animation, SIGNAL(finished()), this, SLOT(unlock()) );
+	connect( animation, SIGNAL(finished()), this, SIGNAL(finished()) );
+
 
 	//TO DO: zrobic bezpieczne kolejkowanie animacji i dac 250:
-	animation->setDuration(90); //w ostatecznosci dac 100
+	animation->setDuration(250); //w ostatecznosci dac 100
 	//animation->setStartValue( this->pos() );
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);

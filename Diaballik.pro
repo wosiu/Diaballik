@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     icel.cpp \
     ai.cpp \
     kolejkaanimacji.cpp \
-    nowagradialog.cpp
+    nowagradialog.cpp \
+    watek.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     icel.h \
     ai.h \
     kolejkaanimacji.h \
-    nowagradialog.h
+    nowagradialog.h \
+    watek.h
 
 FORMS    += mainwindow.ui \
     nowagradialog.ui

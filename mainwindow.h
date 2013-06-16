@@ -45,6 +45,7 @@ private slots:
 	void nowaTura(int graczId);
 	void aktualnyGracz( int graczId );
 	void wykonaneRuchy( int przesuniec, int podan );
+	void wzbudzKomputer();
 
 	void on_Zatwierdz_pushButton_clicked();
 	void on_Cofnij_pushButton_clicked();

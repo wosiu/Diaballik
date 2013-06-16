@@ -8,6 +8,8 @@
 #include "plansza.h"
 #include <vector>
 
+#include <QMutex>
+
 class IPlansza : public QGraphicsScene
 {
 	Q_OBJECT
@@ -37,6 +39,8 @@ private:
 	std::vector< ICel* > dostepneRuchy;
 	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 
+	int stillMoving;
+	QMutex movelock;
 
 signals:
 	//sygnal o kliknieciu na pionek
@@ -49,12 +53,15 @@ private slots:
 	void clickDetector( int poleId );
 	//zbiera sygnaly z wolnych pol
 	void moveDetector( int pos );
+	void decreaseStillMovin();
 
 public slots:
 	void move( int pionekId, int dx, int dy);
 	void move( int pionekId, int poz);
 	void czyscDostepneRuchy();
 
+signals:
+	void silent();
 };
 
 #endif // IPLANSZA_H
