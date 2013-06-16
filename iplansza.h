@@ -60,6 +60,7 @@ public slots:
 	void move( int pionekId, int poz);
 	void czyscDostepneRuchy();
 
+
 signals:
 	void silent();
 };

@@ -35,7 +35,9 @@ private:
 	const QString idGraczToKolor[3] = {"CZARNY", "BIAŁY", "EDYTOR"};
 	bool kompAutoPlay;
 	void connector();
+	void disconnector();
 	void poprawDostepnoscPrzyciskow();
+	bool moveLock;
 
 private slots:
 	void setValidMoves(int);
@@ -52,17 +54,11 @@ private slots:
 	void on_Powtorz_pushButton_clicked();
 	void on_actionNowa_Gra_triggered();
 	void on_actionEdytuj_plansze_triggered();
-
 	void on_actionZapisz_gr_triggered();
-
 	void on_actionZakoncz_triggered();
-
 	void on_actionAutor_triggered();
-
 	void on_actionPomoc_triggered();
-
 	void on_AutoKomputer_clicked();
-
 	void on_actionWzbudzKomputer_triggered();
 
 public slots:

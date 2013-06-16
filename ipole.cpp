@@ -50,7 +50,6 @@ void IPole::move(int x, int y)
 	connect( animation, SIGNAL(finished()), this, SLOT(unlock()) );
 	connect( animation, SIGNAL(finished()), this, SIGNAL(finished()) );
 
-
 	//TO DO: zrobic bezpieczne kolejkowanie animacji i dac 250:
 	animation->setDuration(250); //w ostatecznosci dac 100
 	//animation->setStartValue( this->pos() );

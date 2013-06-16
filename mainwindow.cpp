@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	scena->dodajPionki();
 
 	kompAutoPlay = ui->AutoKomputer->isChecked();
+	moveLock = false;
 
 	//watek *a = new watek();
 	//a->count(1);
@@ -89,6 +90,39 @@ void MainWindow::connector()
 	connect( scena, SIGNAL(silent()), this, SLOT( wzbudzKomputer() ) );
 }
 
+void MainWindow::disconnector()
+{
+	disconnect( scena, SIGNAL(clicked(int)), this, SLOT(setValidMoves(int)) );
+	disconnect( scena, SIGNAL(chose(int,int)), tryb, SLOT(move(int, int)));
+	disconnect( tryb, SIGNAL(moved(int,int)), scena, SLOT(move(int, int)));
+	disconnect( tryb, SIGNAL(uwaga(QString)), this, SLOT( showMonitInBox(QString) ) );
+	disconnect( tryb, SIGNAL( nowaTura(int) ), this, SLOT( nowaTura(int)) );
+	disconnect( tryb, SIGNAL( graczUpdate(int) ), this, SLOT( aktualnyGracz(int)) );
+	disconnect( tryb, SIGNAL(winDetector(int)), this, SLOT(showWinnerBox(int)) );
+	disconnect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
+	disconnect( tryb, SIGNAL(zmianaTrybu(Tryb*)), this, SLOT(ustawNowyTryb(Tryb*)) );
+	disconnect( scena, SIGNAL(silent()), this, SLOT( wzbudzKomputer() ) );
+}
+
+void MainWindow::nowaTura( int graczId )
+{
+	aktualnyGracz( graczId );
+
+	qDebug() << "wzbudzenie z nowej tury.";
+	wzbudzKomputer();
+}
+
+void MainWindow::wzbudzKomputer()
+{
+	qDebug() << "Wzbudzam kompa. Na planszy ruch: " << tryb->plansza.czyjRuch();
+	moveLock = false;
+
+	if ( kompAutoPlay )
+	{
+		on_actionWzbudzKomputer_triggered();
+	}
+}
+
 void MainWindow::showMonitInBox( QString monit )
 {
 	//box->setWindowTitle( QString("Komunikat sędziego") );
@@ -123,30 +157,6 @@ void MainWindow::showMonitOnStatusBar( QString monit )
 void MainWindow::on_Zatwierdz_pushButton_clicked()
 {
 	tryb->zatwierdz();
-}
-
-void MainWindow::nowaTura( int graczId )
-{
-	aktualnyGracz( graczId );
-
-	//ciezar wzbudzania komputera przeniesiony do wzbudz komputer
-	//-> zakonczone ruchy na planszy wzbudzaja go do ruchu
-	//uwaga: w zwiazku z tym dla bezpieczenstwa nalezy zadbac aby najpierw
-	//wykonywana byla logika a nastepnie mechanika
-	//aby nie zaszla sytuacja wzbudzenia przed zmianą logiczną gracza na komputer
-	//bo prosba o wywolanie metody ruchu komputera zostanie odrzucona
-	//w wyniku potraktowania jako niewlasciwego gracza
-
-	if ( kompAutoPlay )
-		on_actionWzbudzKomputer_triggered();
-
-}
-
-void MainWindow::wzbudzKomputer()
-{
-//	if ( kompAutoPlay )
-//		on_actionWzbudzKomputer_triggered();
-
 }
 
 void MainWindow::poprawDostepnoscPrzyciskow()
@@ -249,9 +259,9 @@ void MainWindow::on_actionEdytuj_plansze_triggered()
 
 void MainWindow::ustawNowyTryb( Tryb* nowyTryb )
 {
+	disconnector();
 	delete tryb;
 	tryb = nowyTryb;
-
 	scena->ustawPionki( tryb->plansza );
 	connector();
 	tryb->turaStart();
@@ -339,13 +349,19 @@ void MainWindow::on_actionPomoc_triggered()
 void MainWindow::on_AutoKomputer_clicked()
 {
 	kompAutoPlay = ui->AutoKomputer->isChecked();
-	on_actionWzbudzKomputer_triggered();
+
+	qDebug() << "MainWindow, wzbudzenie kompa z: on_AutoKomputer_clicked()";
+	wzbudzKomputer();
 }
 
 void MainWindow::on_actionWzbudzKomputer_triggered()
 {
+	if ( moveLock ) return;
+	moveLock = true;
+
 	static int roundCounter = 0;
-	qDebug() << "Gra::zatwierdz(): tura = " << roundCounter++;
+	qDebug() << ". . . . . . . . . . ";
+	qDebug() << "MainWindow::on_actionWzbudz..: tura = " << roundCounter++;
 	if( roundCounter > 200 )
 	{
 		qDebug() <<" STOOOOP!";
@@ -356,6 +372,7 @@ void MainWindow::on_actionWzbudzKomputer_triggered()
 	//if ( roundCounter % 10 == 0 )
 	//	QCoreApplication::processEvents();
 
+	qDebug() << "MainWindow::on_actionWzbudz...(): wywolanie kompa:";
 	tryb->komputerGraj();
 }
 

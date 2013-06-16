@@ -94,7 +94,9 @@ void IPlansza::polaczPionki()
 		connect( pionki[i], SIGNAL(clicked(int)), this, SLOT(clickDetector(int)) );
 		//lacze info o zakonczonych ruchach z sprawdzarka stanu stablinego
 		//connect( pionki[i], SIGNAL(finished()), this, SLOT(decreaseStillMovin()) );
-		//lub poiwyzsze laczyc bezposrednio z finished, bo i tak grajKomputer w trybie nie pozwoli na wywolanie podczas wykonywania poprzedniego wywolania
+		//lub poiwyzsze laczyc bezposrednio z silent(), bo i tak grajKomputer w trybie nie pozwoli na wywolanie podczas wykonywania poprzedniego wywolania
+		connect( pionki[i], SIGNAL( finished() ), this, SIGNAL(silent()) );
+
 	}
 		//gdybym nie chcial robic cos po drodze to:
 		//connect( pionki[i], SIGNAL(clicked(int)), this, SIGNAL(clicked(int)) );
@@ -105,16 +107,16 @@ void IPlansza::polaczPionki()
 void IPlansza::decreaseStillMovin()
 {
 	//movelock.tryLock(250);
-	stillMoving--;
+	////stillMoving--;
 
-	qDebug() << "IPlansza:: still moving: "<< stillMoving;
-	Q_ASSERT( stillMoving >= 0 );
+	////qDebug() << "IPlansza:: still moving: "<< stillMoving;
+	////Q_ASSERT( stillMoving >= 0 );
 
-	if ( stillMoving == 0 )
-	{
-		emit silent();
-		qDebug() << "Iplansza::decreaseSill..() finished";
-	}
+	////if ( stillMoving == 0 )
+	////{
+	////	emit silent();
+	////	qDebug() << "Iplansza::decreaseSill..() finished";
+	////}
 
 	//movelock.unlock();
 }
@@ -126,7 +128,7 @@ void IPlansza::move(int pionekId, int dx, int dy)
 	//movelock.lock();
 	//movelock.tryLock(250);
 	//qDebug() << "wszedl za locka";
-	stillMoving++;
+	////stillMoving++;
 	//movelock.unlock();
 
 	pionki[ pionekId ]->move(dx,dy);
@@ -211,6 +213,7 @@ void IPlansza::czyscDostepneRuchy()
 		dostepneRuchy.pop_back();
 	}
 }
+
 
 bool IPlansza::getLock()
 {

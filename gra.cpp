@@ -75,6 +75,7 @@ bool Gra::isEndGame()
 void Gra::turaStart()
 {
 	static int roundCounter = 0;
+	qDebug() << " =========================================== ";
 	qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
 
 
@@ -170,7 +171,7 @@ std::vector<int> Gra::validateAllMoves( int pionekId )
 //uzywane na zewnatrz (UI) do inforamcji gracza (czlowieka) jakie ma mozliwosci ruchu
 std::vector<int> Gra::findValidMoves( int pionekId )
 {
-	qDebug() << "findValidMoves::Gra ( pionekId = "<< pionekId << " )";
+	//qDebug() << "findValidMoves::Gra ( pionekId = "<< pionekId << " )";
 
 	//sprawdzam czy zapytano o pionek obecnego gracza
 	int czyjRuch = plansza.czyjRuch();
@@ -237,7 +238,7 @@ void Gra::move( int pionekId, int pozycja )
 /* OBSLUGA HISTORII */
 void Gra::addToHistory( ruch r )
 {
-	qDebug() << "addToHistory::Gra ( "<< "pionekId = " << r.pionekId  << ", skad = " << r.skad << ", dokad = " << r.dokad <<" )";
+	//qDebug() << "addToHistory::Gra ( "<< "pionekId = " << r.pionekId  << ", skad = " << r.skad << ", dokad = " << r.dokad <<" )";
 
 	//porzucam historie od tego momentu do konca, bo wykonano jakis ruch
 	history.erase( history.begin() + historyIterator + 1, history.end() );
@@ -425,6 +426,15 @@ void Gra::komputerGraj()
 	//sprawdzam czy zaczeta tura nalezy do komputera
 	if ( typGracza[ gracz ] != KOMPUTER ) return;
 
+	qDebug() << "......................";
+	qDebug() <<"Gra::grajKomputer() IN";
+
+	if ( przesuniecWTurze == 2 )
+	{
+		zatwierdz();
+		return;
+	}
+
 	if ( isMoveLocked )
 	{
 		emit uwaga( "Ruch komputera w trakcie obliczeń." );
@@ -440,9 +450,10 @@ void Gra::komputerGraj()
 		chuj +=  ( i * chuj / 4887) % (unsigned long long)( (1e9+7) * i );
 	//qDebug() << chuj;
 
+
 	//prymitywne AI:
 	int licznikRuchow = 0;
-	while ( licznikRuchow < 2 )
+	while ( licznikRuchow < 1 )
 	{
 		int pionek = gracz * 7 + qrand() % 7;
 		std::vector <int> dostepneRuchy = validateAllMoves( pionek );
@@ -462,6 +473,6 @@ void Gra::komputerGraj()
 	//po wszystkim: zatwierdz(). nie emit nowaTura! (zeby sie zapisaly i wyczyscily ruchy, itd..)
 	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
 	isMoveLocked = false;
-	zatwierdz();
+	//zatwierdz();
 
 }
