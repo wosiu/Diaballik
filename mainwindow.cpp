@@ -4,8 +4,6 @@
 #include <ipilkarzyk.h>
 #include <QSequentialAnimationGroup>
 
-#include "watek.h"
-
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
@@ -31,10 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	kompAutoPlay = ui->AutoKomputer->isChecked();
 	moveLock = false;
-
-	//watek *a = new watek();
-	//a->count(1);
-	//qDebug("fin");
 }
 
 MainWindow::~MainWindow()
@@ -107,14 +101,13 @@ void MainWindow::disconnector()
 void MainWindow::nowaTura( int graczId )
 {
 	aktualnyGracz( graczId );
-
-	qDebug() << "wzbudzenie z nowej tury.";
+	//qDebug() << "wzbudzenie z nowej tury.";
 	wzbudzKomputer();
 }
 
 void MainWindow::wzbudzKomputer()
 {
-	qDebug() << "Wzbudzam kompa. Na planszy ruch: " << tryb->plansza.czyjRuch();
+	//qDebug() << "Wzbudzam kompa. Na planszy ruch: " << tryb->plansza.czyjRuch();
 	moveLock = false;
 
 	if ( kompAutoPlay )
@@ -134,8 +127,6 @@ void MainWindow::showMonitInBox( QString monit )
 void MainWindow::showWinnerBox( int gracz )
 {
 	//box->setWindowTitle( QString("Komunikat sędziego") );
-	//TO DO: przyciski: zapisz historię gry lub kontynuuj (zeby mial mozliwosc cofniecia)
-	//Nowa Gra
 	QString monit;
 
 	if ( gracz == 0 || gracz == 1)
@@ -192,7 +183,7 @@ void MainWindow::poprawDostepnoscPrzyciskow()
 	{
 		//sterowanie rozgrywka i historia
 
-		qDebug() << "wszedl" <<(tryb->historyIterator > -1);
+		//qDebug() << "wszedl" <<(tryb->historyIterator > -1);
 
 		ui->Cofnij_pushButton->setEnabled( false );
 		ui->Cofnij_pushButton->setEnabled( (tryb->historyIterator > -1) );
@@ -350,7 +341,7 @@ void MainWindow::on_AutoKomputer_clicked()
 {
 	kompAutoPlay = ui->AutoKomputer->isChecked();
 
-	qDebug() << "MainWindow, wzbudzenie kompa z: on_AutoKomputer_clicked()";
+	//qDebug() << "MainWindow, wzbudzenie kompa z: on_AutoKomputer_clicked()";
 	wzbudzKomputer();
 }
 
@@ -359,20 +350,10 @@ void MainWindow::on_actionWzbudzKomputer_triggered()
 	if ( moveLock ) return;
 	moveLock = true;
 
-	static int roundCounter = 0;
-	qDebug() << ". . . . . . . . . . ";
-	qDebug() << "MainWindow::on_actionWzbudz..: tura = " << roundCounter++;
-	if( roundCounter > 200 )
-	{
-		qDebug() <<" STOOOOP!";
-		return;
-	}
-
-	//waiter( *bool )
 	//if ( roundCounter % 10 == 0 )
 	//	QCoreApplication::processEvents();
 
-	qDebug() << "MainWindow::on_actionWzbudz...(): wywolanie kompa:";
+	//qDebug() << "MainWindow::on_actionWzbudz...(): wywolanie kompa:";
 	tryb->komputerGraj();
 }
 

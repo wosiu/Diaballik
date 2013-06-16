@@ -10,8 +10,6 @@ IPlansza::IPlansza(QObject *parent) :
 	//dodajPionki();
 	polaczPionki();
 	locked = false;
-
-	stillMoving = 0;
 }
 
 void IPlansza::rysujPodklad()
@@ -92,45 +90,18 @@ void IPlansza::polaczPionki()
 	for ( int i = 0; i < 16; i++ )
 	{
 		connect( pionki[i], SIGNAL(clicked(int)), this, SLOT(clickDetector(int)) );
-		//lacze info o zakonczonych ruchach z sprawdzarka stanu stablinego
-		//connect( pionki[i], SIGNAL(finished()), this, SLOT(decreaseStillMovin()) );
-		//lub poiwyzsze laczyc bezposrednio z silent(), bo i tak grajKomputer w trybie nie pozwoli na wywolanie podczas wykonywania poprzedniego wywolania
+		//po skonczonym ruchu na planszy emituje informacje o ciszy
+		//(w mainwindow dzieki niej wzbudzany jest komputer do gry)
 		connect( pionki[i], SIGNAL( finished() ), this, SIGNAL(silent()) );
 
 	}
-		//gdybym nie chcial robic cos po drodze to:
-		//connect( pionki[i], SIGNAL(clicked(int)), this, SIGNAL(clicked(int)) );
 }
 
 /* OBSŁUGA PLANSZY PODCZAS GRY */
 
-void IPlansza::decreaseStillMovin()
-{
-	//movelock.tryLock(250);
-	////stillMoving--;
-
-	////qDebug() << "IPlansza:: still moving: "<< stillMoving;
-	////Q_ASSERT( stillMoving >= 0 );
-
-	////if ( stillMoving == 0 )
-	////{
-	////	emit silent();
-	////	qDebug() << "Iplansza::decreaseSill..() finished";
-	////}
-
-	//movelock.unlock();
-}
-
 // (dx,dy) - wersor
 void IPlansza::move(int pionekId, int dx, int dy)
 {
-	//qDebug() << "wszedl do move";
-	//movelock.lock();
-	//movelock.tryLock(250);
-	//qDebug() << "wszedl za locka";
-	////stillMoving++;
-	//movelock.unlock();
-
 	pionki[ pionekId ]->move(dx,dy);
 
 	//przesunieto pionek wiec czyszcze dostepne ruchy z jego pierwotnej pozycji
@@ -138,14 +109,11 @@ void IPlansza::move(int pionekId, int dx, int dy)
 	czyscDostepneRuchy();
 	//i odklikuje, jesli byl klikniety
 	clickedId = -1;
-
-	//a moze unlockowoac sygnalem finished z pola?
-	//movelock.unlock();
 }
 
 void IPlansza::move(int pionekId, int poz)
 {
-	qDebug() << "IPlansza::move( pionekId=" << pionekId <<", pozycja=" << poz <<")";
+	//qDebug() << "IPlansza::move( pionekId=" << pionekId <<", pozycja=" << poz <<")";
 	int x = fromPixels ( pionki[ pionekId ]->pos().x() );
 	int y = fromPixels ( pionki[ pionekId ]->pos().y() );
 

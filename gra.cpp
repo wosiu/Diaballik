@@ -74,9 +74,9 @@ bool Gra::isEndGame()
 
 void Gra::turaStart()
 {
-	static int roundCounter = 0;
-	qDebug() << " =========================================== ";
-	qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
+	//static int roundCounter = 0;
+	//qDebug() << " =========================================== ";
+	//qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
 
 
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
@@ -426,8 +426,7 @@ void Gra::komputerGraj()
 	//sprawdzam czy zaczeta tura nalezy do komputera
 	if ( typGracza[ gracz ] != KOMPUTER ) return;
 
-	qDebug() << "......................";
-	qDebug() <<"Gra::grajKomputer() IN";
+	//qDebug() <<"Gra::grajKomputer() IN";
 
 	if ( przesuniecWTurze == 2 )
 	{

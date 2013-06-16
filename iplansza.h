@@ -39,9 +39,6 @@ private:
 	std::vector< ICel* > dostepneRuchy;
 	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 
-	int stillMoving;
-	QMutex movelock;
-
 signals:
 	//sygnal o kliknieciu na pionek
 	void clicked( int poleId  );
@@ -53,7 +50,6 @@ private slots:
 	void clickDetector( int poleId );
 	//zbiera sygnaly z wolnych pol
 	void moveDetector( int pos );
-	void decreaseStillMovin();
 
 public slots:
 	void move( int pionekId, int dx, int dy);
