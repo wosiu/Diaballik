@@ -21,9 +21,10 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 	//itHTS = hashToStan.find( hash );
 
 	int h = 5;
-	Plansza wynik = alfabeta( poczatkowy, -INF, +INF, h, true );
+	wywolanyGracz = poczatkowy->czyjRuch();
+	Plansza wynik = alfabeta( *poczatkowy, -INF, INF, h, true );
 
-	std::vector<ruch>roznice = poczatkowy.znajdzRoznice( &wynik );
+	std::vector<ruch>roznice = poczatkowy->znajdzRoznice( &wynik );
 
 	Q_ASSERT ( roznice.size() < 3 );
 
@@ -39,9 +40,14 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 }
 
 
-AIstan alfabeta( AIstan parent, int alfa, int beta, int h, bool max )
+AIstan AI::alfabeta( AIstan parent, int alfa, int beta, int h, bool max )
 {
-	if ( h == 0 ) return ocen( &parent, graczId );
+	if ( h == 0 )
+	{
+		AIstan x;
+		x.v = ocen( &parent, wywolanyGracz );
+		return x;
+	}
 
 	//int r;
 	AIstan r;
@@ -52,13 +58,14 @@ AIstan alfabeta( AIstan parent, int alfa, int beta, int h, bool max )
 	{
 		r.v = -INF; // pas
 
-		foreach ( s, sons )
+		foreach ( AIstan s, sons )
 		{
 			//najpierw jesli mam do wykonania jeszcze jakies ruchy, to
 			//posylam max w dol
-			if ( s.czyjRuch == parent.czyjRuch() ) max=!max; //robie na false, bo w wyloaniu zrobi sie true
+			if ( s.czyjRuch() == parent.czyjRuch() ) max=!max; //robie na false, bo w wyloaniu zrobi sie true
 
 			AIstan x = alfabeta( s, max( r.v, alfa ), beta, h-1, !max );
+
 			if ( x.v >= beta ) return x;
 			if ( x.v >= r.v) r = x;
 		}
@@ -69,7 +76,7 @@ AIstan alfabeta( AIstan parent, int alfa, int beta, int h, bool max )
 
 		if ( s.czyjRuch == parent.czyjRuch() ) max=!max; //robie na true, bo w wyloaniu zrobi sie false
 
-		foreach( s, sons )
+		foreach ( AIstan s, sons )
 		{
 			AIstan x = alfabeta( s, alfa, min( r.v, beta ), h-1, !max );
 			if ( x.v <= a ) return x;

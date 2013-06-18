@@ -364,7 +364,7 @@ void Plansza::usunPionki()
 }
 
 //jesli nei znajdzie roznic, zwroci dostepny ruch pasowy
-std::vector Plansza::znajdzRoznice( Plansza* plansza )
+std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 {
 	std::vector<ruch> wynik;
 

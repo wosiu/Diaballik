@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <QtGlobal>
 #include <QDebug>
-#include "tryb.h"
+#include "ruch.h"
 
 class Plansza
 {

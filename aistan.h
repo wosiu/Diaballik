@@ -7,7 +7,7 @@ class AIstan : public Plansza
 {
 public:
 	AIstan();
-	AIstan( Plansza* plansza, przesuniecWTurze, podanWTurze );
+	AIstan( Plansza* plansza, int przesuniecWTurze, int podanWTurze );
 	~AIstan();
 	//int minimalValue, maximalValue;
 	int value;
