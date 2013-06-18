@@ -6,6 +6,7 @@
 #include <QObject>
 
 #include "plansza.h"
+#include "ruch.h"
 
 class Tryb : public QObject
 {
@@ -21,13 +22,6 @@ public:
 	virtual std::vector <int> findValidMoves( int pionekId ) = 0;
 	virtual TYPGRACZA dajTypGracza( int graczId ) = 0; //czemu to nie moze byc virtualne?
 	virtual void turaStart() = 0;
-
-	struct ruch {
-		int8_t pionekId,skad,dokad;
-		ruch(int8_t _pionekId, int8_t _skad, int8_t _dokad) {
-			pionekId = _pionekId, skad = _skad; dokad = _dokad;
-		}
-	};
 
 	Plansza plansza;
 	int historyIterator;

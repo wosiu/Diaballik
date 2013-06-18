@@ -1,28 +1,39 @@
 #ifndef AI_H
 #define AI_H
 
-#include "plansza.h"
+#include <QThread>
+#include <QMap>
 
+#include "tryb.h"
+#include "aistan.h
 
-struct hint {
-	int pionekId, pozycja;
-	hint( int pionekId, int pozycja ) {
-		this->pionekId = pionekId; this->pozycja = pozycja;
-	}
-};
-
-
-class AI
+class AI : public QThread
 {
+	Q_OBJECT
+public:
+	explicit AI(QObject *parent = 0);
+	void run();
+	Tryb::ruch dajHinta( Plansza* plansza );
+	//QVector < AIstan > generatorStanow( Plansza* plansza );
 
 private:
-	const int INF = 1073741824;
-	int alfabeta(int alfa, int beta);
+	//QMap < unsigned long long, AIstan* > hashToStan;
+	//QMap < unsigned long long, AIstan* >::iterator itHTS;
+	//void garbage();
+	int ocen(AIstan* stan , int graczId);
+	int alfabeta( AIstan *stan, int alfa, int beta );
+	//AIstan *root;
+	//Aistan *present;
 
-public:
-	AI();
+//pytac kosz o hash, jak w koszu, to usuwam z kosza, szukam w hashTosant i usuwam
+//AIstan'y laczyc z removeStan tutaj, podczas usuwania jakiegos stanu emituje, ze jest usuwany
+//i usuwamy go z hashTostan
 
-	hint dajRuch( Plansza* plansza, int gracz, int zuzytychPrzesuniec, int zuzytychPodan );
+signals:
+
+public slots:
+	//removeStan(Aistan* stan);
+
 
 };
 

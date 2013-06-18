@@ -23,10 +23,12 @@ SOURCES += main.cpp\
     iplansza.cpp \
     ipole.cpp \
     icel.cpp \
-    ai.cpp \
     kolejkaanimacji.cpp \
     nowagradialog.cpp \
-    watek.cpp
+    watek.cpp \
+    ai.cpp \
+    aistan.cpp \
+    ruch.cpp
 
 HEADERS  += mainwindow.h \
     gra.h \
@@ -38,10 +40,12 @@ HEADERS  += mainwindow.h \
     iplansza.h \
     ipole.h \
     icel.h \
-    ai.h \
     kolejkaanimacji.h \
     nowagradialog.h \
-    watek.h
+    watek.h \
+    ai.h \
+    aistan.h \
+    ruch.h
 
 FORMS    += mainwindow.ui \
     nowagradialog.ui

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <QtGlobal>
 #include <QDebug>
+#include "tryb.h"
 
 class Plansza
 {
@@ -34,7 +35,8 @@ public:
 	bool unfairGameCheck(int gracz);
 	unsigned long long hashCode();
 	void usunPionki();
-
+	std::vector<ruch> znajdzRoznice( Plansza* plansza );
+	int dajOdlegloscOdLiniStartowej( int poleId );
 
 //private:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,

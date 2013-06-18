@@ -8,8 +8,6 @@
 #include "plansza.h"
 #include <vector>
 
-#include <QMutex>
-
 class IPlansza : public QGraphicsScene
 {
 	Q_OBJECT

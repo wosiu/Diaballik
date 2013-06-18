@@ -350,7 +350,8 @@ unsigned long long Plansza::hashCode()
 	unsigned long long prime[17] = {1000000007, 1000000014000000049, 14069101319555514199, 2173964608407773537, 7232439895113528231, 1423083718267137937, 9015250055358150391, 3633867129218868929, 3321970296312322375, 16054152209726863089, 4648997779380988567, 6980550577642475553, 13284617912389565159, 1913936733860700753, 17872352148200380983, 1978898776512519553, 7048929689792206983};
 	unsigned long long res = 0;
 
-	for ( int i = 0; i < 17; i++ )
+	//bez info o graczu?
+	for ( int i = 0; i < 16; i++ )
 		res += dane[ i ] * prime[ i ];
 
 	return res;
@@ -360,4 +361,43 @@ void Plansza::usunPionki()
 {
 	for ( int i = 0; i < 16; i++ )
 		dane[ i ] = -1;
+}
+
+//jesli nei znajdzie roznic, zwroci dostepny ruch pasowy
+std::vector Plansza::znajdzRoznice( Plansza* plansza )
+{
+	std::vector<ruch> wynik;
+
+	for ( int i = 0; i < 16; i++ )
+		if ( this->dane[i] != plansza->dane[i] )
+			wynik.push_back( ruch( i, dane[i], plansza->dane[i] ) );
+
+	Q_ASSERT ( wynik.size() <= 3 );
+
+	if ( wynik.size() == 0 )
+	{
+		int gracz = plansza->czyjRuch();
+
+		for ( int i = 7 * gracz ; i < 7 + 7 * gracz; i++ )
+		{
+			std::vector<int> sasiedniePustePozycje = dajRuchy( dane[i] );
+			if ( sasiedniePustePozycje.empty() ) continue;
+
+			//else
+			//ruch w te i z powrotem
+			wynik.push_back( ruch( i, dane[i], sasiedniePustePozycje.front() ) );
+			wynik.push_back( ruch( i, sasiedniePustePozycje.front(), dane[i] ) );
+			break;
+		}
+	}
+
+	Q_ASSERT ( wynik.size() > 0 );
+
+	return wynik;
+}
+
+int Plansza::dajOdlegloscOdLiniStartowej( int poleId )
+{
+	int liniaStartowa = ktoryGracz( poleId ) * 6;
+	return std::abs( liniaStartowa - ( dane[ poleId ] / 7 ) );
 }
