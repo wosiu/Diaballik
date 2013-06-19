@@ -61,6 +61,8 @@ private slots:
 	void on_AutoKomputer_clicked();
 	void on_actionWzbudzKomputer_triggered();
 
+	void on_actionDaj_podpowiedz_triggered();
+
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );
 };

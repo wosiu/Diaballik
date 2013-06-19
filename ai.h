@@ -12,7 +12,6 @@ class AI : public QThread
 	Q_OBJECT
 public:
 	explicit AI(QObject *parent = 0);
-	//AI();
 	void run();
 	ruch dajHinta( AIstan *poczatkowy );
 
@@ -24,8 +23,6 @@ private:
 	int ocen( AIstan* stan , int graczId );
 	int ocenaHeurystyczna(AIstan *stan, int graczId);
 	int alfabeta( AIstan* stan, int alfa, int beta, int h, bool max );
-	//AIstan *root;
-	//Aistan *present;
 	int wywolanyGracz;
 
 //pytac kosz o hash, jak w koszu, to usuwam z kosza, szukam w hashTosant i usuwam

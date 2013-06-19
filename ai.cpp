@@ -22,6 +22,7 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 	//itHTS = hashToStan.find( hash );
 
 	//TO DO: uzależnić h od entropii planszy:
+	//maksymalna glebokosc drzewa gry:
 	int h = 6; //8 OK, 6-7 optymalnie
 
 	wywolanyGracz = poczatkowy->czyjRuch();
@@ -152,12 +153,12 @@ int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
 	}
 
 	//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
-	std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
+	/*std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
 	for ( int i = 0; i < pilkaRuchy.size(); i++ )
 		//jesli pilka ma podanie do pionka ktory stoi na lini przeciwnika
 		if ( pilkaRuchy[i] / 7 == ((graczId + 1) % 2) * 6 )
 			//premia
-			res += 1000;
+			res += 1000;*/
 	//powyzsze: fajne, ale gra trwa dluzej (choc faktycznie komp jest madrzejszy)
 
 	return res;

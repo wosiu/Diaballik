@@ -21,7 +21,7 @@ public:
 	void dodajPionki( Plansza plansza );
 	void ustawPionki();
 	void ustawPionki(Plansza plansza );
-
+	int clickedId;
 
 private:
 	IPole* pionki[ 16 ];
@@ -31,9 +31,8 @@ private:
 	void stworzPionki();
 	void polaczPionki();
 	void ustawPole( IPole *pole, int pos );
-
 	bool locked;
-	int clickedId;
+
 	std::vector< ICel* > dostepneRuchy;
 	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 

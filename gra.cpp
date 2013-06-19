@@ -420,18 +420,9 @@ void Gra::moveDetector( int pionekId, int pozycja )
 //obsluguje ruchy komputera
 void Gra::komputerGraj()
 {
-	int gracz = plansza.czyjRuch();
-
 	//sprawdzam czy zaczeta tura nalezy do komputera
+	int gracz = plansza.czyjRuch();
 	if ( typGracza[ gracz ] != KOMPUTER ) return;
-
-	//qDebug() <<"Gra::grajKomputer() IN";
-
-	/*if ( przesuniecWTurze == 2 )
-	{
-		zatwierdz();
-		return;
-	}*/
 
 	if ( isMoveLocked )
 	{
@@ -440,15 +431,15 @@ void Gra::komputerGraj()
 	}
 	isMoveLocked = true;
 
-	//qDebug() << "komputerGraj start jako gracz: " << gracz;
 
-	AI aitest;
-	AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
+	AI ai;
+	//AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
+	AIstan stan( &plansza, przesuniecWTurze, podanWTurze );
 	//AIstan stan( plansza, 0, 0 );
-	ruch r = aitest.dajHinta( stan );
-	delete stan;
+	ruch r = ai.dajHinta( &stan );
+	//delete stan;
 
-	qDebug() << "proponowany ruch dla planszy:" << r.pionekId << r.skad << r.dokad;
+	//qDebug() << "proponowany ruch dla planszy:" << r.pionekId << r.skad << r.dokad;
 
 	if ( r.czyRuch() )
 	{
@@ -460,14 +451,4 @@ void Gra::komputerGraj()
 		isMoveLocked = false;
 		zatwierdz();
 	}
-	//move( gracz * 7 + 2, 37);
-	//move( gracz * 7 + 2, 44);
-
-	//TO DO: move( AI.dajPodpowiedz( obecnyGracz )
-
-	//po wszystkim: zatwierdz(). nie emit nowaTura! (zeby sie zapisaly i wyczyscily ruchy, itd..)
-	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
-
-	//zatwierdz();
-
 }

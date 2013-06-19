@@ -51,7 +51,7 @@ void IPole::move(int x, int y)
 	connect( animation, SIGNAL(finished()), this, SIGNAL(finished()) );
 
 	//TO DO: zrobic bezpieczne kolejkowanie animacji i dac 250:
-	animation->setDuration(250); //w ostatecznosci dac 100
+	animation->setDuration(350); //w ostatecznosci dac 100
 	//animation->setStartValue( this->pos() );
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);

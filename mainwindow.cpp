@@ -347,13 +347,34 @@ void MainWindow::on_AutoKomputer_clicked()
 
 void MainWindow::on_actionWzbudzKomputer_triggered()
 {
-	if ( moveLock ) return;
-	moveLock = true;
+	///if ( moveLock ) return;
+	///moveLock = true;
 
 	//if ( roundCounter % 10 == 0 )
 	//	QCoreApplication::processEvents();
-
 	//qDebug() << "MainWindow::on_actionWzbudz...(): wywolanie kompa:";
-	tryb->komputerGraj();
+
+	///tryb->komputerGraj();
+	on_actionDaj_podpowiedz_triggered();
 }
 
+
+void MainWindow::on_actionDaj_podpowiedz_triggered()
+{
+	if ( moveLock ) return;
+	moveLock = true;
+
+	AI ai;
+	//AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
+	AIstan stan( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
+	//AIstan stan( plansza, 0, 0 );
+	ruch r = ai.dajHinta( &stan );
+	//delete stan;
+
+	if ( r.czyRuch() )
+		tryb->move( r );
+	else
+		tryb->zatwierdz();
+
+	//scena->dodajDostepnePole();
+}
