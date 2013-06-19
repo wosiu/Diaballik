@@ -1,29 +1,28 @@
 #include "ai.h"
 
-AI::AI(QObject *parent) :QThread(parent)
-//AI::AI()
+AI::AI( Plansza *plansza, int przesuniecWTurze, int podanWTurze,
+	   QObject *parent ) :QThread(parent)
 {
+	poczatkowy = new AIstan( plansza, przesuniecWTurze, podanWTurze );
+}
+
+AI::~AI()
+{
+	delete poczatkowy;
 }
 
 void AI::run()
 {
-	//wystartuj obliczanie wezlow
+	hint = dajHinta();
 }
 
 
 
 //QVector <Tryb::ruch> AI::dajHinta( AIstan *plansza )
-ruch AI::dajHinta( AIstan *poczatkowy )
+ruch AI::dajHinta()
 {
-	//unsigned long long hash = plansza->hashCode();
-
-	//a moze by tak uzyc:  QList<AIstan*> values = map.values(hash);
-	//i jesli jest wiecej niz jeden to zasadzic equals?
-	//itHTS = hashToStan.find( hash );
-
-	//TO DO: uzależnić h od entropii planszy:
 	//maksymalna glebokosc drzewa gry:
-	int h = 6; //8 OK, 6-7 optymalnie
+	int h = 8; //8 OK, 6-7 optymalnie
 
 	wywolanyGracz = poczatkowy->czyjRuch();
 
@@ -42,14 +41,6 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 		}
 	}
 
-
-	/*if ( roznice.size() != 1 )
-	{
-		qDebug() << poczatkowy->debug();
-		qDebug() << najlepszy->debug();
-		for ( int i = 0; i < roznice.size(); i++ )
-			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
-	}*/
 
 	//jesli nie mial dostapnych ruchow, to np odnotowano wygraną
 	if ( poczatkowy->sons.size() == 0 )
@@ -76,13 +67,6 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 	Q_ASSERT ( roznice.size() == 1 );
 
 	return roznice.front();
-
-	//jesli hash wystapil = uklad wystapuje w drzewie,
-	//od niego startujemy alfa bete
-	//if ( itHTS != hashToStan.end() )
-	//{
-	//	alfabeta( itHTS.value(), itHTS.value().alfa, itHTS.value().beta, h );
-	//}
 }
 
 

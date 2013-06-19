@@ -360,12 +360,29 @@ void MainWindow::on_actionDaj_podpowiedz_triggered()
 	if ( moveLock ) return;
 	moveLock = true;
 
-	AI ai;
-	//AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
-	AIstan stan( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
-	//AIstan stan( plansza, 0, 0 );
-	ruch r = ai.dajHinta( &stan );
-	//delete stan;
+	//tu wyszarzyc przyciski
+
+	AI ai( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
+	//odpalamy watek liczacy
+	ai.start();
+
+	//w trakcie liczenia obslugujemy okno:
+	while( ai.isRunning() )
+		QCoreApplication::processEvents();
+
+
+	qDebug() << ai.isFinished();
+
+	if( !ai.isFinished() )
+	{
+		qDebug() << "not finished";
+		moveLock = false;
+		return;
+	}
+
+	ruch r = ai.hint;
+
+	//tu odszarzyc
 
 	if ( r.czyRuch() )
 		tryb->move( r );
@@ -373,4 +390,10 @@ void MainWindow::on_actionDaj_podpowiedz_triggered()
 		tryb->zatwierdz();
 
 	//scena->dodajDostepnePole();
+
+}
+
+void MainWindow::on_AI_stop_pushButton_clicked()
+{
+
 }

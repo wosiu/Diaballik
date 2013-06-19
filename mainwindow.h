@@ -63,6 +63,8 @@ private slots:
 
 	void on_actionDaj_podpowiedz_triggered();
 
+	void on_AI_stop_pushButton_clicked();
+
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );
 };

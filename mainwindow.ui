@@ -106,6 +106,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="AI_stop_pushButton">
+          <property name="text">
+           <string>AI stop</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>

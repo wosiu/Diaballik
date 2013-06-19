@@ -11,29 +11,25 @@ class AI : public QThread
 {
 	Q_OBJECT
 public:
-	explicit AI(QObject *parent = 0);
+	explicit AI( Plansza* plansza, int przesuniecWTurze, int podanWTurze,
+				 QObject* parent = 0 );
+	~AI();
 	void run();
-	ruch dajHinta( AIstan *poczatkowy );
+	ruch dajHinta();
+	ruch hint;
 
 private:
-	//QMap < unsigned long long, AIstan* > hashToStan;
-	//QMap < unsigned long long, AIstan* >::iterator itHTS;
-	//void garbage();
 	const int INF = 1073741824;
 	int ocen( AIstan* stan , int graczId );
 	int ocenaHeurystyczna(AIstan *stan, int graczId);
 	int alfabeta( AIstan* stan, int alfa, int beta, int h, bool max );
 	int wywolanyGracz;
-
-//pytac kosz o hash, jak w koszu, to usuwam z kosza, szukam w hashTosant i usuwam
-//AIstan'y laczyc z removeStan tutaj, podczas usuwania jakiegos stanu emituje, ze jest usuwany
-//i usuwamy go z hashTostan
+	AIstan* poczatkowy;
 
 signals:
 
 public slots:
 	//removeStan(Aistan* stan);
-
 
 };
 
