@@ -347,18 +347,14 @@ void MainWindow::on_AutoKomputer_clicked()
 
 void MainWindow::on_actionWzbudzKomputer_triggered()
 {
-	///if ( moveLock ) return;
-	///moveLock = true;
+	int gracz = tryb->plansza.czyjRuch();
 
-	//if ( roundCounter % 10 == 0 )
-	//	QCoreApplication::processEvents();
-	//qDebug() << "MainWindow::on_actionWzbudz...(): wywolanie kompa:";
-
-	///tryb->komputerGraj();
-	on_actionDaj_podpowiedz_triggered();
+	//sprawdzam czy tura nalezy do komputera
+	if ( tryb->typGracza[ gracz ] == Tryb::KOMPUTER )
+		on_actionDaj_podpowiedz_triggered();
 }
 
-
+//wykonuje podpowiedz na planszy
 void MainWindow::on_actionDaj_podpowiedz_triggered()
 {
 	if ( moveLock ) return;

@@ -41,7 +41,6 @@ public slots:
 	void moveDetector( int pionekId, int pozycja );
 	bool undo();
 	bool redo();
-	void komputerGraj();
 	//void czlowiekGraj(); == moveDetector
 
 };

@@ -417,38 +417,3 @@ void Gra::moveDetector( int pionekId, int pozycja )
 	move( pionekId, pozycja );
 }
 
-//obsluguje ruchy komputera
-void Gra::komputerGraj()
-{
-	//sprawdzam czy zaczeta tura nalezy do komputera
-	int gracz = plansza.czyjRuch();
-	if ( typGracza[ gracz ] != KOMPUTER ) return;
-
-	if ( isMoveLocked )
-	{
-		emit uwaga( "Ruch komputera w trakcie obliczeń." );
-		return;
-	}
-	isMoveLocked = true;
-
-
-	AI ai;
-	//AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
-	AIstan stan( &plansza, przesuniecWTurze, podanWTurze );
-	//AIstan stan( plansza, 0, 0 );
-	ruch r = ai.dajHinta( &stan );
-	//delete stan;
-
-	//qDebug() << "proponowany ruch dla planszy:" << r.pionekId << r.skad << r.dokad;
-
-	if ( r.czyRuch() )
-	{
-		Tryb::move( r );
-		isMoveLocked = false;
-	}
-	else
-	{
-		isMoveLocked = false;
-		zatwierdz();
-	}
-}
