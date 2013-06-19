@@ -4,6 +4,7 @@ AI::AI( Plansza *plansza, int przesuniecWTurze, int podanWTurze,
 	   QObject *parent ) :QThread(parent)
 {
 	poczatkowy = new AIstan( plansza, przesuniecWTurze, podanWTurze );
+	done = false;
 }
 
 AI::~AI()
@@ -13,14 +14,27 @@ AI::~AI()
 
 void AI::run()
 {
+	running = true;
+
 	hint = dajHinta();
+
+	if( running )
+		done = true;
+
+	running = false;
 }
 
+void AI::stop()
+{
+	running = false;
+}
 
 
 //QVector <Tryb::ruch> AI::dajHinta( AIstan *plansza )
 ruch AI::dajHinta()
 {
+	if ( !running ) return ruch(); //jesli zatrzymano watek
+
 	//maksymalna glebokosc drzewa gry:
 	int h = 8; //8 OK, 6-7 optymalnie
 
@@ -33,6 +47,8 @@ ruch AI::dajHinta()
 
 	foreach ( AIstan* stan, poczatkowy->sons )
 	{
+		if ( !running ) return ruch(); //jesli zatrzymano watek
+
 		//qDebug() << stan->debug();
 		if ( stan->v >= max )
 		{
@@ -74,6 +90,8 @@ int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 {
 	//qDebug() << "AI::alfabeta( AIstan* parent, int alfa, int beta, int h = "<< h << ", bool max = " << max << ")";
 
+	if ( !running ) return 0; //jesli zatrzymano watek
+
 	//jesli zuzylismy dostepna glebokosc obliczen
 	if ( h == 0 )
 		return parent->v = ocen( parent, wywolanyGracz );
@@ -94,6 +112,8 @@ int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 
 		foreach ( AIstan* s, parent->sons )
 		{
+			if ( !running ) return 0; //jesli zatrzymano watek
+
 			//najpierw jesli mam do wykonania jeszcze jakies ruchy, to
 			//posylam max w dol
 			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
@@ -110,6 +130,8 @@ int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 
 		foreach ( AIstan* s, parent->sons )
 		{
+			if ( !running ) return 0; //jesli zatrzymano watek
+
 			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
 
 			int x = alfabeta( s, alfa, qMin( parent->v, beta ), h-1, !max );
@@ -137,12 +159,12 @@ int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
 	}
 
 	//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
-	/*std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
+	std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
 	for ( int i = 0; i < pilkaRuchy.size(); i++ )
 		//jesli pilka ma podanie do pionka ktory stoi na lini przeciwnika
 		if ( pilkaRuchy[i] / 7 == ((graczId + 1) % 2) * 6 )
 			//premia
-			res += 1000;*/
+			res += 5000;
 	//powyzsze: fajne, ale gra trwa dluzej (choc faktycznie komp jest madrzejszy)
 
 	return res;

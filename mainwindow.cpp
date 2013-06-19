@@ -244,6 +244,9 @@ void MainWindow::on_actionNowa_Gra_triggered()
 
 void MainWindow::on_actionEdytuj_plansze_triggered()
 {
+	if ( !tryb->history.empty() )
+		showMonitInBox("Historia ruchów zostaje porzucona.");
+
 	Tryb* nowyTryb = new Edytor( tryb );
 	ustawNowyTryb( nowyTryb );
 }
@@ -362,32 +365,34 @@ void MainWindow::on_actionDaj_podpowiedz_triggered()
 
 	//tu wyszarzyc przyciski
 
-	AI ai( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
+	ai = new AI( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
+
+	connect( ui->AI_stop_pushButton, SIGNAL(clicked()), ai, SLOT( stop()) );
+
 	//odpalamy watek liczacy
-	ai.start();
+	ai->start();
 
 	//w trakcie liczenia obslugujemy okno:
-	while( ai.isRunning() )
+	while ( ai->isRunning() )
 		QCoreApplication::processEvents();
 
+	//po zakonczonych lub zastopowanych obliczeniach zrywamy polaczenie i usuwamy AI
+	disconnect( ui->AI_stop_pushButton, SIGNAL( clicked() ), ai, SLOT( stop()) );
+	delete ai;
 
-	qDebug() << ai.isFinished();
-
-	if( !ai.isFinished() )
+	//jesli obliczylismy ruch i nie wykonano stopu, wykonujemy go
+	if ( ai->done )
 	{
-		qDebug() << "not finished";
-		moveLock = false;
-		return;
-	}
+		ruch r = ai->hint;
 
-	ruch r = ai.hint;
+		if ( r.czyRuch() )	tryb->move( r );
+		else				tryb->zatwierdz();
+	}
+	else
+		moveLock = false;
+
 
 	//tu odszarzyc
-
-	if ( r.czyRuch() )
-		tryb->move( r );
-	else
-		tryb->zatwierdz();
 
 	//scena->dodajDostepnePole();
 
@@ -395,5 +400,7 @@ void MainWindow::on_actionDaj_podpowiedz_triggered()
 
 void MainWindow::on_AI_stop_pushButton_clicked()
 {
-
+	//polaczone w on_actionDaj_podpowiedz_triggered() z przerwaniem watku
+	kompAutoPlay = false;
+	ui->AutoKomputer->setChecked( false );
 }

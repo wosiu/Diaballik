@@ -38,6 +38,7 @@ private:
 	void disconnector();
 	void poprawDostepnoscPrzyciskow();
 	bool moveLock;
+	AI* ai;
 
 private slots:
 	void setValidMoves(int);

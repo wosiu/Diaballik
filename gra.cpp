@@ -75,7 +75,7 @@ bool Gra::isEndGame()
 void Gra::turaStart()
 {
 	//static int roundCounter = 0;
-	qDebug() << " =========================================== ";
+	//qDebug() << " =========================================== ";
 	//qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
 
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)

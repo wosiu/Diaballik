@@ -17,6 +17,7 @@ public:
 	void run();
 	ruch dajHinta();
 	ruch hint;
+	bool done;
 
 private:
 	const int INF = 1073741824;
@@ -25,10 +26,12 @@ private:
 	int alfabeta( AIstan* stan, int alfa, int beta, int h, bool max );
 	int wywolanyGracz;
 	AIstan* poczatkowy;
+	bool running;
 
 signals:
 
 public slots:
+	void stop();
 	//removeStan(Aistan* stan);
 
 };
