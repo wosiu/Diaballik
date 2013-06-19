@@ -1,5 +1,6 @@
 set (SOURCES
 	ai.cpp
+	aistan.cpp
 	edytor.cpp
 	gra.cpp
 	icel.cpp
@@ -7,16 +8,17 @@ set (SOURCES
 	ipilkarzyk.cpp
 	iplansza.cpp
 	ipole.cpp
-	kolejkaanimacji.cpp
 	main.cpp
 	mainwindow.cpp
 	nowagradialog.cpp
 	plansza.cpp
+	ruch.cpp
 	tryb.cpp
 	)
 
 set (HEADERS
 	ai.h
+	aistan.h
 	edytor.h
 	gra.h
 	icel.h
@@ -24,10 +26,11 @@ set (HEADERS
 	ipilkarzyk.h
 	iplansza.h
 	ipole.h
-	kolejkaanimacji.h
 	mainwindow.h
 	nowagradialog.h
 	plansza.h
+	ruch.h
+	tryb.h
 	)
 
 set (FORMS
@@ -38,6 +41,8 @@ set (FORMS
 qt4_wrap_cpp (HEADERS_MOC ${HEADERS})
 qt4_wrap_ui (FORMS_HEADERS ${FORMS})
 
-add_executable (Diabalik ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS} ${RESOURCES_RCC})
-target_link_libraries (Diabalik ${QT_LIBRARIES})
+add_executable (Diaballik ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS} ${RESOURCES_RCC})
+target_link_libraries (Diaballik ${QT_LIBRARIES})
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
+
+

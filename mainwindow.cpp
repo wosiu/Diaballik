@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
-#include <ipilkarzyk.h>
+#include "ipilkarzyk.h"
 #include <QSequentialAnimationGroup>
 
 MainWindow::MainWindow(QWidget *parent) :

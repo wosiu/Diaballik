@@ -9,6 +9,7 @@
 
 class Gra : public Tryb
 {
+	Q_OBJECT
 
 public:
 	Gra();

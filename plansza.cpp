@@ -375,7 +375,7 @@ std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 			roznice.push_back( ruch( i, dane[i], plansza->dane[i] ) );
 
 	if ( !(roznice.size() <= 1) )
-		for ( int i = 0; i < roznice.size(); i++ )
+		for ( int i = 0; i < (int)roznice.size(); i++ )
 			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
 
 	Q_ASSERT ( roznice.size() <= 1 );

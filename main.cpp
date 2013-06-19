@@ -2,8 +2,6 @@
 #include "mainwindow.h"
 #include <QTextCodec>
 
-
-#include "watek.h"
 #include "ai.h"
 
 int main(int argc, char *argv[])

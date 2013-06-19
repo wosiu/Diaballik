@@ -5,6 +5,7 @@
 
 class IPilkarzyk : public IPole
 {
+	Q_OBJECT
 	Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 
 public:

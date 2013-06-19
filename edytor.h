@@ -6,6 +6,8 @@
 
 class Edytor : public Tryb
 {
+	Q_OBJECT
+
 public:
 	Edytor();
 	Edytor( Tryb* innyTryb );
