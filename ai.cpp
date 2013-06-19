@@ -36,7 +36,7 @@ ruch AI::dajHinta()
 	if ( !running ) return ruch(); //jesli zatrzymano watek
 
 	//maksymalna glebokosc drzewa gry:
-	int h = 8; //8 OK, 6-7 optymalnie
+	int h = 9; //8 OK, 6-7 optymalnie
 
 	wywolanyGracz = poczatkowy->czyjRuch();
 

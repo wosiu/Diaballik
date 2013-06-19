@@ -33,10 +33,10 @@ private:
 	QLabel *statusBarMonit;
 	QMessageBox* boxMonit;
 	const QString idGraczToKolor[3] = {"CZARNY", "BIAŁY", "EDYTOR"};
+	void off_AutoKomputer();
 	bool kompAutoPlay;
 	void connector();
 	void disconnector();
-	void poprawDostepnoscPrzyciskow();
 	bool moveLock;
 	AI* ai;
 
@@ -49,6 +49,8 @@ private slots:
 	void aktualnyGracz( int graczId );
 	void wykonaneRuchy( int przesuniec, int podan );
 	void wzbudzKomputer();
+	void poprawDostepnoscPrzyciskow();
+	void setButtonsEnabled(bool v);
 
 	void on_Zatwierdz_pushButton_clicked();
 	void on_Cofnij_pushButton_clicked();
@@ -61,13 +63,16 @@ private slots:
 	void on_actionPomoc_triggered();
 	void on_AutoKomputer_clicked();
 	void on_actionWzbudzKomputer_triggered();
-
 	void on_actionDaj_podpowiedz_triggered();
+	//void on_AI_stop_pushButton_clicked();
 
-	void on_AI_stop_pushButton_clicked();
+	void on_Przerwij_AI_pushButton_clicked();
 
 public slots:
 	void ustawNowyTryb( Tryb* nowyTryb );
+
+signals:
+	void stopAI();
 };
 
 #endif // MAINWINDOW_H

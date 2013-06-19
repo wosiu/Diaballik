@@ -75,6 +75,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="Przerwij_AI_pushButton">
+        <property name="text">
+         <string>Przerwij AI</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QVBoxLayout" name="przyciski">
         <item>
          <widget class="QPushButton" name="Zatwierdz_pushButton">
@@ -103,13 +110,6 @@
           </property>
           <property name="shortcut">
            <string>Ctrl+Shift+Z</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="AI_stop_pushButton">
-          <property name="text">
-           <string>AI stop</string>
           </property>
          </widget>
         </item>

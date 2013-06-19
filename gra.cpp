@@ -45,8 +45,8 @@ Gra::~Gra()
 
 void Gra::inicjuj()
 {
-	emit undoAble( true );
-	emit redoAble( true );
+	//emit undoAble( true );
+	//emit redoAble( true );
 	isMoveLocked = false;
 }
 

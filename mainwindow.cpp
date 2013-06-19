@@ -82,6 +82,10 @@ void MainWindow::connector()
 	//(aby komputer nie wywolywal sie, gdy sa zakolejkowane fizyczne ruchy, poniewaz takowe mają
 	//niski priorytet i wykonają sie po zakonczonych obliczeniach komputera
 	connect( scena, SIGNAL(silent()), this, SLOT( wzbudzKomputer() ) );
+	//lacze ruch w trybie z dostepnoscia przyciskow:
+	///connect( tryb, SIGNAL(moved(int,int)), this, SLOT( poprawDostepnoscPrzyciskow() ) );
+	//connect( this, SIGNAL(ui->), this, SLOT( poprawDostepnoscPrzyciskow() ) );
+
 }
 
 void MainWindow::disconnector()
@@ -96,12 +100,14 @@ void MainWindow::disconnector()
 	disconnect( tryb, SIGNAL(wykonaneRuchy(int,int)), this, SLOT( wykonaneRuchy(int,int)) );
 	disconnect( tryb, SIGNAL(zmianaTrybu(Tryb*)), this, SLOT(ustawNowyTryb(Tryb*)) );
 	disconnect( scena, SIGNAL(silent()), this, SLOT( wzbudzKomputer() ) );
+	//disconnect( tryb, SIGNAL(moved(int,int)), this, SLOT( poprawDostepnoscPrzyciskow() ) );
 }
 
 void MainWindow::nowaTura( int graczId )
 {
 	aktualnyGracz( graczId );
 	//qDebug() << "wzbudzenie z nowej tury.";
+	///poprawDostepnoscPrzyciskow();
 	wzbudzKomputer();
 }
 
@@ -111,9 +117,7 @@ void MainWindow::wzbudzKomputer()
 	moveLock = false;
 
 	if ( kompAutoPlay )
-	{
 		on_actionWzbudzKomputer_triggered();
-	}
 }
 
 void MainWindow::showMonitInBox( QString monit )
@@ -147,11 +151,15 @@ void MainWindow::showMonitOnStatusBar( QString monit )
 
 void MainWindow::on_Zatwierdz_pushButton_clicked()
 {
+	emit stopAI();
 	tryb->zatwierdz();
+	///poprawDostepnoscPrzyciskow();
 }
 
 void MainWindow::poprawDostepnoscPrzyciskow()
 {
+	qDebug() << "wszedl do poprawiania przyciskow";
+
 	int graczId = tryb->plansza.czyjRuch();
 
 	//jesli ktorys z graczow to komputer
@@ -183,9 +191,8 @@ void MainWindow::poprawDostepnoscPrzyciskow()
 	{
 		//sterowanie rozgrywka i historia
 
-		//qDebug() << "wszedl" <<(tryb->historyIterator > -1);
-
-		ui->Cofnij_pushButton->setEnabled( false );
+		qDebug() << tryb->historyIterator;
+		qDebug() << "wszedl" << (tryb->historyIterator > -1);
 		ui->Cofnij_pushButton->setEnabled( (tryb->historyIterator > -1) );
 		ui->Powtorz_pushButton->setEnabled( (tryb->historyIterator + 1 < (int)tryb->history.size()) );
 		ui->Zatwierdz_pushButton->setEnabled( true );
@@ -197,9 +204,8 @@ void MainWindow::poprawDostepnoscPrzyciskow()
 
 void MainWindow::aktualnyGracz( int graczId )
 {
+	///poprawDostepnoscPrzyciskow();
 	scena->czyscDostepneRuchy();
-
-	//poprawDostepnoscPrzyciskow();
 
 	//poprawienie monitu:
 	QString typ="";
@@ -223,18 +229,24 @@ void MainWindow::wykonaneRuchy(int przesuniec, int podan)
 //TO DO: pressed()
 void MainWindow::on_Cofnij_pushButton_clicked()
 {
-	if ( !scena->getLock() )
-		tryb->undo();
+	if ( scena->getLock() ) return;
+
+	emit stopAI();
+	tryb->undo();
 }
 
 void MainWindow::on_Powtorz_pushButton_clicked()
 {
-	if ( !scena->getLock() )
-		tryb->redo();
+	if ( scena->getLock() ) return;
+
+	emit stopAI();
+	tryb->redo();
 }
 
 void MainWindow::on_actionNowa_Gra_triggered()
 {
+	off_AutoKomputer();
+
 	NowaGraDialog dialog;
 
 	//jesli kliknieto OK
@@ -244,6 +256,8 @@ void MainWindow::on_actionNowa_Gra_triggered()
 
 void MainWindow::on_actionEdytuj_plansze_triggered()
 {
+	off_AutoKomputer();
+
 	if ( !tryb->history.empty() )
 		showMonitInBox("Historia ruchów zostaje porzucona.");
 
@@ -253,9 +267,12 @@ void MainWindow::on_actionEdytuj_plansze_triggered()
 
 void MainWindow::ustawNowyTryb( Tryb* nowyTryb )
 {
+	off_AutoKomputer();
+
 	disconnector();
 	delete tryb;
 	tryb = nowyTryb;
+	///poprawDostepnoscPrzyciskow();
 	scena->ustawPionki( tryb->plansza );
 	connector();
 	tryb->turaStart();
@@ -263,6 +280,8 @@ void MainWindow::ustawNowyTryb( Tryb* nowyTryb )
 
 void MainWindow::setValidMoves( int pionekId )
 {
+	emit stopAI();
+
 	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
 	std::vector<int> pozycje = tryb -> findValidMoves( pionekId );
 	while( !pozycje.empty() )
@@ -274,6 +293,8 @@ void MainWindow::setValidMoves( int pionekId )
 
 void MainWindow::on_actionZapisz_gr_triggered()
 {
+	off_AutoKomputer();
+
 	if ( tryb->plansza.doubleWinCheck() )
 	{
 		showMonitInBox("Nie moża zapisać stanu planszy z niepoprawnym układem pionków (obaj gracze wygrywają). Popraw i ponów próbę zapisu.");
@@ -312,6 +333,8 @@ void MainWindow::on_actionZapisz_gr_triggered()
 
 void MainWindow::on_actionZakoncz_triggered()
 {
+	off_AutoKomputer();
+
 	qApp->quit();
 }
 
@@ -340,12 +363,23 @@ void MainWindow::on_actionPomoc_triggered()
 	box->show();
 }
 
+void MainWindow::off_AutoKomputer()
+{
+	ui->AutoKomputer->setChecked( false );
+	on_AutoKomputer_clicked();
+}
+
 void MainWindow::on_AutoKomputer_clicked()
 {
 	kompAutoPlay = ui->AutoKomputer->isChecked();
 
-	//qDebug() << "MainWindow, wzbudzenie kompa z: on_AutoKomputer_clicked()";
-	wzbudzKomputer();
+	///poprawDostepnoscPrzyciskow();
+
+	if( !kompAutoPlay )
+		emit stopAI();
+	else
+		wzbudzKomputer();
+
 }
 
 void MainWindow::on_actionWzbudzKomputer_triggered()
@@ -363,44 +397,70 @@ void MainWindow::on_actionDaj_podpowiedz_triggered()
 	if ( moveLock ) return;
 	moveLock = true;
 
-	//tu wyszarzyc przyciski
+	qDebug() << "podpowiedz:";
+
+	///poprawDostepnoscPrzyciskow();
+	setButtonsEnabled( false );
 
 	ai = new AI( &(tryb->plansza), tryb->przesuniecWTurze, tryb->podanWTurze );
 
-	connect( ui->AI_stop_pushButton, SIGNAL(clicked()), ai, SLOT( stop()) );
+	//laczymy z checkboxem "Auto Komputer" - odznaczenie checkboxa powoduje
+	//przerwanie obliczen AI
+	connect( this, SIGNAL( stopAI() ), ai, SLOT( stop() ) );
 
 	//odpalamy watek liczacy
 	ai->start();
 
 	//w trakcie liczenia obslugujemy okno:
+	showMonitOnStatusBar("Obliczanie ruchu...");
 	while ( ai->isRunning() )
 		QCoreApplication::processEvents();
 
-	//po zakonczonych lub zastopowanych obliczeniach zrywamy polaczenie i usuwamy AI
-	disconnect( ui->AI_stop_pushButton, SIGNAL( clicked() ), ai, SLOT( stop()) );
-	delete ai;
+
+	//po zakonczonych lub zastopowanych obliczeniach czyscimu komunikat,
+	//zrywamy polaczenie, szarzymy przicisk AI, dalej usuwamy ai
+	showMonitOnStatusBar("");
+	disconnect( this, SIGNAL( stopAI() ), ai, SLOT( stop() ) );
+	setButtonsEnabled( true );
 
 	//jesli obliczylismy ruch i nie wykonano stopu, wykonujemy go
 	if ( ai->done )
 	{
 		ruch r = ai->hint;
+		delete ai;
 
 		if ( r.czyRuch() )	tryb->move( r );
 		else				tryb->zatwierdz();
 	}
 	else
+	{
+		delete ai;
 		moveLock = false;
-
-
-	//tu odszarzyc
-
-	//scena->dodajDostepnePole();
-
+		///poprawDostepnoscPrzyciskow();
+	}
 }
-
+/*
 void MainWindow::on_AI_stop_pushButton_clicked()
 {
 	//polaczone w on_actionDaj_podpowiedz_triggered() z przerwaniem watku
 	kompAutoPlay = false;
 	ui->AutoKomputer->setChecked( false );
+}
+*/
+
+void MainWindow::on_Przerwij_AI_pushButton_clicked()
+{
+	if( tryb->typGracza[ tryb->plansza.czyjRuch() ] == Tryb::KOMPUTER )
+		off_AutoKomputer();
+	else
+		emit stopAI();
+}
+
+void MainWindow::setButtonsEnabled( bool v )
+{
+	ui->Cofnij_pushButton->setEnabled(v);
+	ui->Powtorz_pushButton->setEnabled(v);
+	ui->Zatwierdz_pushButton->setEnabled(v);
+	ui->actionDaj_podpowiedz->setEnabled(v);
+	ui->actionWzbudzKomputer->setEnabled(v);
 }
