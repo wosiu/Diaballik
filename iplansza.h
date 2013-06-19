@@ -34,7 +34,6 @@ private:
 	bool locked;
 
 	std::vector< ICel* > dostepneRuchy;
-	//int lastClickedId; //do "odznaczania" - zrealizowane w MainWindow::setValidMoves()
 
 signals:
 	//sygnal o kliknieciu na pionek

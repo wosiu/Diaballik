@@ -5,10 +5,6 @@ Edytor::Edytor()
 	inicjuj();
 }
 
-/*Edytor::Edytor(Plansza plansza)
-{
-	this->plansza = plansza;
-}*/
 
 Edytor::Edytor( Tryb *innyTryb )
 {
@@ -22,9 +18,11 @@ Edytor::Edytor( Tryb *innyTryb )
 	inicjuj();
 }
 
+
 void Edytor::inicjuj()
 {
 }
+
 
 std::vector<int> Edytor::findValidMoves( int pionekId )
 {
@@ -41,10 +39,12 @@ std::vector<int> Edytor::findValidMoves( int pionekId )
 	return res;
 }
 
+
 Tryb::TYPGRACZA Edytor::dajTypGracza( int graczId )
 {
 	return EDYTOR;
 }
+
 
 //nie korzystamy z tego w edytorze
 bool Edytor::isValidMove(int pionekId, int pos)
@@ -52,11 +52,10 @@ bool Edytor::isValidMove(int pionekId, int pos)
 	return true;
 }
 
+
 //zmienia gracza rozpoczynajacego na przeciwnego
 void Edytor::turaStart()
 {
-	//plansza.nastepnyGracz();
-	//emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 	emit wykonaneRuchy( 0, 0 );
 	emit nowaTura( plansza.czyjRuch() );
 
@@ -64,10 +63,12 @@ void Edytor::turaStart()
 	emit redoAble( false );
 }
 
+
 Plansza Edytor::dajPlanszePoczatkowa()
 {
 	return plansza;
 }
+
 
 void Edytor::zatwierdz()
 {
@@ -94,10 +95,12 @@ void Edytor::move( int pionekId, int pozycja )
 	physicalMove( pionekId, pozycja );
 }
 
+
 void Edytor::moveDetector( int pionekId, int pozycja )
 {
 	move( pionekId, pozycja );
 }
+
 
 bool Edytor::undo()
 {
@@ -105,14 +108,14 @@ bool Edytor::undo()
 	return false;
 }
 
+
 bool Edytor::redo()
 {
 	emit uwaga( "Powtarzanie ruchów niedostępne w trybie edycji." );
 	return false;
 }
 
+
 void Edytor::komputerGraj()
 {
 }
-
-

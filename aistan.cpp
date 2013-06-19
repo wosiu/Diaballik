@@ -57,13 +57,6 @@ void AIstan::generatorSynow()
 		{
 			std::vector<int> dostepne = dajRuchy( i );
 
-			/*QString dbg = QString::number( i ) + ": ";
-			for ( int j = 0; j < dostepne.size(); j++ )
-			{
-				dbg += QString::number( dostepne[ j ] ) + " ";
-			}
-			qDebug() << dbg;*/
-
 			while ( !dostepne.empty() )
 			{
 				AIstan* nowy = new AIstan( this, przesuniecWTurze + 1, podanWTurze );

@@ -12,17 +12,16 @@ public:
 	Edytor();
 	Edytor( Tryb* innyTryb );
 	void inicjuj();
-	//Edytor( Plansza plansza );
-	std::vector<int> findValidMoves( int pionekId ); //done
-	TYPGRACZA dajTypGracza( int graczId ); //done
+	std::vector<int> findValidMoves( int pionekId );
+	TYPGRACZA dajTypGracza( int graczId );
 	virtual bool isValidMove( int pionekId, int pos );
-	void turaStart(); //done
+	void turaStart();
 	Plansza dajPlanszePoczatkowa();
 
 public slots:
-	void zatwierdz(); //done
-	void move( int pionekId, int pozycja ); //done
-	void moveDetector( int pionekId, int pozycja ); //done
+	void zatwierdz();
+	void move( int pionekId, int pozycja );
+	void moveDetector( int pionekId, int pozycja );
 	bool undo();
 	bool redo();
 	void komputerGraj();

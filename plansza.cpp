@@ -28,8 +28,6 @@ Plansza::Plansza()
 }
 
 
-//Plansza(tab), Plansza(vector) TO DO
-
 bool Plansza::czyPilka( int pionekId )
 {
 	return ( pionekId == 14 || pionekId == 15 );
@@ -40,11 +38,6 @@ bool Plansza::czyPilkarzyk( int pionekId )
 	if( pionekId > 15 || pionekId < 0 ) return false;
 	return !czyPilka( pionekId );
 }
-
-/*int8_t* Plansza::zapisz()
-{
-	return dane;
-}*/
 
 
 int Plansza::dajPozycje( int pionekId )
@@ -379,26 +372,6 @@ std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
 
 	Q_ASSERT ( roznice.size() <= 1 );
-
-	//brak roznic uznajemy jako pas (ruch w te i we wte dowolnym mobilnym pionkiem)
-	/*if ( wynik.size() == 0 )
-	{
-		int gracz = plansza->czyjRuch();
-
-		for ( int i = 7 * gracz ; i < 7 + 7 * gracz; i++ )
-		{
-			std::vector<int> sasiedniePustePozycje = dajRuchy( i );
-			if ( sasiedniePustePozycje.empty() ) continue;
-
-			//else
-			//ruch w te i z powrotem
-			wynik.push_back( ruch( i, dane[i], sasiedniePustePozycje.front() ) );
-			wynik.push_back( ruch( i, sasiedniePustePozycje.front(), dane[i] ) );
-			break;
-		}
-	}
-
-	Q_ASSERT ( wynik.size() > 0 );*/
 
 	return roznice;
 }

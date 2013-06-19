@@ -9,12 +9,11 @@ public:
 	AIstan();
 	AIstan( Plansza* plansza, int przesuniecWTurze, int podanWTurze );
 	~AIstan();
-	//int minimalValue, maximalValue;
 	int v;
 	int przesuniecWTurze, podanWTurze;
 	void generatorSynow();
 	QVector <AIstan*> sons;
-	int alfa,beta; //inicjowac -inf, inf
+	int alfa,beta; //inicjowane -inf, inf
 
 private:
 	const int INF = 1073741824;

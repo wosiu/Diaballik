@@ -1,7 +1,6 @@
 #include "ipole.h"
 
 const int IPole::rozmiar = 50;
-//bool IPole::locked = false;
 
 IPole::IPole(QObject *parent) :
 	QObject(parent)
@@ -28,7 +27,6 @@ void IPole::moveable(bool lock)
 void IPole::unlock()
 {
 	locked = false;
-	//emit animationFinished();
 }
 
 bool IPole::getLock()
@@ -50,12 +48,9 @@ void IPole::move(int x, int y)
 	connect( animation, SIGNAL(finished()), this, SLOT(unlock()) );
 	connect( animation, SIGNAL(finished()), this, SIGNAL(finished()) );
 
-	//TO DO: zrobic bezpieczne kolejkowanie animacji i dac 250:
-	animation->setDuration(350); //w ostatecznosci dac 100
-	//animation->setStartValue( this->pos() );
+	animation->setDuration(350);
 	animation->setEndValue( this->mapToParent( x*IPole::rozmiar, y*IPole::rozmiar ) );
 	animation->setEasingCurve(QEasingCurve::InOutSine);
-	//animation->DeleteWhenStopped;
 	animation->start( QPropertyAnimation::DeleteWhenStopped );
 }
 

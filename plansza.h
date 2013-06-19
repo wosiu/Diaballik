@@ -12,7 +12,6 @@ class Plansza
 {
 public:
 	Plansza();
-	//int8_t* zapisz();
 	static int ktoryGracz( int poleId );
 	static bool czyPilka( int pionekId );
 	static bool czyPilkarzyk( int pionekId );
@@ -43,8 +42,6 @@ public:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,
 //[16] - 0/1 - ktory gracz zaczyna
 	int8_t dane[17];
-	//int8_t pola[7][7];
-	//bool polaWypelnione;
 	int pozycjaToId(int pozycja);
 };
 

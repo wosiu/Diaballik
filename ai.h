@@ -32,7 +32,6 @@ signals:
 
 public slots:
 	void stop();
-	//removeStan(Aistan* stan);
 
 };
 

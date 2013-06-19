@@ -7,10 +7,10 @@ IPlansza::IPlansza(QObject *parent) :
 {
 	rysujPodklad();
 	stworzPionki();
-	//dodajPionki();
 	polaczPionki();
 	locked = false;
 }
+
 
 void IPlansza::rysujPodklad()
 {
@@ -26,13 +26,9 @@ void IPlansza::rysujPodklad()
 			   toPixels(j) + IPilkarzyk::przesuniecieWzgledne(),
 			   IPilkarzyk::rozmiar, IPilkarzyk::rozmiar,
 			   QPen(), pola );
-
-
-			//siatka:
-			//IPole *pole = new IPole(this);pole->moveable(false);
-			//this->addItem( pole );pole->setPos( i*IPole::rozmiar,j*IPole::rozmiar );
 		}
 }
+
 
 void IPlansza::stworzPionki()
 {
@@ -48,11 +44,13 @@ void IPlansza::stworzPionki()
 	ustawPionki();
 }
 
+
 void IPlansza::dodajPionki()
 {
 	for ( int i = 0; i < 16; i++ )
 		this->addItem( pionki[ i ] );
 }
+
 
 void IPlansza::dodajPionki(Plansza plansza)
 {
@@ -60,6 +58,7 @@ void IPlansza::dodajPionki(Plansza plansza)
 	for ( int i = 0; i < 16; i++ )
 		this->addItem( pionki[ i ] );
 }
+
 
 void IPlansza::ustawPionki()
 {
@@ -73,6 +72,7 @@ void IPlansza::ustawPionki()
 	pionki[ 15 ]->setPos( toPixels(3), toPixels(6) );
 }
 
+
 void IPlansza::ustawPionki( Plansza plansza )
 {
 	int x,y;
@@ -85,6 +85,7 @@ void IPlansza::ustawPionki( Plansza plansza )
 	}
 }
 
+
 void IPlansza::polaczPionki()
 {
 	for ( int i = 0; i < 16; i++ )
@@ -96,6 +97,8 @@ void IPlansza::polaczPionki()
 
 	}
 }
+
+
 
 /* OBSŁUGA PLANSZY PODCZAS GRY */
 
@@ -110,6 +113,7 @@ void IPlansza::move(int pionekId, int dx, int dy)
 	//i odklikuje, jesli byl klikniety
 	clickedId = -1;
 }
+
 
 void IPlansza::move(int pionekId, int poz)
 {
@@ -127,14 +131,14 @@ void IPlansza::move(int pionekId, int poz)
 //wykrywa klikniecie na pionek i informuje o tym MainWindow
 void IPlansza::clickDetector( int poleId )
 {
-	//if( !(0 <= polId && poleId <= 15) ) return;
+	//if( !(0 <= polId && poleId <= 15) ) return; //(zakladamy poprawnosc)
 	if( locked ) return;
 	//blokuje clickDetectora - klikanie na wszystkie pionki nieaktywne
 	locked = true;
 	czyscDostepneRuchy();
 
-	//odklikuję = odznaczam dostepne obszary po ponownym klknieciu tego samego pionka
-	//bo wykona sie tylko powyzsze czyscDostepneRuchy
+	//odklikuję = odznaczam dostepne obszary po ponownym klknieciu tego samego
+	//pionka bo wykona sie tylko powyzsze czyscDostepneRuchy
 	if ( clickedId == poleId )
 	{
 		clickedId = -1;
@@ -148,13 +152,15 @@ void IPlansza::clickDetector( int poleId )
 	locked = false;
 }
 
+
 void IPlansza::ustawPole( IPole *pole, int pos )
 {
 	pole->setPos( toPixels(pos % 7), toPixels(pos / 7 ) );
 }
 
-//nastepnie MainWindow pyta Gre/Edytor o dostepne do ruchu pola i nakazuje plnaszy
-//je wyrysowac:
+
+//nastepnie MainWindow pyta Gre/Edytor o dostepne do ruchu pola i nakazuje
+//plnaszy je wyrysowac:
 void IPlansza::dodajDostepnePole( int pos )
 {
 	ICel *pole = new ICel( pos );
@@ -164,18 +170,23 @@ void IPlansza::dodajDostepnePole( int pos )
 	this->addItem( pole );
 }
 
+
 //wykryto klikniecie na ICel - pole dostepnego ruchu
 void IPlansza::moveDetector( int pos )
 {
 	czyscDostepneRuchy();
-	emit chose( clickedId, pos ); //z tym bedzie conneckniety gracz, ktory nakarze grze wykonac move na planszy, ta przekaze przez mainwidnow wykonanie ruchu na planszy
+	//sygnal wedrujacy przez mainwindow do trybu wskazujacy ktorym pionkiem
+	//ruszyl czlowiek
+	emit chose( clickedId, pos );
 }
+
 
 void IPlansza::czyscDostepneRuchy()
 {
 	while ( !dostepneRuchy.empty() )
 	{
-		disconnect( dostepneRuchy.back(), SIGNAL(clicked(int)), this, SLOT(moveDetector(int)) );
+		disconnect( dostepneRuchy.back(), SIGNAL(clicked(int)), this,
+					SLOT(moveDetector(int)) );
 		this->removeItem( dostepneRuchy.back() );
 		delete dostepneRuchy.back();
 		dostepneRuchy.pop_back();
@@ -190,6 +201,7 @@ bool IPlansza::getLock()
 
 	return false;
 }
+
 
 void IPlansza::clear()
 {

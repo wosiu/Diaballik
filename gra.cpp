@@ -1,11 +1,5 @@
 #include "gra.h"
 
-#define debon 1
-#define deb(burak) if(debon) {qDebug()<<"DEB-> "<<#burak<<": "<<burak;}
-#define debv(burak) if(debon) {qDebug()<<"DEB-> "<<#burak<<": \t"; for(unsigned int zyx=0;zyx<burak.size();zyx++) cout<<burak[zyx]<<" "; cout<<endl;}
-
-
-
 Gra::Gra()
 {
 	historyIterator = -1;
@@ -27,21 +21,6 @@ Gra::Gra( Tryb *innyTryb )
 	historyIterator = innyTryb->historyIterator;
 }
 
-/*Gra::Gra(const Gra innaGra )
-{
-	plansza = innaGra.plansza;
-	plansza.nastepnyGracz(); //poniewaz turaStart() zmieni z powrotem na dobrego
-	podanWTurze = innaGra.podanWTurze;
-	przesuniecWTurze = innaGra.przesuniecWTurze;
-	typGracza[1] = innaGra.typGracza[1];
-	typGracza[0] = innaGra.typGracza[0];
-	inicjuj();
-}*/
-
-
-Gra::~Gra()
-{
-}
 
 void Gra::inicjuj()
 {
@@ -56,7 +35,6 @@ bool Gra::isEndGame()
 
 	if ( plansza.remis() )
 	{
-		//emit remisDetector();
 		emit winDetector( 2 );
 		return true;
 	}
@@ -72,21 +50,18 @@ bool Gra::isEndGame()
 	return false;
 }
 
+
 void Gra::turaStart()
 {
-	//static int roundCounter = 0;
-	//qDebug() << " =========================================== ";
-	//qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
+	//static int roundCounter = 0; qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
 
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
 	if ( !isEndGame() )
 	{
-		//przesuniecWTurze = podanWTurze = 0; //ew przeniesc do zatwierdz, zeby sie nie wykonywalo przy odpaleniu gry po raz pierwszy
 		zliczRuchyWTurze();
 		emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
-		//przelacznie na nastepnego gracza
+		//przelacznie na nastepnego gracza w UI
 		emit nowaTura( plansza.czyjRuch() );
-		//komputerGraj( plansza.czyjRuch() );
 	}
 	else
 	{
@@ -94,17 +69,14 @@ void Gra::turaStart()
 		przesuniecWTurze = 2;
 		podanWTurze = 1;
 	}
-
-	//jesli bedzie trza blokowac przyciski to zrobic int historyWalker(-1..1) i tam emitowac prawdzajac historyIterator
-	emit undoAble( true );
-	emit redoAble( true );
-
 }
+
 
 Plansza Gra::dajPlanszePoczatkowa()
 {
 	return planszaPoczatkowa;
 }
+
 
 Tryb::TYPGRACZA Gra::dajTypGracza( int graczId )
 {
@@ -117,17 +89,13 @@ bool Gra::isValidMove( int pionekId, int pos )
 {
 	//qDebug() << "isValidMove::Gra ( pionekId = "<< pionekId << ", pozycja "<< pos <<"  )";
 
-	//TO DO: musi byc do wczytywania rozgrywki
-	//(nie prawda ->) nie powinno byc do AI ( bo se bedzie liczyc w tle )
-	//bo bedzie operowala na swoich planszach
-	//ALE do zwyklej gry niepotrzebne, bo czy dobry gracz, sprawdzam w FindValidMoves
-	//ale tez nie przeszkadza
+	//czy o ruch pyta wlasciwy gracz
 	if ( plansza.czyjRuch() != plansza.ktoryGracz( pionekId ) ) return false;
 
 	//sprawdzam czy ma dostepne jeszcze ruchy
 	Q_ASSERT ( podanWTurze + przesuniecWTurze <= 3);
 
-	//oprocz limitow ruchow powyzsze tez sprawdza czy na planszy poprzednia
+	//oprocz limitow ruchow ponizsze tez sprawdza czy na planszy poprzednia
 	//runda wygrana (patrz turaStart)
 	if ( podanWTurze + przesuniecWTurze == 3 ) return false;
 
@@ -142,16 +110,9 @@ bool Gra::isValidMove( int pionekId, int pos )
 	if ( std::find( dobreRuchy.begin(), dobreRuchy.end(), pos )
 			  == dobreRuchy.end() ) return false;
 
-	//sprawdzam czy ktos wygral w tej turze lub ta tura nalezy do gracza, ktory ktoryms ruchem
-	//w tej turze wygra jak zatwierdzi (to jak ma jeszcze jakies wolne ruchy, to moze kontynuowac
-	//int winner = plansza.winCheck();
-	//if ( winner != -1 && winner != plansza.czyjRuch() ) return false;
-	//tu nie moze byc sprawdzania zwyciestwa bo to syf.. zwyciestwo / przegrana / remis
-	//ma byc stwierdzana po zatwierdzeniu tury a nie w jej trakcie !!!
-
-
 	return true;
 }
+
 
 std::vector<int> Gra::validateAllMoves( int pionekId )
 {
@@ -159,13 +120,14 @@ std::vector<int> Gra::validateAllMoves( int pionekId )
 	std::vector<int> res;
 	std::vector<int> mozliweRuchy = plansza.dajRuchy( pionekId );
 
-	//sprawdzam dostepne ruchy pod kątem pozostalej ilosci ruchow
+	//sprawdzam dostepne ruchy mechaniczne pod kątem zasad gry
 	for ( int i = 0; i < (int)mozliweRuchy.size(); i++ )
 		if	( isValidMove( pionekId, mozliweRuchy[i] ))
 			res.push_back( mozliweRuchy[i] );
 
 	return res;
 }
+
 
 //uzywane na zewnatrz (UI) do inforamcji gracza (czlowieka) jakie ma mozliwosci ruchu
 std::vector<int> Gra::findValidMoves( int pionekId )
@@ -179,11 +141,14 @@ std::vector<int> Gra::findValidMoves( int pionekId )
 		return std::vector<int>();
 
 	//sprawdzam czy to nie jest zapytanie o pionki komputera
+	//(dostepnych ruchow dla takowych nie chcemy zaznaczac na planszy
+	//po kliknieciu na nie)
 	if ( typGracza[ czyjRuch ] == KOMPUTER )
 		return std::vector<int>();
 
 	return validateAllMoves( pionekId );
 }
+
 
 //zatwierdzenie ruchu (uzywane na zewnatrz i przez komputer)
 void Gra::zatwierdz()
@@ -194,32 +159,17 @@ void Gra::zatwierdz()
 		emit uwaga( "Aby zatwierdzić turę, musi być wykonany przynajmniej jeden ruch!" );
 		return;
 	}
-	//while( pausa ) {}
 
-	//w tura start:
-
-	//przesuniecWTurze = podanWTurze = 0; //- to moze byc ale nie powinno nic zmieniac bo w zliczRuchywturze sie powinno wyzerowac samo
 	plansza.nastepnyGracz();
 	turaStart();
 }
 
-//TO DO! do trybu z tym (i z inicjacją w konstruktorze):
-/*void Gra::setPausa( bool isPausa )
-{
-	pausa = isPausa;
-}*/
 
 void Gra::move( int pionekId, int pozycja )
 {
 	//qDebug() << "move::Gra ( "<< pionekId << ", "<< pozycja <<"  )";
 
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
-
-	//poszlo do isValid:
-	//jesli nikt nie wygral lub ta tura nalezy do gracza, ktory ktoryms ruchem
-	//w tej turze wygral (to jak ma jeszcze jakies wolne ruchy, to moze zagrac,
-	//dopoki nie zatwierdzi
-	//Q_ASSERT( plansza.winCheck() == -1 || plansza.winCheck() == plansza.czyjRuch() );
 
 	//dorzucamy ruch do historii
 	addToHistory( ruch( pionekId, plansza.dajPozycje(pionekId), pozycja ) );
@@ -234,7 +184,21 @@ void Gra::move( int pionekId, int pozycja )
 }
 
 
+// obsluguje ruchy czlowieka
+void Gra::moveDetector( int pionekId, int pozycja )
+{
+	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
+	//nie przyjdzie zawolanie z UI pionkow kompa, bo nie wyswietla sie
+	//validMoves dla niego, wiec uzytkownik nie bedzie mial dostepu do takich ruchow
+	Q_ASSERT( typGracza[ plansza.ktoryGracz( pionekId ) ] == CZLOWIEK );
+
+	move( pionekId, pozycja );
+}
+
+
+
 /* OBSLUGA HISTORII */
+
 void Gra::addToHistory( ruch r )
 {
 	//qDebug() << "addToHistory::Gra ( "<< "pionekId = " << r.pionekId  << ", skad = " << r.skad << ", dokad = " << r.dokad <<" )";
@@ -246,7 +210,8 @@ void Gra::addToHistory( ruch r )
 	history.push_back( r );
 }
 
-//uwaga: undo / redo uzyte przez CZLOWIEK cofa zawsze jeden jego ruch
+
+//UWAGA: undo / redo uzyte przez CZLOWIEK cofa zawsze jeden jego ruch
 //nawet jesli bedzie to wymagalo cofniecia calej tury KOMPUTERa
 
 //ustawia gracza na wskazywany przez historyIterator pionek
@@ -263,32 +228,6 @@ bool Gra::undo()
 		emit uwaga("Brak ruchów do cofnięcia.");
 		return false;
 	}
-
-
-	/*if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER && historyIterator < 3 )
-	{
-		//ale jesli cofamy ruchy komputera, a przed nim nie ma nic
-		//to nie mozemy ich cofnac (takie zachowanie nei ma sensu)S
-			bool isHumanOnStart = false;
-			//sprawdzam wiec czy ktorys z ruchow 0,1,(2) nalezy do czlowieka
-			//bo jak tak, to moge cofnąc
-			for ( int i = 0; i < historyIterator; i++ )
-				if ( typGracza[ plansza.ktoryGracz( history[ i ].pionekId ) ]
-					 == CZLOWIEK )
-				{
-					isHumanOnStart = true;
-					break;
-				}
-
-			//nie ma ruchow czlowika na poczatku historii,
-			//wiec nie ma sensu cofac ruchow komputera:
-			if ( !isHumanOnStart )
-			{
-				emit( "Do tego miejsca rozgrywki zostały wykonane ruchy jedynie przez Komputer. Nie masz dostępu do cofnięcia ich. Kontynuuj grę lub powtórz ruchy jeśli dostępne.");
-				return false;
-			}
-	}*/
-
 
 	ruch r = history[ historyIterator ];
 	Q_ASSERT( plansza.dajPozycje( r.pionekId ) == r.dokad );
@@ -308,13 +247,13 @@ bool Gra::undo()
 		//ale ma to sens (odzwierciedla rzeczywistosc)
 		if ( historyIterator <  0 )
 			emit nowaTura( plansza.czyjRuch() );
-		//	komputerGraj(); //jesli komputer gra, to gdy w UI jest idznaczone auto play to ten poczatkowy ruch po cofnieciu komp i tak wykona sam
 		else //powtarzamy tak jak opisane wyzej
 			undo();
 	}
 
 	return true;
 }
+
 
 bool Gra::redo()
 {
@@ -348,6 +287,7 @@ bool Gra::redo()
 	return true;
 }
 
+
 void Gra::zliczRuchyWTurze()
 {
 	podanWTurze = przesuniecWTurze = 0;
@@ -378,6 +318,7 @@ void Gra::zliczRuchyWTurze()
 	emit wykonaneRuchy( przesuniecWTurze, podanWTurze );
 }
 
+
 void Gra::poprawGraczaWzgledemHistorii()
 {
 	//żadne ruchy nie są zakolejkowane, wiec nie wykonano ruchow
@@ -402,18 +343,3 @@ void Gra::poprawGraczaWzgledemHistorii()
 
 	zliczRuchyWTurze();
 }
-
-
-/* OBSLUGRA RUCHOW GRACZY */
-
-// obsluguje ruchy czlowieka
-void Gra::moveDetector( int pionekId, int pozycja )
-{
-	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
-	//nie przyjdzie zawolanie z UI pionkow kompa, bo nie wyswietla sie
-	//validMoves dla niego, wiec uzytkownik nie bedzie mial dostepu do takich ruchow
-	Q_ASSERT( typGracza[ plansza.ktoryGracz( pionekId ) ] == CZLOWIEK );
-
-	move( pionekId, pozycja );
-}
-

@@ -6,6 +6,7 @@ ICel::ICel(QObject *parent, int poz):
 	id = poz;
 }
 
+
 ICel::ICel(int poz)
 {
 	id = poz;

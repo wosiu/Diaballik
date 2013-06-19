@@ -1,11 +1,10 @@
 #ifndef GRA_H
 #define GRA_H
 
-#include "tryb.h"
-#include "ai.h"
 #include <algorithm>
 #include <vector>
-#include "ai.h"
+
+#include "tryb.h"
 
 class Gra : public Tryb
 {
@@ -14,8 +13,6 @@ class Gra : public Tryb
 public:
 	Gra();
 	Gra( Tryb* innyTryb );
-	//Gra( const Gra innaGra );
-	~Gra();
 	void inicjuj();
 	bool isValidMove( int pionekId, int pos );
 	std::vector<int> findValidMoves( int pionekId );
@@ -24,8 +21,6 @@ public:
 	Plansza dajPlanszePoczatkowa();
 
 private:
-	//std::vector < ruch > ruchy; //w turze, jednego gracza
-	AI *ai;
 	std::vector < int > validateAllMoves( int pionekId );
 	bool isEndGame();
 	bool isMoveLocked;
@@ -34,7 +29,6 @@ private:
 	void zliczRuchyWTurze();
 	void addToHistory( ruch r );
 	void poprawGraczaWzgledemHistorii();
-	//Plansza planszaStartowa;
 
 public slots:
 	void zatwierdz();
@@ -42,7 +36,6 @@ public slots:
 	void moveDetector( int pionekId, int pozycja );
 	bool undo();
 	bool redo();
-	//void czlowiekGraj(); == moveDetector
 
 };
 

@@ -29,7 +29,7 @@ public:
 	std::vector < ruch > history;
 
 //protected:
-	TYPGRACZA typGracza[2]; //TO DO: sprawdzic czy readonly z zewnatrz
+	TYPGRACZA typGracza[2];
 	int podanWTurze;
 	int przesuniecWTurze;
 	Plansza planszaPoczatkowa;
@@ -44,12 +44,9 @@ public slots:
 
 signals:
 	void moved( int pionekId, int pos );
-	//jak pozbyc sie ponizszego z tej klasy, zeby bylo tylko w podklasie?
 	void nowaTura( int gracz );
 	void winDetector( int gracz );
 	void uwaga( QString tresc );
-	//void remisDetector();
-	//void lockGameControl(bool) //blokuje przyciski cofnij, powtorz,itp, itd
 	void wykonaneRuchy( int przesuniecWTurze, int podanWTurze );
 	void undoAble( bool );
 	void redoAble( bool );

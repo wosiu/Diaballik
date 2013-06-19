@@ -2,14 +2,17 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "gra.h"
-#include "edytor.h"
-#include "iplansza.h"
-#include "nowagradialog.h"
 #include <QPropertyAnimation>
 #include <QLabel>
 #include <QMessageBox>
 #include <QtGui> //do resize eventu
+
+#include "gra.h"
+#include "edytor.h"
+#include "iplansza.h"
+#include "nowagradialog.h"
+#include "ai.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -49,7 +52,6 @@ private slots:
 	void aktualnyGracz( int graczId );
 	void wykonaneRuchy( int przesuniec, int podan );
 	void wzbudzKomputer();
-	void poprawDostepnoscPrzyciskow();
 	void setButtonsEnabled(bool v);
 
 	void on_Zatwierdz_pushButton_clicked();
@@ -64,8 +66,6 @@ private slots:
 	void on_AutoKomputer_clicked();
 	void on_actionWzbudzKomputer_triggered();
 	void on_actionDaj_podpowiedz_triggered();
-	//void on_AI_stop_pushButton_clicked();
-
 	void on_Przerwij_AI_pushButton_clicked();
 
 public slots:

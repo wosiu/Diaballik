@@ -2,6 +2,7 @@
 
 const int IPilka::rozmiar = 30;
 
+
 IPilka::IPilka(QObject *parent, int gracz, int id) :
 	IPole(parent)
 {
@@ -9,10 +10,12 @@ IPilka::IPilka(QObject *parent, int gracz, int id) :
 	this->id = id;
 }
 
+
 int IPilka::przesuniecieWzgledne()
 {
 	return ( IPole::rozmiar - IPilka::rozmiar ) / 2;
 }
+
 
 void IPilka::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 					 QWidget *widget)

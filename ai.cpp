@@ -7,15 +7,16 @@ AI::AI( Plansza *plansza, int przesuniecWTurze, int podanWTurze,
 	done = false;
 }
 
+
 AI::~AI()
 {
 	delete poczatkowy;
 }
 
+
 void AI::run()
 {
 	running = true;
-
 	hint = dajHinta();
 
 	if( running )
@@ -24,32 +25,34 @@ void AI::run()
 	running = false;
 }
 
+
 void AI::stop()
 {
 	running = false;
 }
 
 
-//QVector <Tryb::ruch> AI::dajHinta( AIstan *plansza )
 ruch AI::dajHinta()
 {
 	if ( !running ) return ruch(); //jesli zatrzymano watek
 
 	//maksymalna glebokosc drzewa gry:
-	int h = 7; //8 OK, 6-7 optymalnie
+	//SZREDERZE, JEŚLI BARDZIEJ CHCESZ ZWOLNIĆ PROGRAM TO TUTAJ:
+	int h = 7; //8-9 OK acz wolno, 6-7 optymalnie
 
 	wywolanyGracz = poczatkowy->czyjRuch();
 
+	//buduję drzewo gry, wypełniając je od razu wartosciami min max
 	alfabeta( poczatkowy, poczatkowy->alfa, poczatkowy->beta, h, true );
 
 	AIstan* najlepszy;
 	int max = -INF;
 
+	//przegladam synow roota wybierajac najepsze posuniecie
 	foreach ( AIstan* stan, poczatkowy->sons )
 	{
 		if ( !running ) return ruch(); //jesli zatrzymano watek
 
-		//qDebug() << stan->debug();
 		if ( stan->v >= max )
 		{
 			max = stan->v;
@@ -57,15 +60,13 @@ ruch AI::dajHinta()
 		}
 	}
 
-
 	//jesli nie mial dostapnych ruchow, to np odnotowano wygraną
 	if ( poczatkowy->sons.size() == 0 )
-		return ruch(-1,0,0); //zatwierdz
+		return ruch(-1,0,0); //zatwierdzenie tury
 
 	//szukamy roznice pomiedzy plansza wejsciowa a ta podpowiedziana przez AI
 	std::vector<ruch>roznice = poczatkowy->znajdzRoznice( najlepszy );
 	Q_ASSERT ( roznice.size() < 3 ); //miedzy nimi moze byc max 3 roznice
-
 
 	//AI podpowiada zatwierdzenie tury
 	if ( najlepszy->czyjRuch() != poczatkowy->czyjRuch() )
@@ -78,8 +79,7 @@ ruch AI::dajHinta()
 
 
 	//nie moze byc brak roznic (pas bylby rozwazony przez AI na
-	//dwoch nastepujacych po sobie glebokosciach
-	//tak samo jak 2 rozne ruchy
+	//dwoch nastepujacych po sobie glebokosciach tak samo jak 2 rozne ruchy
 	Q_ASSERT ( roznice.size() == 1 );
 
 	return roznice.front();
@@ -115,8 +115,8 @@ int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 			if ( !running ) return 0; //jesli zatrzymano watek
 
 			//najpierw jesli mam do wykonania jeszcze jakies ruchy, to
-			//posylam max w dol
-			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
+			//posylam max w dol; max ustawiamy na false, bo w wywolaniu bd true
+			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max;
 
 			int x = alfabeta( s, qMax( parent->v, alfa ), beta, h-1, !max );
 
@@ -132,7 +132,7 @@ int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 		{
 			if ( !running ) return 0; //jesli zatrzymano watek
 
-			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
+			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max;
 
 			int x = alfabeta( s, alfa, qMin( parent->v, beta ), h-1, !max );
 			if ( x <= alfa ) { parent->v = x; return x; };
@@ -153,19 +153,20 @@ int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
 	{
 		int odl = stan->dajlOdlOdStart( i );
 
-		odl *= odl;
-		//if ( odl == 6 ) odl += 15; //premia za stanie pionka na mecie
+		//odl *= odl;
+		if ( odl == 6 ) odl += 20; //dodatkowa premia za stanie pionka na mecie
 		res += odl * 10;
 	}
 
-	//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
+	/*//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
 	std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
 	for ( int i = 0; i < (int)pilkaRuchy.size(); i++ )
 		//jesli pilka ma podanie do pionka ktory stoi na lini przeciwnika
 		if ( pilkaRuchy[i] / 7 == ((graczId + 1) % 2) * 6 )
-			//premia
-			res += 5000;
-	//powyzsze: fajne, ale gra trwa dluzej (choc faktycznie komp jest madrzejszy)
+		{
+			res += 100;
+			break;
+		}*/
 
 	return res;
 }
@@ -181,7 +182,8 @@ int AI::ocen( AIstan *stan, int graczId )
 	if ( isWin == -1 )
 	{
 		int przeciwnik = ( graczId + 1 ) % 2;
-		return ocenaHeurystyczna( stan, graczId ) - ocenaHeurystyczna( stan, przeciwnik );
+		return ocenaHeurystyczna( stan, graczId )
+				- ocenaHeurystyczna( stan, przeciwnik );
 	}
 
 	//stan w ktorym wygrywa gracz, ktory pytal o hinta
@@ -191,5 +193,3 @@ int AI::ocen( AIstan *stan, int graczId )
 	return -INF;
 
 }
-
-
