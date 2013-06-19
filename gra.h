@@ -12,7 +12,7 @@ class Gra : public Tryb
 
 public:
 	Gra();
-	Gra( Tryb* innyTryb );
+	Gra(Tryb* innyTryb);
 	void inicjuj();
 	bool isValidMove( int pionekId, int pos );
 	std::vector<int> findValidMoves( int pionekId );

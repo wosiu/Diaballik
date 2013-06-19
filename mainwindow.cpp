@@ -169,7 +169,7 @@ void MainWindow::on_Cofnij_pushButton_clicked()
 {
 	if ( scena->getLock() ) return;
 
-	emit stopAI();
+	off_AutoKomputer();
 	tryb->undo();
 }
 
@@ -177,7 +177,7 @@ void MainWindow::on_Powtorz_pushButton_clicked()
 {
 	if ( scena->getLock() ) return;
 
-	emit stopAI();
+	off_AutoKomputer();
 	tryb->redo();
 }
 

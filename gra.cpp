@@ -6,7 +6,7 @@ Gra::Gra()
 	inicjuj();
 }
 
-Gra::Gra( Tryb *innyTryb )
+Gra::Gra(Tryb *innyTryb )
 {
 	plansza = innyTryb->plansza;
 	planszaPoczatkowa = innyTryb->planszaPoczatkowa;
@@ -211,18 +211,9 @@ void Gra::addToHistory( ruch r )
 }
 
 
-//UWAGA: undo / redo uzyte przez CZLOWIEK cofa zawsze jeden jego ruch
-//nawet jesli bedzie to wymagalo cofniecia calej tury KOMPUTERa
-
 //ustawia gracza na wskazywany przez historyIterator pionek
 bool Gra::undo()
 {
-	if ( typGracza[0] == KOMPUTER && typGracza[1] == KOMPUTER )
-	{
-		emit uwaga("Gra Komputer vs Komputer - cofanie ruchów niedostępne.");
-		return false;
-	}
-
 	if ( historyIterator < 0 )
 	{
 		emit uwaga("Brak ruchów do cofnięcia.");
@@ -235,21 +226,6 @@ bool Gra::undo()
 	physicalMove ( r.pionekId , r.skad );
 	historyIterator--;
 	poprawGraczaWzgledemHistorii();
-
-	//jesli w wyniku cofniecia obecnie ma wykonywac ruch komputer,
-	//to jego wszystkie ruchy w tej turze zostają także cofniete
-	//a takze ostatni ruch w turze przed komputerem CZLOWIEK'a
-	if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER )
-	{
-		//ale jesli nie ma co cofać w turze przed komputem,
-		//to po jego cofnietych ruchach nakazujemy mu ponownie grac
-		//minus w stosunku do porpzedniego rozwiazania: stracimy historie rozgrywki
-		//ale ma to sens (odzwierciedla rzeczywistosc)
-		if ( historyIterator <  0 )
-			emit nowaTura( plansza.czyjRuch() );
-		else //powtarzamy tak jak opisane wyzej
-			undo();
-	}
 
 	return true;
 }
@@ -270,19 +246,6 @@ bool Gra::redo()
 
 	physicalMove( r.pionekId , r.dokad );
 	poprawGraczaWzgledemHistorii();
-
-	//jesli w wyniku powtorzenia obecnie ma wykonywac ruch komputer,
-	//to jego wszystkie ruchy w tej turze zostają także powtorzone
-	//a takze pierwszu ruch w turze po komputerze
-	if ( typGracza[ plansza.czyjRuch() ] == KOMPUTER )
-	{
-		//ale jesli nie ma co powtarzac w turze po komputerze,
-		//to po prostu zaczynamy nowa runde
-		if ( historyIterator + 1 >= (int)history.size() )
-			zatwierdz();
-		else //powtarzamy tak jak opisane wyzej
-			redo();
-	}
 
 	return true;
 }
