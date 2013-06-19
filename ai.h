@@ -4,7 +4,6 @@
 #include <QThread>
 #include <QMap>
 
-#include "tryb.h"
 #include "aistan.h"
 #include "ruch.h"
 
@@ -13,9 +12,9 @@ class AI : public QThread
 	Q_OBJECT
 public:
 	explicit AI(QObject *parent = 0);
+	//AI();
 	void run();
 	ruch dajHinta( AIstan *poczatkowy );
-	//QVector < AIstan > generatorStanow( Plansza* plansza );
 
 private:
 	//QMap < unsigned long long, AIstan* > hashToStan;
@@ -23,7 +22,8 @@ private:
 	//void garbage();
 	const int INF = 1073741824;
 	int ocen( AIstan* stan , int graczId );
-	AIstan alfabeta( AIstan stan, int alfa, int beta, int h, bool max );
+	int ocenaHeurystyczna(AIstan *stan, int graczId);
+	int alfabeta( AIstan* stan, int alfa, int beta, int h, bool max );
 	//AIstan *root;
 	//Aistan *present;
 	int wywolanyGracz;

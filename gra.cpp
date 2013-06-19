@@ -75,9 +75,8 @@ bool Gra::isEndGame()
 void Gra::turaStart()
 {
 	//static int roundCounter = 0;
-	//qDebug() << " =========================================== ";
+	qDebug() << " =========================================== ";
 	//qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
-
 
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
 	if ( !isEndGame() )
@@ -428,11 +427,11 @@ void Gra::komputerGraj()
 
 	//qDebug() <<"Gra::grajKomputer() IN";
 
-	if ( przesuniecWTurze == 2 )
+	/*if ( przesuniecWTurze == 2 )
 	{
 		zatwierdz();
 		return;
-	}
+	}*/
 
 	if ( isMoveLocked )
 	{
@@ -443,26 +442,23 @@ void Gra::komputerGraj()
 
 	//qDebug() << "komputerGraj start jako gracz: " << gracz;
 
-	//naśladuje obliczenia AI
-	unsigned long long chuj = 7;
-	for( int i=1; i<7000000; i++)
-		chuj +=  ( i * chuj / 4887) % (unsigned long long)( (1e9+7) * i );
-	//qDebug() << chuj;
+	AI aitest;
+	AIstan* stan = new AIstan( &plansza, przesuniecWTurze, podanWTurze );
+	//AIstan stan( plansza, 0, 0 );
+	ruch r = aitest.dajHinta( stan );
+	delete stan;
 
+	qDebug() << "proponowany ruch dla planszy:" << r.pionekId << r.skad << r.dokad;
 
-	//prymitywne AI:
-	int licznikRuchow = 0;
-	while ( licznikRuchow < 1 )
+	if ( r.czyRuch() )
 	{
-		int pionek = gracz * 7 + qrand() % 7;
-		std::vector <int> dostepneRuchy = validateAllMoves( pionek );
-
-		if ( dostepneRuchy.empty() ) continue;
-
-		std::random_shuffle( dostepneRuchy.begin(), dostepneRuchy.end() );
-
-		move( pionek, dostepneRuchy[0] );
-		licznikRuchow++;
+		Tryb::move( r );
+		isMoveLocked = false;
+	}
+	else
+	{
+		isMoveLocked = false;
+		zatwierdz();
 	}
 	//move( gracz * 7 + 2, 37);
 	//move( gracz * 7 + 2, 44);
@@ -471,7 +467,7 @@ void Gra::komputerGraj()
 
 	//po wszystkim: zatwierdz(). nie emit nowaTura! (zeby sie zapisaly i wyczyscily ruchy, itd..)
 	//ten zatwierdz uzaleznic od if (konfig.wzbudzanie kliknieciem )
-	isMoveLocked = false;
+
 	//zatwierdz();
 
 }

@@ -1,15 +1,16 @@
 #include "ai.h"
 
-AI::AI(QObject *parent) :
-	QThread(parent)
+AI::AI(QObject *parent) :QThread(parent)
+//AI::AI()
 {
-
 }
 
 void AI::run()
 {
 	//wystartuj obliczanie wezlow
 }
+
+
 
 //QVector <Tryb::ruch> AI::dajHinta( AIstan *plansza )
 ruch AI::dajHinta( AIstan *poczatkowy )
@@ -20,16 +21,60 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 	//i jesli jest wiecej niz jeden to zasadzic equals?
 	//itHTS = hashToStan.find( hash );
 
-	int h = 5;
+	//TO DO: uzależnić h od entropii planszy:
+	int h = 6; //8 OK, 6-7 optymalnie
+
 	wywolanyGracz = poczatkowy->czyjRuch();
-	Plansza wynik = alfabeta( *poczatkowy, -INF, INF, h, true );
 
-	std::vector<ruch>roznice = poczatkowy->znajdzRoznice( &wynik );
+	alfabeta( poczatkowy, poczatkowy->alfa, poczatkowy->beta, h, true );
 
-	Q_ASSERT ( roznice.size() < 3 );
+	AIstan* najlepszy;
+	int max = -INF;
+
+	foreach ( AIstan* stan, poczatkowy->sons )
+	{
+		//qDebug() << stan->debug();
+		if ( stan->v >= max )
+		{
+			max = stan->v;
+			najlepszy = stan;
+		}
+	}
+
+
+	/*if ( roznice.size() != 1 )
+	{
+		qDebug() << poczatkowy->debug();
+		qDebug() << najlepszy->debug();
+		for ( int i = 0; i < roznice.size(); i++ )
+			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
+	}*/
+
+	//jesli nie mial dostapnych ruchow, to np odnotowano wygraną
+	if ( poczatkowy->sons.size() == 0 )
+		return ruch(-1,0,0); //zatwierdz
+
+	//szukamy roznice pomiedzy plansza wejsciowa a ta podpowiedziana przez AI
+	std::vector<ruch>roznice = poczatkowy->znajdzRoznice( najlepszy );
+	Q_ASSERT ( roznice.size() < 3 ); //miedzy nimi moze byc max 3 roznice
+
+
+	//AI podpowiada zatwierdzenie tury
+	if ( najlepszy->czyjRuch() != poczatkowy->czyjRuch() )
+	{
+		//skoro zatwierdzil, to nie wykonal zadnych ruchow
+		Q_ASSERT( roznice.size() == 0 );
+
+		return ruch(-1,0,0); //zatwierdz
+	}
+
+
+	//nie moze byc brak roznic (pas bylby rozwazony przez AI na
+	//dwoch nastepujacych po sobie glebokosciach
+	//tak samo jak 2 rozne ruchy
+	Q_ASSERT ( roznice.size() == 1 );
 
 	return roznice.front();
-
 
 	//jesli hash wystapil = uklad wystapuje w drzewie,
 	//od niego startujemy alfa bete
@@ -40,86 +85,104 @@ ruch AI::dajHinta( AIstan *poczatkowy )
 }
 
 
-AIstan AI::alfabeta( AIstan parent, int alfa, int beta, int h, bool max )
+int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 {
-	if ( h == 0 )
-	{
-		AIstan x;
-		x.v = ocen( &parent, wywolanyGracz );
-		return x;
-	}
+	//qDebug() << "AI::alfabeta( AIstan* parent, int alfa, int beta, int h = "<< h << ", bool max = " << max << ")";
 
-	//int r;
-	AIstan r;
-	vector <AIstan> sons = parent.generatorStanow();
+	//jesli zuzylismy dostepna glebokosc obliczen
+	if ( h == 0 )
+		return parent->v = ocen( parent, wywolanyGracz );
+
+	parent->generatorSynow();
+
+	//jesli wskazany ojciec nie ma synow (brak mozliwosci ruszenia np z powodu
+	//czyjejs wygranej
+	if ( parent->sons.empty() )
+		return parent->v = ocen( parent, wywolanyGracz );
+
 
 	//jesli jestesmy w ruchu gracza ktory szuka hinta
 	if ( max )
 	{
-		r.v = -INF; // pas
+		parent->v = -INF; // pas
+		//to do: uzywac bety zamiast powyzszego?
 
-		foreach ( AIstan s, sons )
+		foreach ( AIstan* s, parent->sons )
 		{
 			//najpierw jesli mam do wykonania jeszcze jakies ruchy, to
 			//posylam max w dol
-			if ( s.czyjRuch() == parent.czyjRuch() ) max=!max; //robie na false, bo w wyloaniu zrobi sie true
+			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
 
-			AIstan x = alfabeta( s, max( r.v, alfa ), beta, h-1, !max );
+			int x = alfabeta( s, qMax( parent->v, alfa ), beta, h-1, !max );
 
-			if ( x.v >= beta ) return x;
-			if ( x.v >= r.v) r = x;
+			if ( x >= beta ) { parent->v = x; return x; }
+			if ( x >= parent->v ) parent->v = x;
 		}
 	}
 	else
 	{
-		r.v = +INF;
+		parent->v = +INF;
 
-		if ( s.czyjRuch == parent.czyjRuch() ) max=!max; //robie na true, bo w wyloaniu zrobi sie false
-
-		foreach ( AIstan s, sons )
+		foreach ( AIstan* s, parent->sons )
 		{
-			AIstan x = alfabeta( s, alfa, min( r.v, beta ), h-1, !max );
-			if ( x.v <= a ) return x;
-			if ( x.v <= r.v) r = x;
+			if ( s->czyjRuch() == parent->czyjRuch() ) max = !max; //robie na false, bo w wyloaniu zrobi sie true
+
+			int x = alfabeta( s, alfa, qMin( parent->v, beta ), h-1, !max );
+			if ( x <= alfa ) { parent->v = x; return x; };
+			if ( x <= parent->v ) parent->v = x;
 		}
 	}
 
-	return r;
+	return parent->v;
+}
+
+
+int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
+{
+	int res = 0;
+
+	//odleglosc od startu
+	for ( int i = 7 * graczId; i < 7 + 7 * graczId; i++ )
+	{
+		int odl = stan->dajlOdlOdStart( i );
+
+		odl *= odl;
+		//if ( odl == 6 ) odl += 15; //premia za stanie pionka na mecie
+		res += odl * 10;
+	}
+
+	//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
+	std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
+	for ( int i = 0; i < pilkaRuchy.size(); i++ )
+		//jesli pilka ma podanie do pionka ktory stoi na lini przeciwnika
+		if ( pilkaRuchy[i] / 7 == ((graczId + 1) % 2) * 6 )
+			//premia
+			res += 1000;
+	//powyzsze: fajne, ale gra trwa dluzej (choc faktycznie komp jest madrzejszy)
+
+	return res;
 }
 
 
 int AI::ocen( AIstan *stan, int graczId )
 {
-	int isWin = stan.winCheck();
+	//qDebug() << "AI::ocen( AIstan *stan " << stan->czyjRuch() << ", int graczId = "<< graczId << ")";
+
+	int isWin = stan->winCheck();
 
 	//stan, w ktorym nikt obecnie nie wygrywa nikt nie wygrywa
 	if ( isWin == -1 )
 	{
-		int res=0;
-		int startY = gracz*6;
-
-		//odleglosc od startu
-		for ( int i = 7 * gracz; i < 7 + 7 * gracz; i++ )
-		{
-			int odl = stan.dajlOdlegloscOdLiniStartowej( i );
-
-			if ( odl == 6 ) odl += 10; //premia za stanie pionka na mecie
-			res += 10*odl;
-		}
-
-		//premia: mozliwosc zagrania pilka do jakiegos gracza
-		res += stan.dajRuchy( 14 + gracz ).size();
-		//TO DO: a moze zrobic wyjebana premie za mozliwosc podania do gracza na mecie?
-
-		//odleglosc przeciwnika od startu na minus
-		int przeciwnik = ( grac + 1 ) % 2;
-
-		return res - ocen( stan, przeciwnik );
+		int przeciwnik = ( graczId + 1 ) % 2;
+		return ocenaHeurystyczna( stan, graczId ) - ocenaHeurystyczna( stan, przeciwnik );
 	}
 
 	//stan w ktorym wygrywa gracz, ktory pytal o hinta
-	if ( isWin == graczId ) resturn INF;
+	if ( isWin == graczId ) return INF;
 
 	//stan w ktorym wygrywa przeciwny gracz
 	return -INF;
+
 }
+
+

@@ -17,6 +17,7 @@ public:
 	~Tryb();
 	enum TYPGRACZA { CZLOWIEK, KOMPUTER, EDYTOR };
 	void physicalMove( int pionekId, int pozycja );
+	void move( ruch r );
 	virtual bool isValidMove( int pionekId, int pos ) = 0;
 
 	virtual std::vector <int> findValidMoves( int pionekId ) = 0;

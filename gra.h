@@ -5,6 +5,7 @@
 #include "ai.h"
 #include <algorithm>
 #include <vector>
+#include "ai.h"
 
 class Gra : public Tryb
 {

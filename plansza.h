@@ -36,7 +36,8 @@ public:
 	unsigned long long hashCode();
 	void usunPionki();
 	std::vector<ruch> znajdzRoznice( Plansza* plansza );
-	int dajOdlegloscOdLiniStartowej( int poleId );
+	int dajlOdlOdStart( int poleId );
+	QString debug();
 
 //private:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,

@@ -221,6 +221,9 @@ std::vector<int> Plansza::dajRuchy( int pionekId )
 		return std::vector<int>();
 
 	//jesli pionek
+	if ( !( 0 <= pionekId && pionekId < 14 ) ) qDebug() << pionekId;
+
+	Q_ASSERT ( czyPilkarzyk( pionekId ) );
 	return dajSasiedniePuste( pionekId );
 }
 
@@ -363,24 +366,28 @@ void Plansza::usunPionki()
 		dane[ i ] = -1;
 }
 
-//jesli nei znajdzie roznic, zwroci dostepny ruch pasowy
 std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 {
-	std::vector<ruch> wynik;
+	std::vector<ruch> roznice;
 
 	for ( int i = 0; i < 16; i++ )
 		if ( this->dane[i] != plansza->dane[i] )
-			wynik.push_back( ruch( i, dane[i], plansza->dane[i] ) );
+			roznice.push_back( ruch( i, dane[i], plansza->dane[i] ) );
 
-	Q_ASSERT ( wynik.size() <= 3 );
+	if ( !(roznice.size() <= 1) )
+		for ( int i = 0; i < roznice.size(); i++ )
+			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
 
-	if ( wynik.size() == 0 )
+	Q_ASSERT ( roznice.size() <= 1 );
+
+	//brak roznic uznajemy jako pas (ruch w te i we wte dowolnym mobilnym pionkiem)
+	/*if ( wynik.size() == 0 )
 	{
 		int gracz = plansza->czyjRuch();
 
 		for ( int i = 7 * gracz ; i < 7 + 7 * gracz; i++ )
 		{
-			std::vector<int> sasiedniePustePozycje = dajRuchy( dane[i] );
+			std::vector<int> sasiedniePustePozycje = dajRuchy( i );
 			if ( sasiedniePustePozycje.empty() ) continue;
 
 			//else
@@ -391,13 +398,21 @@ std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 		}
 	}
 
-	Q_ASSERT ( wynik.size() > 0 );
+	Q_ASSERT ( wynik.size() > 0 );*/
 
-	return wynik;
+	return roznice;
 }
 
-int Plansza::dajOdlegloscOdLiniStartowej( int poleId )
+int Plansza::dajlOdlOdStart( int poleId )
 {
 	int liniaStartowa = ktoryGracz( poleId ) * 6;
 	return std::abs( liniaStartowa - ( dane[ poleId ] / 7 ) );
+}
+
+QString Plansza::debug()
+{
+	QString deb = "Plansza debug:";
+	for( int i = 0; i < 17; i++ )
+		deb += QString::number( i ) + ":" + QString::number( dane[i] ) + "; ";
+	return deb;
 }
