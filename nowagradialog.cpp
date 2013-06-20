@@ -50,6 +50,9 @@ bool NowaGraDialog::validateAndSetSave()
 			ustawienia->plansza.dane[i] = poz;
 		}
 
+		//sprawdzamy nieprawdilowy stan - podwojna wygrana
+		if ( ustawienia->plansza.doubleWinCheck() ) return false;
+
 		int8_t graczRozpoczynajacy;
 		in >> graczRozpoczynajacy;
 

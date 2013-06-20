@@ -196,7 +196,13 @@ void MainWindow::on_actionEdytuj_plansze_triggered()
 	off_AutoKomputer();
 
 	if ( !tryb->history.empty() )
-		showMonitInBox("Historia ruchów zostaje porzucona.");
+	{
+		QMessageBox monit;
+		monit.setText( "Historia ruchów zostanie porzucona." );
+		monit.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
+
+		if ( monit.exec() == QMessageBox::Cancel ) return;
+	}
 
 	Tryb* nowyTryb = new Edytor( tryb );
 	ustawNowyTryb( nowyTryb );
