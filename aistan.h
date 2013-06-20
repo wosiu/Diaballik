@@ -16,7 +16,8 @@ public:
 	int alfa,beta; //inicjowane -inf, inf
 
 private:
-	const int INF = 1073741824;
+	void dodajStan(int idPrzesunietego, int przesuniecWTurze, int podanWTurze);
+	const int INF = 1 << 30;
 };
 
 #endif // AISTAN_H

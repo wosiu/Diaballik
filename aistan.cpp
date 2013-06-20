@@ -29,6 +29,20 @@ AIstan::~AIstan()
 	}
 }
 
+
+void AIstan::dodajStan( int idPrzesunietego, int przesuniecWTurze, int podanWTurze  )
+{
+	std::vector<int> dostepne = dajRuchy( idPrzesunietego );
+
+	while ( !dostepne.empty() )
+	{
+		AIstan* nowy = new AIstan( this, przesuniecWTurze, podanWTurze );
+		nowy->przesun( idPrzesunietego, dostepne.back() );
+		dostepne.pop_back();
+		sons.push_back( nowy );
+	}
+}
+
 void AIstan::generatorSynow()
 {
 	int gracz = czyjRuch();
@@ -39,32 +53,12 @@ void AIstan::generatorSynow()
 
 	//dostepne podanie z tego stanu
 	if ( podanWTurze < 1 )
-	{
-		int i = 14 + gracz;
-		std::vector<int> dostepne = dajRuchy( i );
-		while ( !dostepne.empty() )
-		{
-			AIstan* nowy = new AIstan( this, przesuniecWTurze, podanWTurze + 1 );
-			nowy->przesun( i, dostepne.back() );
-			dostepne.pop_back();
-			sons.push_back( nowy );
-		}
-	}
+		dodajStan( 14 + gracz, przesuniecWTurze, podanWTurze + 1 );
 
 	//dostepne przesuniecia z tego stanu
 	if ( przesuniecWTurze < 2 )
 		for ( int i = 7 * gracz; i < 7 + 7 * gracz; i++ )
-		{
-			std::vector<int> dostepne = dajRuchy( i );
-
-			while ( !dostepne.empty() )
-			{
-				AIstan* nowy = new AIstan( this, przesuniecWTurze + 1, podanWTurze );
-				nowy->przesun( i, dostepne.back() );
-				dostepne.pop_back();
-				sons.push_back( nowy );
-			}
-		}
+			dodajStan( i, przesuniecWTurze + 1, podanWTurze );
 
 	//zatiwerdzenie tury (nie wykonanie zadnego ruchu w tym obiegu,
 	//przelaczenie na przeciwnika

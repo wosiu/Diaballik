@@ -38,7 +38,7 @@ ruch AI::dajHinta()
 
 	//maksymalna glebokosc drzewa gry:
 	//SZREDERZE, JEŚLI BARDZIEJ CHCESZ ZWOLNIĆ PROGRAM TO TUTAJ:
-	int h = 7; //8-9 OK acz wolno, 6-7 optymalnie
+	int h = 8; //8-9 OK acz wolno, 6-7 optymalnie
 
 	wywolanyGracz = poczatkowy->czyjRuch();
 
@@ -153,20 +153,20 @@ int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
 	{
 		int odl = stan->dajlOdlOdStart( i );
 
-		//odl *= odl;
+		odl *= odl;
 		if ( odl == 6 ) odl += 20; //dodatkowa premia za stanie pionka na mecie
-		res += odl * 10;
+		res += odl * 10; //pionek na mecie podbija res o 560
 	}
 
-	/*//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
+	//premia: mozliwosc zagrania pilka do gracza, ktory jest na lini przeciwnika
 	std::vector <int> pilkaRuchy = stan->dajRuchy( 14 + graczId );
 	for ( int i = 0; i < (int)pilkaRuchy.size(); i++ )
 		//jesli pilka ma podanie do pionka ktory stoi na lini przeciwnika
 		if ( pilkaRuchy[i] / 7 == ((graczId + 1) % 2) * 6 )
 		{
-			res += 100;
+			res += 400;
 			break;
-		}*/
+		}
 
 	return res;
 }

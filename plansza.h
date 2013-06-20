@@ -38,11 +38,13 @@ public:
 	int dajlOdlOdStart( int poleId );
 	QString debug();
 
-//private:
 //[0-6] - nr pól pionków gracza 0; [7-13] - gracza 1, [14]/[15] - pilki gracz 0/1,
 //[16] - 0/1 - ktory gracz zaczyna
 	int8_t dane[17];
 	int pozycjaToId(int pozycja);
+	//ilosc pilkarzykow w druzynie = szerokosc planszy = wysokosc planszy
+	static const int rozmiarDruzyny = 7;
+	static const int iloscPol = 49;
 };
 
 #endif // PLANSZA_H

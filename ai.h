@@ -21,7 +21,7 @@ public:
 	bool running;
 
 private:
-	const int INF = 1073741824;
+	const int INF = 1 << 30;
 	int ocen( AIstan* stan , int graczId );
 	int ocenaHeurystyczna(AIstan *stan, int graczId);
 	int alfabeta( AIstan* stan, int alfa, int beta, int h, bool max );

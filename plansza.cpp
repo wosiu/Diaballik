@@ -15,10 +15,10 @@ qMakePair(-1, 1), //GORA-LEWO SKOS
 
 Plansza::Plansza()
 {
-	for ( int i = 0; i < 7; i++ )
+	for ( int i = 0; i < rozmiarDruzyny; i++ )
 	{
 		dane[i] = i;
-		dane[i + 7] = i + 42;
+		dane[i + rozmiarDruzyny] = i + 42;
 	}
 
 	dane[ 14 ] = 3; 	//pilka 0 na pozycje 3
@@ -50,26 +50,26 @@ int Plansza::dajPozycje( int pionekId )
 std::vector<int> Plansza::dajWszystkiePuste()
 {
 	std::vector<int>res;
-	bool color[49];
-	for ( int i = 0; i < 49; i++ ) color[i] = true;
+	bool color[iloscPol];
+	for ( int i = 0; i < iloscPol; i++ ) color[i] = true;
 	for ( int i = 0; i < 14; i++ ) color[ dane[i] ] = false;
 
-	for ( int i = 0; i < 49; i++ )
+	for ( int i = 0; i < iloscPol; i++ )
 		if ( color[i] )
 			res.push_back( i );
 
-	Q_ASSERT( res.size() == 49 - 14 );
+	Q_ASSERT( res.size() == iloscPol - 14 );
 	return res;
 }
 
 
 std::vector<int> Plansza::dajDruzyne( int poleId )
 {
-	std::vector<int>res( dane + ktoryGracz( poleId ) * 7,
-						 dane + 7 + ktoryGracz( poleId ) * 7 );
+	std::vector<int>res( dane + ktoryGracz( poleId ) * rozmiarDruzyny,
+						 dane + rozmiarDruzyny + ktoryGracz( poleId ) * rozmiarDruzyny );
 	sort( res.begin(), res.end() );
 
-	Q_ASSERT( res.size() == 7 );
+	Q_ASSERT( (int)res.size() == rozmiarDruzyny );
 	return res;
 }
 
@@ -77,7 +77,7 @@ std::vector<int> Plansza::dajDruzyne( int poleId )
 bool Plansza::czyPuste(int x, int y)
 {
 	if ( x < 0 || x > 6 || y < 0 || y > 6 ) return false;
-	int poz = x + y * 7;
+	int poz = x + y * rozmiarDruzyny;
 
 	for ( int i = 0; i < 16; i++ )
 		if( dane[i] == poz )
@@ -88,9 +88,9 @@ bool Plansza::czyPuste(int x, int y)
 
 bool Plansza::czyPuste(int pozycja)
 {
-	if ( pozycja < 0 || pozycja > 48 ) return false;
+	if ( pozycja < 0 || pozycja > iloscPol - 1 ) return false;
 
-	return czyPuste( pozycja % 7, pozycja / 7 );
+	return czyPuste( pozycja % rozmiarDruzyny, pozycja / rozmiarDruzyny );
 }
 
 int Plansza::pozycjaToId( int pozycja )
@@ -131,8 +131,8 @@ std::vector<int> Plansza::dajSasiedniePuste( int pilkarzId )
 	std::vector<int>res;
 
 	int poz = dane[ pilkarzId ];
-	int x = poz % 7;
-	int y = poz / 7;
+	int x = poz % rozmiarDruzyny;
+	int y = poz / rozmiarDruzyny;
 	int nx, ny;
 
 	//sprawdzam cztery podstawowe kierunki
@@ -141,7 +141,7 @@ std::vector<int> Plansza::dajSasiedniePuste( int pilkarzId )
 		nx = x + DIR[i].first;
 		ny = y + DIR[i].second;
 
-		if ( czyPuste( nx, ny ) ) res.push_back( nx + ny * 7 );
+		if ( czyPuste( nx, ny ) ) res.push_back( nx + ny * rozmiarDruzyny );
 	}
 	return res;
 }
@@ -149,7 +149,7 @@ std::vector<int> Plansza::dajSasiedniePuste( int pilkarzId )
 
 int Plansza::ktoryGracz( int poleId )
 {
-	return (int) !( poleId < 7 || poleId == 14 );
+	return (int) !( poleId < rozmiarDruzyny || poleId == 14 );
 }
 
 
@@ -158,16 +158,16 @@ std::vector<int> Plansza::dajPodania( int pilkaId )
 	Q_ASSERT( pilkaId == 14 || pilkaId == 15 );
 
 	//wypelniam plansze kwadratową
-	int8_t pola[7][7];
-	for ( int i = 0; i < 7; i++ )
-		for ( int j = 0; j < 7; j++ )
+	int8_t pola[rozmiarDruzyny][rozmiarDruzyny];
+	for ( int i = 0; i < rozmiarDruzyny; i++ )
+		for ( int j = 0; j < rozmiarDruzyny; j++ )
 			pola[i][j] = -1;
 
 	for ( int i = 0; i < 14; i++ )
-		pola[ dane[i] % 7 ][ dane[i] / 7  ] = i;
+		pola[ dane[i] % rozmiarDruzyny ][ dane[i] / rozmiarDruzyny  ] = i;
 
-	int xp = dane[ pilkaId ] % 7;
-	int yp = dane[ pilkaId ] / 7;
+	int xp = dane[ pilkaId ] % rozmiarDruzyny;
+	int yp = dane[ pilkaId ] / rozmiarDruzyny;
 
 	std::vector<int>res;
 
@@ -179,8 +179,8 @@ std::vector<int> Plansza::dajPodania( int pilkaId )
 
 		//oddalam sie o 1 kwadrat w danym kierunku
 		for ( int d = 1;
-			  0 <= (xp + dx * d) && (xp + dx * d) < 7  &&
-			  0 <= (yp + dy * d) && (yp + dy * d) < 7;
+			  0 <= (xp + dx * d) && (xp + dx * d) < rozmiarDruzyny  &&
+			  0 <= (yp + dy * d) && (yp + dy * d) < rozmiarDruzyny;
 			  d++ )
 		{
 			int nx = xp + dx * d;
@@ -226,7 +226,8 @@ int Plansza::dajIdPodajacego(int pilkaId)
 
 	int gracz = ktoryGracz( pilkaId );
 
-	for ( int i = 7 * gracz ; i < 7 + 7 * gracz; i++ )
+	for ( int i = rozmiarDruzyny * gracz ;
+		  i < rozmiarDruzyny + rozmiarDruzyny * gracz; i++ )
 		if( dane[ i ] == dane[ pilkaId ] )
 			return i;
 
@@ -274,7 +275,7 @@ int Plansza::winCheck()
 	if ( dane[ 14 ] >= 42 )
 		return 0;
 
-	if ( dane[ 15 ] < 7 )
+	if ( dane[ 15 ] < rozmiarDruzyny )
 		return 1;
 
 	//nikt nie wygral
@@ -283,7 +284,7 @@ int Plansza::winCheck()
 
 bool Plansza::doubleWinCheck()
 {
-	return  dane[ 14 ] >= 42  &&  dane[ 15 ] < 7;
+	return  dane[ 14 ] >= 42  &&  dane[ 15 ] < rozmiarDruzyny;
 }
 
 bool Plansza::remis()
@@ -296,41 +297,42 @@ bool Plansza::unfairGameCheck( int gracz )
 {
 	//sprawdzamy czy w ogole jest na planszy sciana nie do przejscia stworzona
 	//przez danego gracza:
-	std::vector <int> pozycje (7, -1);
+	std::vector <int> pozycje (rozmiarDruzyny, -1);
 
 	//sprawdzam x:
-	for ( int i = 0; i < 7; i++ )
+	for ( int i = 0; i < rozmiarDruzyny; i++ )
 	{
-		int j = i + 7 * gracz;
+		int j = i + rozmiarDruzyny * gracz;
 
 		//jakis pionek stoi juz na tym x => przynajmniej 2 stoją na tym samym x
 		//=> jest luka pomiedzy pionkami jednego gracza
-		if ( pozycje[ dane[ j ] % 7 ] != -1 )
+		if ( pozycje[ dane[ j ] % rozmiarDruzyny ] != -1 )
 			return false;
 
-		pozycje[ dane[ j ] % 7 ] =  dane[ j ];
+		pozycje[ dane[ j ] % rozmiarDruzyny ] =  dane[ j ];
 	}
 
 	//sprawdzam y:
 	for ( int i = 0; i < 6; i++ )
 		//jezeli rozia sie wiecej niz jednym wierszem
-		if ( std::abs( pozycje[i] / 7 - pozycje[i+1] / 7 ) > 1 )
+		if ( std::abs( pozycje[i] / rozmiarDruzyny -
+					   pozycje[i+1] / rozmiarDruzyny ) > 1 )
 			return false;
 
 	//skoro dotrwalismy tutaj, tzn ze jest sciana nie do przejscia
 	//sprawdzamy czy min 3 pionki przeciwnika stoją przy niej
 	int przeciwnicy = 0; //licznik stykajacych sie z linia nie do przejscia przeciwnikow
 
-	for ( int i = 0; i < 7; i++ )
+	for ( int i = 0; i < rozmiarDruzyny; i++ )
 	{
 		//sprawdzam pole nad, jesli jest zajete to na pewno przez przeciwnika
 		//poniewaz wszyscy moi zawodnicy znajduja sie w "scianie" (maja rozne x)
-		if ( pozycje[ i ] / 7 > 0 )
-			przeciwnicy += (int) (!czyPuste( pozycje[ i ] - 7 ));
+		if ( pozycje[ i ] / rozmiarDruzyny > 0 )
+			przeciwnicy += (int) (!czyPuste( pozycje[ i ] - rozmiarDruzyny ));
 
 		//pod analogicznie
-		if ( pozycje[ i ] / 7 < 6 )
-			przeciwnicy += (int) (!czyPuste( pozycje[ i ] + 7 ));
+		if ( pozycje[ i ] / rozmiarDruzyny < 6 )
+			przeciwnicy += (int) (!czyPuste( pozycje[ i ] + rozmiarDruzyny ));
 
 		if ( przeciwnicy >= 3 )
 			return true;
@@ -343,10 +345,10 @@ bool Plansza::unfairGameCheck( int gracz )
 
 unsigned long long Plansza::hashCode()
 {
-	unsigned long long prime[17] = {1000000007, 1000000014000000049, 14069101319555514199, 2173964608407773537, 7232439895113528231, 1423083718267137937, 9015250055358150391, 3633867129218868929, 3321970296312322375, 16054152209726863089, 4648997779380988567, 6980550577642475553, 13284617912389565159, 1913936733860700753, 17872352148200380983, 1978898776512519553, 7048929689792206983};
+	unsigned long long prime[17] = {1000000007ULL, 1000000014000000049ULL, 14069101319555514199ULL, 2173964608407773537ULL, 7232439895113528231ULL, 1423083718267137937ULL, 9015250055358150391ULL, 3633867129218868929ULL, 3321970296312322375ULL, 16054152209726863089ULL, 4648997779380988567ULL, 6980550577642475553ULL, 13284617912389565159ULL, 1913936733860700753ULL, 17872352148200380983ULL, 1978898776512519553ULL, 7048929689792206983ULL};
 	unsigned long long res = 0;
 
-	//bez info o graczu?
+	//bez info o graczu
 	for ( int i = 0; i < 16; i++ )
 		res += dane[ i ] * prime[ i ];
 
