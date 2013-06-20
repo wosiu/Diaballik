@@ -88,8 +88,6 @@ ruch AI::dajHinta()
 
 int AI::alfabeta( AIstan* parent, int alfa, int beta, int h, bool max )
 {
-	//qDebug() << "AI::alfabeta( AIstan* parent, int alfa, int beta, int h = "<< h << ", bool max = " << max << ")";
-
 	if ( !running ) return 0; //jesli zatrzymano watek
 
 	//jesli zuzylismy dostepna glebokosc obliczen
@@ -174,8 +172,6 @@ int AI::ocenaHeurystyczna( AIstan *stan, int graczId )
 
 int AI::ocen( AIstan *stan, int graczId )
 {
-	//qDebug() << "AI::ocen( AIstan *stan " << stan->czyjRuch() << ", int graczId = "<< graczId << ")";
-
 	int isWin = stan->winCheck();
 
 	//stan, w ktorym nikt obecnie nie wygrywa nikt nie wygrywa

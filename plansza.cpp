@@ -213,9 +213,6 @@ std::vector<int> Plansza::dajRuchy( int pionekId )
 	if ( dane[ pionekId ] == dane[ 14 + ktoryGracz( pionekId ) ] )
 		return std::vector<int>();
 
-	//jesli pionek
-	if ( !( 0 <= pionekId && pionekId < 14 ) ) qDebug() << pionekId;
-
 	Q_ASSERT ( czyPilkarzyk( pionekId ) );
 	return dajSasiedniePuste( pionekId );
 }
@@ -368,10 +365,6 @@ std::vector<ruch> Plansza::znajdzRoznice( Plansza* plansza )
 	for ( int i = 0; i < 16; i++ )
 		if ( this->dane[i] != plansza->dane[i] )
 			roznice.push_back( ruch( i, dane[i], plansza->dane[i] ) );
-
-	if ( !(roznice.size() <= 1) )
-		for ( int i = 0; i < (int)roznice.size(); i++ )
-			qDebug() << roznice[i].pionekId << roznice[i].skad << roznice[i].dokad;
 
 	Q_ASSERT ( roznice.size() <= 1 );
 

@@ -103,7 +103,6 @@ void MainWindow::nowaTura( int graczId )
 
 void MainWindow::wzbudzKomputer()
 {
-	//qDebug() << "Wzbudzam kompa. Na planszy ruch: " << tryb->plansza.czyjRuch();
 	moveLock = false;
 
 	if ( kompAutoPlay )
@@ -219,7 +218,6 @@ void MainWindow::setValidMoves( int pionekId )
 {
 	emit stopAI();
 
-	//qDebug()<<" mainwindow: setValidMoves(pionekId = " << pionekId << ")";
 	std::vector<int> pozycje = tryb -> findValidMoves( pionekId );
 	while( !pozycje.empty() )
 	{
@@ -259,10 +257,7 @@ void MainWindow::on_actionZapisz_gr_triggered()
 	//zapisuje historie rozgrywki
 	for( int i = 0; i < qMin( tryb->historyIterator + 1, (int)tryb->history.size() )
 		 ; i++ )
-	{
 		out << tryb->history[i].pionekId << tryb->history[i].skad << tryb->history[i].dokad;
-		//qDebug() << tryb->history[i].pionekId << tryb->history[i].skad << tryb->history[i].dokad;
-	}
 
 	file.close();
 }

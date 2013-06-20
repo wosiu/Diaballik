@@ -53,8 +53,6 @@ bool Gra::isEndGame()
 
 void Gra::turaStart()
 {
-	//static int roundCounter = 0; qDebug() << "Gra::turaStart(): tura = " << roundCounter++;
-
 	//jesli na planszy nie wykryto nietypowych stanow (wygrana, unfair game)
 	if ( !isEndGame() )
 	{
@@ -87,8 +85,6 @@ Tryb::TYPGRACZA Gra::dajTypGracza( int graczId )
 //sprawdzanie pod kątem nie przekroczenia limitow ruchow
 bool Gra::isValidMove( int pionekId, int pos )
 {
-	//qDebug() << "isValidMove::Gra ( pionekId = "<< pionekId << ", pozycja "<< pos <<"  )";
-
 	//czy o ruch pyta wlasciwy gracz
 	if ( plansza.czyjRuch() != plansza.ktoryGracz( pionekId ) ) return false;
 
@@ -132,8 +128,6 @@ std::vector<int> Gra::validateAllMoves( int pionekId )
 //uzywane na zewnatrz (UI) do inforamcji gracza (czlowieka) jakie ma mozliwosci ruchu
 std::vector<int> Gra::findValidMoves( int pionekId )
 {
-	//qDebug() << "findValidMoves::Gra ( pionekId = "<< pionekId << " )";
-
 	//sprawdzam czy zapytano o pionek obecnego gracza
 	int czyjRuch = plansza.czyjRuch();
 
@@ -167,8 +161,6 @@ void Gra::zatwierdz()
 
 void Gra::move( int pionekId, int pozycja )
 {
-	//qDebug() << "move::Gra ( "<< pionekId << ", "<< pozycja <<"  )";
-
 	Q_ASSERT( isValidMove( pionekId, pozycja  ) );
 
 	//dorzucamy ruch do historii
@@ -201,8 +193,6 @@ void Gra::moveDetector( int pionekId, int pozycja )
 
 void Gra::addToHistory( ruch r )
 {
-	//qDebug() << "addToHistory::Gra ( "<< "pionekId = " << r.pionekId  << ", skad = " << r.skad << ", dokad = " << r.dokad <<" )";
-
 	//porzucam historie od tego momentu do konca, bo wykonano jakis ruch
 	history.erase( history.begin() + historyIterator + 1, history.end() );
 

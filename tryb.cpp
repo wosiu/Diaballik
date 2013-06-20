@@ -17,7 +17,6 @@ Tryb::~Tryb()
 
 void Tryb::physicalMove( int pionekId, int pozycja )
 {
-	//qDebug() << "Tryb::physicalMove ( pionekId = " << pionekId <<", pozycja = "<< pozycja << ")";
 	plansza.przesun( pionekId, pozycja );
 	emit moved( pionekId, pozycja );
 }

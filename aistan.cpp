@@ -43,6 +43,7 @@ void AIstan::dodajStan( int idPrzesunietego, int przesuniecWTurze, int podanWTur
 	}
 }
 
+
 void AIstan::generatorSynow()
 {
 	int gracz = czyjRuch();

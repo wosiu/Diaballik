@@ -18,12 +18,9 @@ bool NowaGraDialog::validateAndSetSave()
 {
 	QFile save( saveSciezka );
 
-	qDebug() << "validate start";
-
 	//sprawdzamy czy wybrany plik dobrze sie otwiera
 	if ( ! save.open( QIODevice::ReadOnly ) )
 	{
-		qDebug() << "blad otwiernia";
 		save.close();
 		return false;
 	}
@@ -48,7 +45,7 @@ bool NowaGraDialog::validateAndSetSave()
 			// 2 pionki ustawione na tym samym polu lub niewlasciwa pozycja
 			//lub ustawienie pilki na polu bez pionka
 			if ( !ustawienia->plansza.czyDostepne( i,  poz )  )
-				{qDebug()<<"2"<<poz ;save.close(); return false;}
+				return false;
 
 			ustawienia->plansza.dane[i] = poz;
 		}
